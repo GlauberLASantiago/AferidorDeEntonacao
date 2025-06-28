@@ -48,4 +48,4 @@ Observe o feedback na tela para ajustar a sua afinação.
 O aplicativo irá avançar ou repetir a nota automaticamente. Você pode clicar em "Próxima Nota" a qualquer momento para pular para um novo desafio.
 
 Créditos
-Este aplicativo foi desenvolvido por Glauber Santiago - UFSCar.
+Este aplicativo foi desenvolvido por Glauber Santiago - UFSCar por meio do Gemini 2.5 pro.
