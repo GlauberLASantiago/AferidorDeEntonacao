@@ -29,7 +29,6 @@
         
         <p class="text-gray-500 text-sm mb-6 px-4">
             Pode ser utilizado para o treino de entonação para voz ou instrumentos.
-            <!-- MUDANÇA: Texto da dica corrigido -->
             <strong>Dica:</strong> comece a cantar a nota ainda enquanto ouve o som para uma melhor entonação.
         </p>
 
@@ -138,11 +137,14 @@
             instructionEl.textContent = 'Ouça com atenção...';
             targetNoteDisplayEl.textContent = noteToPlay.name;
             synth.triggerAttackRelease(noteToPlay.freq, '1s');
+            
+            // MUDANÇA: Aumento do tempo de espera para evitar que o som do app seja captado.
+            // O valor foi aumentado de 1500ms para 2000ms.
             setTimeout(() => {
                 instructionEl.textContent = 'AGORA CANTE A NOTA';
                 listening = true;
                 actionTaken = false;
-            }, 1500);
+            }, 2000);
         };
 
         function autoCorrelate(buffer, sampleRate) {
@@ -240,3 +242,4 @@
     </script>
 </body>
 </html>
+
