@@ -1,56 +1,93 @@
-Aferidor de Entonação
+# 🎵 Aferidor de Entonação
 
-Descrição
-O Aferidor de Entonação é uma ferramenta web interativa desenvolvida para auxiliar cantores e instrumentistas a aprimorar a sua afinação e percepção musical. O aplicativo apresenta uma nota de referência e utiliza o microfone do usuário para analisar, em tempo real, se a nota cantada ou tocada está afinada.
+O **Aferidor de Entonação** é uma aplicação web interativa desenvolvida para ajudar cantores e instrumentistas a melhorar a afinação e a percepção auditiva. O sistema reproduz uma nota de referência e utiliza o microfone do usuário para analisar, em tempo real, se a nota executada está afinada.
 
-O projeto foi construído com tecnologias web padrão (HTML, CSS e JavaScript), sem a necessidade de frameworks complexos, e utiliza a biblioteca Tone.js para a geração e análise de áudio.
+A ferramenta oferece feedback imediato sobre a entonação, permitindo ajustes progressivos e treinamento auditivo de forma simples e acessível diretamente no navegador.
 
-Principais Funcionalidades
+## ✨ Funcionalidades
 
-Nota de Referência: O aplicativo toca uma nota aleatória da escala cromática para que o usuário a utilize como referência.
+- Geração de **nota de referência aleatória** da escala cromática
+- Captura de áudio pelo **microfone do usuário**
+- **Análise de frequência em tempo real**
+- Algoritmo de **detecção de pitch por autocorrelação**
+- Feedback imediato sobre a afinação:
+  - afinado
+  - quase afinado
+  - fora da afinação
+- **Tolerância ajustável** para avaliação da entonação
+- Sistema de **repetição automática da nota** para nova tentativa
+- Apresentação de nova nota após duas tentativas incorretas
+- Reconhecimento da nota **independente da oitava**
+- Interface simples e intuitiva para prática musical
 
-Análise em Tempo Real: Captura o áudio do microfone e utiliza um algoritmo de autocorrelação para detectar a frequência da nota entoada pelo usuário.
+## 🛠️ Tecnologias Utilizadas
 
-Feedback Instantâneo:
+- **HTML5** – estrutura da aplicação
+- **Tailwind CSS** – estilização da interface
+- **JavaScript (ES6+)** – lógica do aplicativo
+- **Tone.js** – geração e análise de áudio
+- **Web Audio API** – processamento de áudio em tempo real
 
-Informa se o usuário acertou a afinação com uma margem de tolerância ajustável.
+## 🎯 Objetivo do Projeto
 
-Caso a nota esteja fora, indica que a entonação precisa ser corrigida.
+O projeto foi desenvolvido para oferecer uma ferramenta prática de treino de entonação, permitindo que músicos desenvolvam:
 
-Oferece um feedback de "Quase Lá" para ajudar no ajuste fino da afinação.
+- percepção auditiva
+- controle vocal
+- precisão na execução de notas
+- consciência da afinação
 
-Repetição Inteligente: Se o usuário errar a nota, o aplicativo a repete para uma segunda tentativa. Caso erre duas vezes seguidas, uma nova nota é apresentada para manter o dinamismo do treino.
+A aplicação pode ser utilizada tanto por iniciantes quanto por músicos em treinamento mais avançado.
 
-Independência de Oitava: O sistema reconhece a nota entoada independentemente da oitava em que é cantada, focando apenas na qualidade da afinação.
+## ▶️ Como Usar
 
-Tecnologias Utilizadas
+1. Clone ou baixe o repositório para o seu computador.
+2. Abra o arquivo **index.html** em um navegador moderno.
+3. Clique no botão **INICIAR**.
+4. Permita o acesso ao **microfone** quando solicitado.
+5. Clique em **Próxima Nota** para ouvir a nota de referência.
+6. Cante ou toque a nota ouvida.
+7. Observe o **feedback na tela** para ajustar a afinação.
+8. Continue o treino com novas notas.
 
-HTML5: Estrutura base da página.
+### Dica
 
-Tailwind CSS: Framework CSS para uma estilização rápida e moderna.
+Comece a cantar **durante a emissão da nota de referência** para facilitar o alinhamento da afinação.
 
-JavaScript (ES6+): Lógica principal do aplicativo.
+## 🔍 Como Funciona
 
-Tone.js: Web Audio framework para geração de som e análise de frequência.
+O sistema utiliza um algoritmo de **autocorrelação de frequência** para identificar o pitch do áudio captado pelo microfone. A frequência detectada é comparada com a nota de referência e classificada de acordo com uma margem de tolerância.
 
-Como Usar
+Mesmo que a nota seja executada em outra oitava, o sistema reconhece corretamente a **classe de altura**, garantindo maior flexibilidade no treino.
 
-Clone este repositório para a sua máquina local.
+## 🎓 Aplicações Educacionais
 
-Abra o arquivo index.html em qualquer navegador moderno (Chrome, Firefox, Edge, etc.).
+Esta ferramenta pode ser utilizada em:
 
-Clique no botão "INICIAR".
+- aulas de canto
+- treinamento vocal
+- educação musical
+- prática de percepção auditiva
+- estudo de afinação instrumental
 
-O navegador irá solicitar permissão para usar o seu microfone. Permita o acesso.
+## 🌐 Compatibilidade
 
-Clique em "Próxima Nota" para ouvir o som de referência.
+Recomenda-se utilizar navegadores modernos com suporte a **Web Audio API**, como:
 
-Cante a nota que ouviu. A dica é começar a cantar ainda durante a emissão da nota de referência para uma melhor entonação.
+- Google Chrome
+- Microsoft Edge
+- Firefox
+- Opera
 
-Observe o feedback na tela para ajustar a sua afinação.
+## ⚠️ Permissões
 
-O aplicativo irá avançar ou repetir a nota automaticamente. Você pode clicar em "Próxima Nota" a qualquer momento para pular para um novo desafio.
+Para funcionar corretamente, o aplicativo precisa de acesso ao **microfone do dispositivo**.
 
-Créditos
+## 📄 Licença
 
-Este aplicativo foi desenvolvido por Glauber Santiago - UFSCar por meio do Gemini 2.5 pro.
+Este projeto pode ser utilizado para fins educacionais e de estudo.
+
+## 👨‍🏫 Créditos
+
+Desenvolvido por **Glauber Santiago — UFSCar**  
+com apoio do **Gemini 2.5 Pro**
