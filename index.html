@@ -238,6 +238,13 @@
                             <p class="font-semibold text-sm text-brand-light">6. Laboratório Livre</p>
                             <p class="text-xs text-brand-light/70 mt-0.5">Afinador contínuo, curva vocal e teclado sem erros.</p>
                         </button>
+                        <button data-path="mirror" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 sm:col-span-2 border border-brand-gold/30">
+                            <div class="flex items-center justify-between">
+                                <p class="font-semibold text-sm text-brand-gold">7. Espelho Vocal (Emitir → Gravar 3s → Comparar)</p>
+                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded-full bg-brand-coral/30 border border-brand-coral text-brand-light">NOVO</span>
+                            </div>
+                            <p class="text-xs text-brand-light/80 mt-0.5">O app emite a nota, grava sua voz por 3s e toca: 1º Nota de Origem → 2º Sua Voz → 3º As Duas Juntas.</p>
+                        </button>
                     </div>
 
                     <!-- Configurações Pedagógicas -->
@@ -417,12 +424,21 @@
                             <button id="nextNoteButton" class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base hidden">
                                 Sortear / Próxima Nota
                             </button>
-                            <button id="replayNoteButton" class="glass-btn-sandy font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ouvir a nota alvo novamente">
-                                Ouvir Novamente
+                            <button id="recordCompareButton" class="glass-btn-sandy font-bold py-3.5 px-4 rounded-2xl text-sm hidden" title="Emite a nota de origem, grava sua voz por 3 segundos e toca uma depois da outra e depois as duas juntas">
+                                🎙️ Emitir, Gravar 3s &amp; Comparar
+                            </button>
+                            <button id="replayNoteButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ouvir a nota alvo novamente">
+                                Ouvir Nota
                             </button>
                             <button id="droneToggleButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ligar/Desligar Nota Pedal Tônica">
                                 Pedal Tônico: OFF
                             </button>
+                        </div>
+                        <div id="autoMirrorOptionRow" class="hidden flex items-center justify-center">
+                            <label class="inline-flex items-center gap-2 cursor-pointer text-xs text-brand-light/85 bg-[#264653]/75 px-3 py-1.5 rounded-xl border border-white/15">
+                                <input type="checkbox" id="autoRecordCompareToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                                <span>Gravar minha voz (3s) e reproduzir comparação automaticamente após cada emissão</span>
+                            </label>
                         </div>
                         <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando ativação de áudio pelo usuário...</p>
                     </div>
@@ -453,6 +469,56 @@
                         </div>
 
                         <p id="feedback" class="text-base md:text-lg font-semibold min-h-[1.75rem] text-brand-light mt-2">&nbsp;</p>
+                    </div>
+
+                    <!-- Painel Espelho Vocal: Gravação Automática (3s) & Comparação (Sequencial + As Duas Juntas) -->
+                    <div id="voiceMirrorPanel" class="glass-panel mt-4 p-4 rounded-2xl border border-brand-gold/25">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-2">
+                                <span id="mirrorRecDot" class="w-2.5 h-2.5 rounded-full bg-brand-light/40 inline-block"></span>
+                                <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Espelho Auditivo · Gravação (3s) &amp; Comparação</p>
+                            </div>
+                            <span id="mirrorStatusBadge" class="text-[11px] font-mono-tech text-brand-light/75">Pronto para gravar</span>
+                        </div>
+
+                        <!-- Barra de contagem de 3 segundos da gravação -->
+                        <div class="w-full bg-[#193039] rounded-full h-2 mb-3 overflow-hidden border border-white/15">
+                            <div id="mirrorProgressBar" class="bg-gradient-to-r from-[#E76F51] via-[#F4A261] to-[#2A9D8F] h-full transition-all duration-100" style="width: 0%"></div>
+                        </div>
+
+                        <!-- 3 Etapas da Comparação (1º Nota de Origem -> 2º Sua Voz -> 3º As Duas Juntas) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                            <button type="button" id="playOnlyOriginBtn" disabled
+                                class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
+                                <span class="block text-[10px] font-mono-tech uppercase text-brand-gold">1ª Etapa (Individual)</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota de Origem</span>
+                                <span id="mirrorOriginInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Referência do app</span>
+                            </button>
+
+                            <button type="button" id="playOnlyUserVoiceBtn" disabled
+                                class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
+                                <span class="block text-[10px] font-mono-tech uppercase text-brand-sandy">2ª Etapa (Individual)</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🎤 Sua Voz (3s)</span>
+                                <span id="mirrorVoiceInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Aguardando gravação</span>
+                            </button>
+
+                            <button type="button" id="playBothTogetherBtn" disabled
+                                class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
+                                <span class="block text-[10px] font-mono-tech uppercase text-brand-teal">3ª Etapa (Simultânea)</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
+                                <span id="mirrorBothInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Origem + Sua Voz</span>
+                            </button>
+                        </div>
+
+                        <div class="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <p id="mirrorSummaryText" class="text-[11px] text-brand-light/80">
+                                Clique em <strong>"🎙️ Emitir, Gravar 3s &amp; Comparar"</strong> (ou use a <strong>Trilha 7</strong>) para ouvir a referência, gravar 3s e escutar a comparação.
+                            </p>
+                            <button type="button" id="replayFullComparisonBtn" disabled
+                                class="glass-btn-teal px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 shrink-0">
+                                ↻ Reouvir Sequência (1 → 2 → Juntas)
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Medidor Visual de Biofeedback em Tempo Real (Cents Gauge + Curva Melódica) -->
@@ -882,8 +948,24 @@
         // =========================================================================
         const startButton = document.getElementById('startButton');
         const nextNoteButton = document.getElementById('nextNoteButton');
+        const recordCompareButton = document.getElementById('recordCompareButton');
         const replayNoteButton = document.getElementById('replayNoteButton');
         const droneToggleButton = document.getElementById('droneToggleButton');
+        const autoMirrorOptionRow = document.getElementById('autoMirrorOptionRow');
+        const autoRecordCompareToggle = document.getElementById('autoRecordCompareToggle');
+
+        // Elementos do Painel Espelho Auditivo (Gravação 3s & Comparação)
+        const mirrorRecDotEl = document.getElementById('mirrorRecDot');
+        const mirrorStatusBadgeEl = document.getElementById('mirrorStatusBadge');
+        const mirrorProgressBarEl = document.getElementById('mirrorProgressBar');
+        const playOnlyOriginBtn = document.getElementById('playOnlyOriginBtn');
+        const playOnlyUserVoiceBtn = document.getElementById('playOnlyUserVoiceBtn');
+        const playBothTogetherBtn = document.getElementById('playBothTogetherBtn');
+        const replayFullComparisonBtn = document.getElementById('replayFullComparisonBtn');
+        const mirrorOriginInfoEl = document.getElementById('mirrorOriginInfo');
+        const mirrorVoiceInfoEl = document.getElementById('mirrorVoiceInfo');
+        const mirrorBothInfoEl = document.getElementById('mirrorBothInfo');
+        const mirrorSummaryTextEl = document.getElementById('mirrorSummaryText');
         const statusEl = document.getElementById('status');
         const instructionEl = document.getElementById('instruction');
         const targetNoteDisplayEl = document.getElementById('targetNoteDisplay');
@@ -1027,6 +1109,10 @@
             freelab: {
                 badge: 'Trilha 6 · Laboratório Livre',
                 banner: '<strong class="text-brand-gold">Trilha 6 (Laboratório Livre):</strong> Cante qualquer nota livremente ou clique no Diapasão Interativo abaixo para observar sua curva vocal sem contagem de erros.'
+            },
+            mirror: {
+                badge: 'Trilha 7 · Espelho Vocal (3s)',
+                banner: '<strong class="text-brand-gold">Trilha 7 (Espelho Vocal — Emitir → Gravar 3s → Comparar):</strong> O app emite a nota de origem, grava sua voz automaticamente por <strong>3 segundos</strong> e depois reproduz a comparação: <strong>1º Nota de Origem</strong>, <strong>2º Sua Voz</strong> e <strong>3º As Duas Juntas</strong>!'
             }
         };
 
@@ -1087,6 +1173,19 @@
         // Histórico para o Gráfico de Contorno Vocal (últimos 140 frames)
         const MAX_CONTOUR_POINTS = 140;
         let contourHistory = [];
+
+        // Estado da Gravação Automática de 3s & Comparação (Espelho Auditivo)
+        const VOICE_RECORD_DURATION_MS = 3000;
+        let voiceRecorderProcessor = null;
+        let toneRecorder = null;
+        let isRecordingVoice3s = false;
+        let recordedPcmChunks = [];
+        let recordedPitchSamples = [];
+        let lastRecordedVoiceBuffer = null;
+        let lastComparisonNote = null;
+        let activeRecordedVoiceSource = null;
+        let comparisonTimers = [];
+        let recordingProgressInterval = null;
 
         // =========================================================================
         // 3.1 CAMADA REUTILIZÁVEL DE ÁUDIO SOUNDFONT (FluidR3_GM) + FALLBACK
@@ -1879,13 +1978,17 @@
                     targetFreqSubEl.textContent = `Referência: ${freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(freq)})`;
 
                     listening = false;
-                    await SoundFontEngine.playNote(freq, { duration: 1.0 });
-                    setTimeout(() => {
-                        if (analyser) {
-                            listening = true;
-                            actionTaken = false;
-                        }
-                    }, 1200);
+                    if (shouldUseAutoMirrorMode() && analyser) {
+                        await playRecordAndCompare(currentNote);
+                    } else {
+                        await SoundFontEngine.playNote(freq, { duration: 1.0 });
+                        setTimeout(() => {
+                            if (analyser) {
+                                listening = true;
+                                actionTaken = false;
+                            }
+                        }, 1200);
+                    }
                 });
             });
         }
@@ -1895,6 +1998,397 @@
             const widthPct = Math.min(80, Math.max(15, tol));
             toleranceZoneEl.style.width = `${widthPct}%`;
             drawPitchContour();
+        }
+
+        // =========================================================================
+        // 5.1 ESPELHO AUDITIVO: GRAVAÇÃO AUTOMÁTICA DE 3s E COMPARAÇÃO EM 3 ETAPAS
+        //     (1º Nota de Origem -> 2º Sua Voz -> 3º As Duas Juntas)
+        // =========================================================================
+        function shouldUseAutoMirrorMode() {
+            return currentPath === 'mirror' || (autoRecordCompareToggle && autoRecordCompareToggle.checked);
+        }
+
+        function setupVoiceRecorderGraph() {
+            if (!audioContext || !mic) return;
+            try {
+                if (!voiceRecorderProcessor) {
+                    voiceRecorderProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+                    const silentGain = audioContext.createGain();
+                    silentGain.gain.value = 0;
+
+                    const nativeStream = mic._stream || (mic._mediaStream && mic._mediaStream.mediaStream);
+                    if (nativeStream instanceof MediaStream) {
+                        const streamSource = audioContext.createMediaStreamSource(nativeStream);
+                        streamSource.connect(voiceRecorderProcessor);
+                    } else if (window.Tone && typeof Tone.connect === 'function') {
+                        Tone.connect(mic, voiceRecorderProcessor);
+                    }
+
+                    voiceRecorderProcessor.connect(silentGain);
+                    silentGain.connect(audioContext.destination);
+
+                    voiceRecorderProcessor.onaudioprocess = (event) => {
+                        if (!isRecordingVoice3s) return;
+                        const inputData = event.inputBuffer.getChannelData(0);
+                        recordedPcmChunks.push(new Float32Array(inputData));
+                    };
+                }
+
+                if (!toneRecorder && window.Tone && Tone.Recorder) {
+                    toneRecorder = new Tone.Recorder();
+                    mic.connect(toneRecorder);
+                }
+            } catch (err) {
+                console.warn('Aviso ao configurar captador de voz para comparação:', err);
+            }
+        }
+
+        function clearComparisonTimers() {
+            comparisonTimers.forEach(t => clearTimeout(t));
+            comparisonTimers = [];
+            if (recordingProgressInterval) {
+                clearInterval(recordingProgressInterval);
+                recordingProgressInterval = null;
+            }
+        }
+
+        function stopVoiceComparisonPlayback() {
+            clearComparisonTimers();
+            isRecordingVoice3s = false;
+            if (activeRecordedVoiceSource) {
+                try {
+                    activeRecordedVoiceSource.stop();
+                } catch (e) {}
+                activeRecordedVoiceSource = null;
+            }
+            SoundFontEngine.stopAllNotes(0.08);
+            highlightMirrorStepButton(null);
+            if (mirrorRecDotEl) {
+                mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-brand-light/40 inline-block';
+            }
+        }
+
+        function highlightMirrorStepButton(activeBtnId = null) {
+            const buttons = [playOnlyOriginBtn, playOnlyUserVoiceBtn, playBothTogetherBtn];
+            buttons.forEach(btn => {
+                if (!btn) return;
+                if (activeBtnId && btn.id === activeBtnId) {
+                    btn.className = 'mirror-step-btn rounded-xl p-2.5 border-2 border-[#E9C46A] bg-[#2A9D8F]/35 text-left transition-all shadow-[0_0_18px_rgba(233,196,106,0.35)]';
+                } else {
+                    btn.className = 'mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold';
+                }
+            });
+        }
+
+        async function buildProcessedVoiceAudioBuffer(fallbackBlob = null) {
+            const ctx = await SoundFontEngine.ensureAudioContext();
+            const sampleRate = ctx.sampleRate;
+
+            let totalLength = 0;
+            for (let i = 0; i < recordedPcmChunks.length; i++) {
+                totalLength += recordedPcmChunks[i].length;
+            }
+
+            let rawSamples = null;
+            if (totalLength > 0) {
+                rawSamples = new Float32Array(totalLength);
+                let offset = 0;
+                for (let i = 0; i < recordedPcmChunks.length; i++) {
+                    rawSamples.set(recordedPcmChunks[i], offset);
+                    offset += recordedPcmChunks[i].length;
+                }
+            } else if (fallbackBlob && fallbackBlob.size > 0) {
+                try {
+                    const arrBuf = await fallbackBlob.arrayBuffer();
+                    const decoded = await SoundFontEngine.decodeAudioDataCompat(ctx, arrBuf);
+                    rawSamples = new Float32Array(decoded.getChannelData(0));
+                } catch (e) {
+                    console.warn('Falha ao decodificar fallbackBlob:', e);
+                }
+            }
+
+            if (!rawSamples || rawSamples.length === 0) {
+                // Caso nenhum pacote tenha sido capturado, retorna 2s de silêncio seguro
+                return ctx.createBuffer(1, sampleRate * 2, sampleRate);
+            }
+
+            // Remove silêncio inicial excessivo (até no máximo 0.85s) para que o ataque da voz alinhe com a nota de origem quando tocarem juntas
+            const maxTrimSamples = Math.min(rawSamples.length - Math.floor(sampleRate * 0.5), Math.floor(sampleRate * 0.85));
+            const windowSize = 256;
+            let trimStart = 0;
+            for (let i = 0; i < maxTrimSamples; i += windowSize) {
+                let sumSq = 0;
+                for (let j = 0; j < windowSize && (i + j) < rawSamples.length; j++) {
+                    const s = rawSamples[i + j];
+                    sumSq += s * s;
+                }
+                const rms = Math.sqrt(sumSq / windowSize);
+                if (rms > 0.011) {
+                    trimStart = Math.max(0, i - Math.floor(sampleRate * 0.03));
+                    break;
+                }
+            }
+
+            const trimmed = rawSamples.slice(trimStart);
+            let maxPeak = 0;
+            for (let i = 0; i < trimmed.length; i++) {
+                const abs = Math.abs(trimmed[i]);
+                if (abs > maxPeak) maxPeak = abs;
+            }
+
+            // Normalização suave de amplitude (evita distorção e garante audibilidade ao lado do SoundFont)
+            const normFactor = maxPeak > 0.008 ? Math.min(5.5, 0.88 / maxPeak) : 1.0;
+            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(trimmed.length / 4));
+            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(trimmed.length / 4));
+
+            const outBuffer = ctx.createBuffer(1, trimmed.length, sampleRate);
+            const channelOut = outBuffer.getChannelData(0);
+
+            for (let i = 0; i < trimmed.length; i++) {
+                let env = 1.0;
+                if (i < fadeInSamples) {
+                    env = i / fadeInSamples;
+                } else if (i > trimmed.length - fadeOutSamples) {
+                    env = (trimmed.length - i) / fadeOutSamples;
+                }
+                channelOut[i] = Math.max(-0.98, Math.min(0.98, trimmed[i] * normFactor * env));
+            }
+
+            return outBuffer;
+        }
+
+        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 0.95 } = {}) {
+            if (!audioBuffer) return null;
+            const ctx = await SoundFontEngine.ensureAudioContext();
+
+            if (activeRecordedVoiceSource) {
+                try {
+                    activeRecordedVoiceSource.stop();
+                } catch (e) {}
+            }
+
+            const source = ctx.createBufferSource();
+            source.buffer = audioBuffer;
+
+            const voiceGain = ctx.createGain();
+            voiceGain.gain.setValueAtTime(gain, ctx.currentTime);
+
+            source.connect(voiceGain);
+            voiceGain.connect(ctx.destination);
+            source.start(ctx.currentTime);
+
+            if (duration && duration < audioBuffer.duration) {
+                const stopTime = ctx.currentTime + duration;
+                voiceGain.gain.setValueAtTime(gain, Math.max(ctx.currentTime, stopTime - 0.04));
+                voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
+                source.stop(stopTime + 0.01);
+            }
+
+            activeRecordedVoiceSource = source;
+            source.onended = () => {
+                if (activeRecordedVoiceSource === source) {
+                    activeRecordedVoiceSource = null;
+                }
+            };
+            return source;
+        }
+
+        async function playFullComparisonSequence(noteToCompare = lastComparisonNote || currentNote, { evaluateAfter = false, avgCents = null } = {}) {
+            if (!noteToCompare || !lastRecordedVoiceBuffer) return;
+            stopVoiceComparisonPlayback();
+
+            const voiceDur = Math.max(1.4, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+            const originDur = 1.65;
+            const gapSec = 0.35;
+
+            // 1ª ETAPA: NOTA DE ORIGEM (SOZINHA)
+            highlightMirrorStepButton('playOnlyOriginBtn');
+            mirrorStatusBadgeEl.textContent = '1/3 · Nota de Origem';
+            mirrorProgressBarEl.style.width = '33%';
+            instructionEl.textContent = `1º · Ouvindo a NOTA DE ORIGEM (${noteToCompare.name})...`;
+            feedbackEl.textContent = 'Compare mentalmente o timbre e o centro da nota de referência.';
+            await SoundFontEngine.playNote(noteToCompare.freq, { duration: originDur, velocity: 0.92 });
+
+            // 2ª ETAPA: SUA VOZ GRAVADA (SOZINHA)
+            const step2DelayMs = Math.round((originDur + gapSec) * 1000);
+            const t2 = setTimeout(async () => {
+                highlightMirrorStepButton('playOnlyUserVoiceBtn');
+                mirrorStatusBadgeEl.textContent = '2/3 · Sua Voz Gravada';
+                mirrorProgressBarEl.style.width = '66%';
+                instructionEl.textContent = '2º · Ouvindo a SUA VOZ GRAVADA...';
+                feedbackEl.textContent = 'Observe a altura do seu ataque e a estabilidade da sustentação.';
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.95 });
+            }, step2DelayMs);
+            comparisonTimers.push(t2);
+
+            // 3ª ETAPA: AS DUAS JUNTAS (NOTA DE ORIGEM + SUA VOZ SIMULTANEAMENTE)
+            const step3DelayMs = step2DelayMs + Math.round((voiceDur + gapSec) * 1000);
+            const t3 = setTimeout(async () => {
+                highlightMirrorStepButton('playBothTogetherBtn');
+                mirrorStatusBadgeEl.textContent = '3/3 · As Duas Juntas!';
+                mirrorProgressBarEl.style.width = '100%';
+                instructionEl.textContent = `3º · Ouvindo AS DUAS JUNTAS (${noteToCompare.name} + Sua Voz)!`;
+                feedbackEl.textContent = 'Perceba a fusão em uníssono (ou os batimentos acústicos se houver diferença).';
+                await Promise.all([
+                    SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.82 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.95 })
+                ]);
+            }, step3DelayMs);
+            comparisonTimers.push(t3);
+
+            // CONCLUSÃO DA SEQUÊNCIA COMPARATIVA
+            const finishDelayMs = step3DelayMs + Math.round((voiceDur + 0.25) * 1000);
+            const tEnd = setTimeout(() => {
+                highlightMirrorStepButton(null);
+                mirrorStatusBadgeEl.textContent = 'Comparação concluída ✓';
+
+                if (evaluateAfter) {
+                    const tol = Number(toleranceSelect.value);
+                    if (avgCents !== null && Number.isFinite(avgCents)) {
+                        const absC = Math.abs(avgCents);
+                        const sign = avgCents > 0 ? '+' : '';
+                        if (absC <= tol) {
+                            updateScore(true, avgCents);
+                            userResultDisplay.textContent = absC <= 12 ? 'Na Mosca!' : 'Afinado';
+                            feedbackEl.textContent = `Excelente fusão! Desvio médio na gravação: ${sign}${avgCents} cents.`;
+                            displayArea.style.background = 'rgba(42, 157, 143, 0.34)';
+                            displayArea.style.borderColor = '#2A9D8F';
+                        } else {
+                            const hint = avgCents < 0 ? 'um pouco grave (♭)' : 'um pouco agudo (♯)';
+                            userResultDisplay.textContent = avgCents < 0 ? 'Grave (♭)' : 'Agudo (♯)';
+                            feedbackEl.textContent = `Sua gravação ficou ${hint} (média: ${sign}${avgCents} c). Ouça novamente os botões abaixo ou tente de novo!`;
+                            displayArea.style.background = 'rgba(244, 162, 97, 0.28)';
+                            displayArea.style.borderColor = '#F4A261';
+                        }
+                    } else {
+                        feedbackEl.textContent = 'Comparação concluída! Use os botões abaixo para reouvir cada parte ou sorteie a próxima nota.';
+                    }
+                }
+                instructionEl.textContent = 'Toque nos botões do Espelho Auditivo para reouvir ou clique em "Sortear / Próxima Nota"';
+            }, finishDelayMs);
+            comparisonTimers.push(tEnd);
+        }
+
+        async function playRecordAndCompare(noteToPlay = currentNote) {
+            if (!audioContext && !synth) return;
+            if (!noteToPlay) {
+                const pool = getActiveNotesPool();
+                noteToPlay = pool[Math.floor(Math.random() * pool.length)];
+                currentNote = noteToPlay;
+            }
+
+            stopVoiceComparisonPlayback();
+            if (audiationTimer) clearInterval(audiationTimer);
+
+            listening = false;
+            actionTaken = true;
+            lastComparisonNote = noteToPlay;
+            sustainFrames = 0;
+            offPitchFrames = 0;
+            contourHistory = [];
+            drawPitchContour();
+            updateSustainProgress(0);
+            resetDisplayColors();
+
+            targetNoteDisplayEl.textContent = noteToPlay.name;
+            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
+            mirrorOriginInfoEl.textContent = `${noteToPlay.name} · ${noteToPlay.freq.toFixed(1)} Hz`;
+            mirrorVoiceInfoEl.textContent = 'Preparando gravação (3s)...';
+            mirrorBothInfoEl.textContent = `${noteToPlay.name} + Sua Voz`;
+
+            // 1. EMITE A NOTA DE ORIGEM
+            instructionEl.textContent = `1. Ouça a nota de origem (${noteToPlay.name})... A gravação iniciará automaticamente!`;
+            feedbackEl.textContent = 'Prepare o fôlego: a gravação de 3 segundos começa logo após o som.';
+            mirrorStatusBadgeEl.textContent = '🔊 Emitindo referência...';
+            mirrorProgressBarEl.style.width = '0%';
+            highlightMirrorStepButton('playOnlyOriginBtn');
+
+            await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.15, velocity: 0.92 });
+
+            // 2. INICIA AUTOMATICAMENTE A GRAVAÇÃO DA VOZ POR 3 SEGUNDOS
+            const startRecTimer = setTimeout(async () => {
+                highlightMirrorStepButton(null);
+                recordedPcmChunks = [];
+                recordedPitchSamples = [];
+                isRecordingVoice3s = true;
+                listening = true;
+                actionTaken = false;
+
+                if (toneRecorder && toneRecorder.state !== 'started') {
+                    try {
+                        toneRecorder.start();
+                    } catch (e) {}
+                }
+
+                if (mirrorRecDotEl) {
+                    mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-[#E76F51] animate-pulse inline-block shadow-[0_0_8px_#E76F51]';
+                }
+
+                const recStartTime = performance.now();
+                instructionEl.textContent = '● GRAVANDO SUA VOZ (3.0s) — CANTE E SUSTENTE A NOTA!';
+                feedbackEl.textContent = 'Mantenha a emissão firme durante os 3 segundos...';
+
+                recordingProgressInterval = setInterval(() => {
+                    const elapsed = performance.now() - recStartTime;
+                    const pct = Math.min(100, Math.round((elapsed / VOICE_RECORD_DURATION_MS) * 100));
+                    const remainingSec = Math.max(0, (VOICE_RECORD_DURATION_MS - elapsed) / 1000).toFixed(1);
+                    mirrorProgressBarEl.style.width = `${pct}%`;
+                    mirrorStatusBadgeEl.textContent = `● Gravando: ${remainingSec}s`;
+                    updateSustainProgress(pct);
+                }, 80);
+
+                // 3. FINALIZA OS 3 SEGUNDOS DE GRAVAÇÃO E DISPARA A COMPARAÇÃO (1º -> 2º -> JUNTAS)
+                const stopRecTimer = setTimeout(async () => {
+                    if (recordingProgressInterval) {
+                        clearInterval(recordingProgressInterval);
+                        recordingProgressInterval = null;
+                    }
+                    isRecordingVoice3s = false;
+                    listening = false;
+                    actionTaken = true;
+
+                    if (mirrorRecDotEl) {
+                        mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-[#2A9D8F] inline-block';
+                    }
+                    mirrorProgressBarEl.style.width = '100%';
+                    mirrorStatusBadgeEl.textContent = 'Processando áudio...';
+
+                    let fallbackBlob = null;
+                    if (toneRecorder && toneRecorder.state === 'started') {
+                        try {
+                            fallbackBlob = await toneRecorder.stop();
+                        } catch (e) {}
+                    }
+
+                    lastRecordedVoiceBuffer = await buildProcessedVoiceAudioBuffer(fallbackBlob);
+
+                    let avgCents = null;
+                    let avgFreq = null;
+                    if (recordedPitchSamples.length > 0) {
+                        const sumCents = recordedPitchSamples.reduce((acc, s) => acc + s.cents, 0);
+                        const sumFreq = recordedPitchSamples.reduce((acc, s) => acc + s.freq, 0);
+                        avgCents = Math.round(sumCents / recordedPitchSamples.length);
+                        avgFreq = sumFreq / recordedPitchSamples.length;
+                        const sign = avgCents > 0 ? '+' : '';
+                        mirrorVoiceInfoEl.textContent = `Média: ${avgFreq.toFixed(1)} Hz (${sign}${avgCents} c)`;
+                    } else {
+                        mirrorVoiceInfoEl.textContent = 'Voz gravada (3s)';
+                    }
+
+                    playOnlyOriginBtn.disabled = false;
+                    playOnlyUserVoiceBtn.disabled = false;
+                    playBothTogetherBtn.disabled = false;
+                    replayFullComparisonBtn.disabled = false;
+
+                    mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação pronta:</strong> Escutando 1º Nota de Origem (${noteToPlay.name}) → 2º Sua Voz → 3º As Duas Juntas!`;
+
+                    await playFullComparisonSequence(noteToPlay, { evaluateAfter: true, avgCents });
+                }, VOICE_RECORD_DURATION_MS);
+
+                comparisonTimers.push(stopRecTimer);
+            }, 1350);
+
+            comparisonTimers.push(startRecTimer);
         }
 
         // =========================================================================
@@ -1924,19 +2418,22 @@
                 mic = new Tone.UserMedia();
                 await mic.open();
                 mic.connect(analyser);
+                setupVoiceRecorderGraph();
 
-                statusEl.textContent = 'Microfone e Coro Vocal (FluidR3_GM) prontos · Biofeedback ativo';
+                statusEl.textContent = 'Microfone e Coro Vocal (FluidR3_GM) prontos · Biofeedback e Espelho Vocal 3s ativos';
                 startButton.classList.add('hidden');
                 nextNoteButton.classList.remove('hidden');
+                recordCompareButton.classList.remove('hidden');
                 replayNoteButton.classList.remove('hidden');
                 droneToggleButton.classList.remove('hidden');
+                if (autoMirrorOptionRow) autoMirrorOptionRow.classList.remove('hidden');
                 updateDroneButtonLabel();
 
                 if (currentPath === 'freelab') {
                     instructionEl.textContent = 'Modo Livre: Cante qualquer nota ou toque no Diapasão abaixo';
                     listening = true;
                 } else {
-                    instructionEl.textContent = 'Pressione "Sortear / Próxima Nota" para iniciar a rodada';
+                    instructionEl.textContent = 'Pressione "Sortear / Próxima Nota" ou "🎙️ Emitir, Gravar 3s & Comparar"';
                 }
                 getPitchLoop();
             } catch (error) {
@@ -2049,6 +2546,13 @@
 
         const playAndSetupListener = async (noteToPlay) => {
             if (!noteToPlay) return;
+            if (shouldUseAutoMirrorMode()) {
+                intervalBadgeEl.classList.remove('hidden');
+                intervalBadgeEl.textContent = 'Espelho Vocal (Emitir → Gravar 3s → Comparar)';
+                await playRecordAndCompare(noteToPlay);
+                return;
+            }
+            stopVoiceComparisonPlayback();
             listening = false;
             actionTaken = true;
             feedbackEl.innerHTML = '&nbsp;';
@@ -2242,6 +2746,17 @@
             const tolerance = Number(toleranceSelect.value);
             const requireSustain = sustainModeToggle.checked;
 
+            // Durante a gravação automática de 3 segundos (Espelho Vocal), registra as amostras sem interromper os 3s
+            if (isRecordingVoice3s) {
+                recordedPitchSamples.push({ freq: comparedFreq, cents: roundedCents });
+                if (absCentsDiff <= tolerance) {
+                    userResultDisplay.textContent = absCentsDiff <= 12 ? 'Na Mosca!' : 'Afinado';
+                } else {
+                    userResultDisplay.textContent = centsDiff < 0 ? 'Abaixo (Grave ♭)' : 'Acima (Agudo ♯)';
+                }
+                return;
+            }
+
             // 1. DENTRO DA ZONA DE AFINAÇÃO (#2A9D8F)
             if (absCentsDiff <= tolerance) {
                 offPitchFrames = 0;
@@ -2378,6 +2893,61 @@
         startButton.addEventListener('click', startApp);
         nextNoteButton.addEventListener('click', startNewRound);
         replayNoteButton.addEventListener('click', repeatRound);
+
+        if (recordCompareButton) {
+            recordCompareButton.addEventListener('click', () => {
+                playRecordAndCompare(currentNote);
+            });
+        }
+
+        if (playOnlyOriginBtn) {
+            playOnlyOriginBtn.addEventListener('click', async () => {
+                const note = lastComparisonNote || currentNote;
+                if (!note) return;
+                stopVoiceComparisonPlayback();
+                highlightMirrorStepButton('playOnlyOriginBtn');
+                mirrorStatusBadgeEl.textContent = '1ª Etapa · Nota de Origem';
+                await SoundFontEngine.playNote(note.freq, { duration: 1.7, velocity: 0.92 });
+                const t = setTimeout(() => highlightMirrorStepButton(null), 1750);
+                comparisonTimers.push(t);
+            });
+        }
+
+        if (playOnlyUserVoiceBtn) {
+            playOnlyUserVoiceBtn.addEventListener('click', async () => {
+                if (!lastRecordedVoiceBuffer) return;
+                stopVoiceComparisonPlayback();
+                const dur = Math.max(1.4, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+                highlightMirrorStepButton('playOnlyUserVoiceBtn');
+                mirrorStatusBadgeEl.textContent = '2ª Etapa · Sua Voz';
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.95 });
+                const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
+                comparisonTimers.push(t);
+            });
+        }
+
+        if (playBothTogetherBtn) {
+            playBothTogetherBtn.addEventListener('click', async () => {
+                const note = lastComparisonNote || currentNote;
+                if (!note || !lastRecordedVoiceBuffer) return;
+                stopVoiceComparisonPlayback();
+                const dur = Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+                highlightMirrorStepButton('playBothTogetherBtn');
+                mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
+                await Promise.all([
+                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.82 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.95 })
+                ]);
+                const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
+                comparisonTimers.push(t);
+            });
+        }
+
+        if (replayFullComparisonBtn) {
+            replayFullComparisonBtn.addEventListener('click', () => {
+                playFullComparisonSequence(lastComparisonNote || currentNote, { evaluateAfter: false });
+            });
+        }
 
         // Pedal Tônico (Sol para Vozes Graves / Dó para Vozes Agudas)
         droneToggleButton.addEventListener('click', () => {
