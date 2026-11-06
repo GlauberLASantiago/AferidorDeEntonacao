@@ -14,7 +14,7 @@ O **Aferidor de Entonação** é uma aplicação web interativa desenvolvida par
 5. **Trilha 5 — Arpejos & Tríades (Sentido Harmônico):** Percorre os graus de tríades maiores e menores (*1º, 3º e 5º graus*) para consolidar a afinação harmônica e coral.
 6. **Trilha 6 — Laboratório Livre:** Afinador contínuo integrado ao gráfico de contorno vocal e ao **Diapasão Interativo** de 13 notas (1 oitava completa), sem contagem de erros.
 7. **Trilha 7 — Espelho Vocal (Emitir → Gravar 3s → Comparar):** O aplicativo emite a nota de referência, inicia automaticamente uma **gravação de 3 segundos** da voz do usuário e, em seguida, reproduz a comparação: **1º Nota Original**, **2º Áudio Gravado** e **3º As Duas Juntas (em uníssono)**.
-8. **Trilha 8 — Comparação Especial (Auto-Tune):** O aplicativo emite a nota de referência, grava a voz do usuário por **3 segundos** e, no final, exibe e reproduz apenas os dois áudios: **1º Voz Original (gravada)** e **2º Voz Corrigida na Afinação (Auto-Tune na oitava exata da nota emitida)**.
+8. **Trilha 8 — Comparação Especial (Auto-Tune):** O aplicativo emite a nota de referência, grava a voz do usuário por **3 segundos** e, em seguida, reproduz a sequência completa: **1º Nota Original**, **2º Áudio Gravado**, **3º Áudio Gravado Corrigido na Afinação (Auto-Tune na oitava exata da nota emitida)** e, por fim, **4º Os 2 Áudios Gravados Juntos (Áudio Gravado + Voz Corrigida, sem a nota guia)**.
 
 ### 2. Biofeedback Visual Contínuo e Repetição Pedagógica
 - **Régua Direcional de Cents (`-100` a `+100 cents`):** Mostra instantaneamente a nota detectada, o desvio numérico em *cents* e a orientação motora (*"Suba um pouco — está Grave ♭"* ou *"Relaxe/desça um pouco — está Agudo ♯"*).

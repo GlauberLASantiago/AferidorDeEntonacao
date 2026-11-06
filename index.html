@@ -250,7 +250,7 @@
                                 <p class="font-semibold text-sm text-brand-gold">8. Comparação Especial</p>
                                 <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-coral/35 border border-brand-coral text-brand-light">Auto-Tune</span>
                             </div>
-                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e no final toca apenas: 1º Voz Original → 2º Voz Corrigida.</p>
+                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º Gravado → 3º Corrigido → 4º Os 2 Áudios Juntos.</p>
                         </button>
                     </div>
 
@@ -493,33 +493,33 @@
                             <div id="mirrorProgressBar" class="bg-gradient-to-r from-[#E76F51] via-[#F4A261] to-[#2A9D8F] h-full transition-all duration-100" style="width: 0%"></div>
                         </div>
 
-                        <!-- Etapas da Comparação (Trilha 7: 3 botões | Trilha 8 Comparação Especial: apenas os 2 áudios da voz) -->
-                        <div id="mirrorButtonsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                        <!-- Etapas da Comparação (Trilha 7: Espelho Vocal | Trilha 8: Comparação Especial Auto-Tune) -->
+                        <div id="mirrorButtonsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <button type="button" id="playOnlyOriginBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
                                 <span id="originStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-gold">1ª Etapa (Individual)</span>
-                                <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota de Origem</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota Original</span>
                                 <span id="mirrorOriginInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Referência do app</span>
                             </button>
 
                             <button type="button" id="playOnlyUserVoiceBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
                                 <span id="userVoiceStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-sandy">2ª Etapa (Individual)</span>
-                                <span id="userVoiceStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎤 Voz Original (3s)</span>
+                                <span id="userVoiceStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎤 Áudio Gravado</span>
                                 <span id="mirrorVoiceInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Aguardando gravação</span>
                             </button>
 
                             <button type="button" id="playAutoTunedVoiceBtn" disabled
-                                class="mirror-step-btn hidden rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span id="autoTuneStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-coral">2º Áudio · Auto-Tune</span>
+                                class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
+                                <span id="autoTuneStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-coral">3ª Etapa · Auto-Tune</span>
                                 <span class="block text-xs font-bold text-brand-light mt-0.5">✨ Voz Corrigida</span>
                                 <span id="mirrorAutoTuneInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Afinação corrigida</span>
                             </button>
 
                             <button type="button" id="playBothTogetherBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span class="block text-[10px] font-mono-tech uppercase text-brand-teal">3ª Etapa (Simultânea)</span>
-                                <span class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
+                                <span id="bothTogetherStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-teal">Etapa Final (Juntas)</span>
+                                <span id="bothTogetherStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
                                 <span id="mirrorBothInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Origem + Sua Voz</span>
                             </button>
                         </div>
@@ -535,11 +535,11 @@
                                 <div class="flex flex-wrap gap-1.5">
                                     <button type="button" id="replayFullComparisonBtn" disabled
                                         class="glass-btn-teal px-2.5 py-1.5 rounded-xl text-[11px] font-semibold disabled:opacity-40 shrink-0">
-                                        ↻ Reouvir Sequência (1 → 2 → Juntas)
+                                        ↻ Espelho (1 → 2 → Juntas)
                                     </button>
                                     <button type="button" id="replaySpecialAutoTuneBtn" disabled
-                                        class="hidden glass-btn-primary px-2.5 py-1.5 rounded-xl text-[11px] font-semibold disabled:opacity-40 shrink-0">
-                                        ↻ Reouvir (Voz Original → Voz Corrigida)
+                                        class="glass-btn-primary px-2.5 py-1.5 rounded-xl text-[11px] font-semibold disabled:opacity-40 shrink-0">
+                                        ✨ Especial (1 → 2 → 3 → Vozes Juntas)
                                     </button>
                                 </div>
                             </div>
@@ -1149,7 +1149,7 @@
             },
             special: {
                 badge: 'Trilha 8 · Comparação Especial',
-                banner: '<strong class="text-brand-gold">Trilha 8 (Comparação Especial — Auto-Tune):</strong> O app emite a nota guia, grava sua voz por <strong>3 segundos</strong> e no final reproduz apenas os dois áudios: <strong>1º Voz Original</strong> e <strong>2º Voz Corrigida na Afinação (Auto-Tune)</strong>!'
+                banner: '<strong class="text-brand-gold">Trilha 8 (Comparação Especial — Auto-Tune):</strong> O app emite a nota, grava sua voz por <strong>3 segundos</strong> e depois reproduz: <strong>1º Nota Original</strong>, <strong>2º Áudio Gravado</strong>, <strong>3º Áudio Corrigido (Auto-Tune)</strong> e, no final, <strong>4º Os Dois Áudios Gravados Juntos (Voz Original + Voz Corrigida)</strong>!'
             }
         };
 
@@ -1227,6 +1227,7 @@
         let lastComparisonNote = null;
         let recordedVoiceVolume = 0.50;
         let activeRecordedVoiceSource = null;
+        let activeRecordedVoiceSource2 = null;
         let activeRecordedVoiceGainNode = null;
         let activeHtmlAudioElement = null;
         let comparisonTimers = [];
@@ -2177,6 +2178,12 @@
                 } catch (e) {}
                 activeRecordedVoiceSource = null;
             }
+            if (activeRecordedVoiceSource2) {
+                try {
+                    activeRecordedVoiceSource2.stop();
+                } catch (e) {}
+                activeRecordedVoiceSource2 = null;
+            }
             activeRecordedVoiceGainNode = null;
             if (activeHtmlAudioElement) {
                 try {
@@ -2232,42 +2239,18 @@
         }
 
         function updateMirrorPanelLayout() {
-            const gridEl = document.getElementById('mirrorButtonsGrid');
-            const userVoiceLabelEl = document.getElementById('userVoiceStepLabel');
-            const userVoiceTitleEl = document.getElementById('userVoiceStepTitle');
-            const autoTuneLabelEl = document.getElementById('autoTuneStepLabel');
+            const bothLabelEl = document.getElementById('bothTogetherStepLabel');
+            const bothTitleEl = document.getElementById('bothTogetherStepTitle');
 
             if (currentPath === 'special') {
-                // Na Trilha 8 (Comparação Especial), aparecem apenas os dois áudios: Voz Original e Voz Corrigida
-                if (gridEl) {
-                    gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2 text-center';
-                }
-                if (playOnlyOriginBtn) playOnlyOriginBtn.classList.add('hidden');
-                if (playBothTogetherBtn) playBothTogetherBtn.classList.add('hidden');
-                if (playOnlyUserVoiceBtn) playOnlyUserVoiceBtn.classList.remove('hidden');
-                if (playAutoTunedVoiceBtn) playAutoTunedVoiceBtn.classList.remove('hidden');
-
-                if (userVoiceLabelEl) userVoiceLabelEl.textContent = '1º Áudio · Gravação Original';
-                if (userVoiceTitleEl) userVoiceTitleEl.textContent = '🎤 Voz Original (3s)';
-                if (autoTuneLabelEl) autoTuneLabelEl.textContent = '2º Áudio · Auto-Tune';
-
-                if (replayFullComparisonBtn) replayFullComparisonBtn.classList.add('hidden');
-                if (replaySpecialAutoTuneBtn) replaySpecialAutoTuneBtn.classList.remove('hidden');
+                if (bothLabelEl) bothLabelEl.textContent = '4ª Etapa (Simultânea)';
+                if (bothTitleEl) bothTitleEl.textContent = '🎶 Os 2 Áudios Juntos';
+                if (mirrorBothInfoEl) mirrorBothInfoEl.textContent = 'Gravado + Corrigido';
             } else {
-                // Na Trilha 7 (Espelho Vocal) e demais trilhas: 1º Nota de Origem, 2º Sua Voz, 3º As Duas Juntas
-                if (gridEl) {
-                    gridEl.className = 'grid grid-cols-1 sm:grid-cols-3 gap-2 text-center';
-                }
-                if (playOnlyOriginBtn) playOnlyOriginBtn.classList.remove('hidden');
-                if (playOnlyUserVoiceBtn) playOnlyUserVoiceBtn.classList.remove('hidden');
-                if (playBothTogetherBtn) playBothTogetherBtn.classList.remove('hidden');
-                if (playAutoTunedVoiceBtn) playAutoTunedVoiceBtn.classList.add('hidden');
-
-                if (userVoiceLabelEl) userVoiceLabelEl.textContent = '2ª Etapa (Individual)';
-                if (userVoiceTitleEl) userVoiceTitleEl.textContent = '🎤 Sua Voz (3s)';
-
-                if (replayFullComparisonBtn) replayFullComparisonBtn.classList.remove('hidden');
-                if (replaySpecialAutoTuneBtn) replaySpecialAutoTuneBtn.classList.add('hidden');
+                if (bothLabelEl) bothLabelEl.textContent = '3ª Etapa (Simultânea)';
+                if (bothTitleEl) bothTitleEl.textContent = '🎶 As Duas Juntas';
+                const nName = (lastComparisonNote && lastComparisonNote.name) || (currentNote && currentNote.name) || 'Origem';
+                if (mirrorBothInfoEl) mirrorBothInfoEl.textContent = `${nName} + Sua Voz`;
             }
         }
 
@@ -2426,6 +2409,8 @@
             const grainSize = Math.max(512, Math.round(sampleRate * 0.038));
             let phase0 = 0.0;
             let currentRatio = frameRatios[0] || 1.0;
+            let synthPhase = 0.0;
+            let envFollower = 0.0;
 
             const sampleInterp = (pos) => {
                 if (pos <= 0) return inputData[0];
@@ -2457,6 +2442,18 @@
                 const s1 = sampleInterp(pos1);
                 const shiftedVoice = w0 * s0 + w1 * s1;
 
+                const absVal = Math.abs(shiftedVoice);
+                envFollower = absVal > envFollower
+                    ? envFollower + 0.02 * (absVal - envFollower)
+                    : envFollower + 0.0015 * (absVal - envFollower);
+
+                synthPhase += (2.0 * Math.PI * referenceTargetFreq) / sampleRate;
+                if (synthPhase > 2.0 * Math.PI) synthPhase -= 2.0 * Math.PI;
+
+                const autoTuneLock = envFollower > 0.010
+                    ? envFollower * 0.30 * (0.65 * Math.sin(synthPhase) + 0.25 * Math.sin(2.0 * synthPhase) + 0.10 * Math.sin(3.0 * synthPhase))
+                    : 0.0;
+
                 let env = 1.0;
                 if (i < fadeInSamples) {
                     env = i / fadeInSamples;
@@ -2464,8 +2461,7 @@
                     env = (length - i) / fadeOutSamples;
                 }
 
-                // Exclusivamente a voz gravada do usuário transposta para a afinação exata (sem nota guia sintetizada junto)
-                outputData[i] = Math.max(-0.85, Math.min(0.85, shiftedVoice * env));
+                outputData[i] = Math.max(-0.85, Math.min(0.85, (0.82 * shiftedVoice + autoTuneLock) * env));
             }
 
             return outBuffer;
@@ -2532,6 +2528,74 @@
                 return audioEl;
             }
             return null;
+        }
+
+        /**
+         * Reproduz simultaneamente dois AudioBuffers de voz (ex: Áudio Gravado + Voz Corrigida)
+         * sem que o segundo interrompa o primeiro.
+         */
+        async function playTwoVoiceBuffersTogether(buffer1, buffer2, { duration = null, gain = recordedVoiceVolume } = {}) {
+            if (!buffer1 && !buffer2) return null;
+            if (!buffer2) return playRecordedVoiceBuffer(buffer1, { duration, gain });
+            if (!buffer1) return playRecordedVoiceBuffer(buffer2, { duration, gain });
+
+            const ctx = getNativeBrowserAudioContext();
+            if (!ctx) return null;
+            if (ctx.state === 'suspended') {
+                await ctx.resume();
+            }
+
+            if (activeRecordedVoiceSource) {
+                try { activeRecordedVoiceSource.stop(); } catch (e) {}
+                activeRecordedVoiceSource = null;
+            }
+            if (activeRecordedVoiceSource2) {
+                try { activeRecordedVoiceSource2.stop(); } catch (e) {}
+                activeRecordedVoiceSource2 = null;
+            }
+            activeRecordedVoiceGainNode = null;
+
+            const source1 = ctx.createBufferSource();
+            const source2 = ctx.createBufferSource();
+            source1.buffer = buffer1;
+            source2.buffer = buffer2;
+
+            const voiceGain = ctx.createGain();
+            // Ganho levemente equilibrado ao somar os dois sinais de voz para evitar clipping
+            const combinedGain = Math.min(2.0, gain * 0.82);
+            voiceGain.gain.setValueAtTime(combinedGain, ctx.currentTime);
+            activeRecordedVoiceGainNode = voiceGain;
+
+            source1.connect(voiceGain);
+            source2.connect(voiceGain);
+            voiceGain.connect(ctx.destination);
+
+            source1.start(0);
+            source2.start(0);
+
+            const maxDur = Math.max(buffer1.duration, buffer2.duration);
+            if (duration && duration < maxDur) {
+                const stopTime = ctx.currentTime + duration;
+                voiceGain.gain.setValueAtTime(combinedGain, Math.max(ctx.currentTime, stopTime - 0.04));
+                voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
+                source1.stop(stopTime + 0.01);
+                source2.stop(stopTime + 0.01);
+            }
+
+            activeRecordedVoiceSource = source1;
+            activeRecordedVoiceSource2 = source2;
+            source1.onended = () => {
+                if (activeRecordedVoiceSource === source1) {
+                    activeRecordedVoiceSource = null;
+                }
+            };
+            source2.onended = () => {
+                if (activeRecordedVoiceSource2 === source2) {
+                    activeRecordedVoiceSource2 = null;
+                    activeRecordedVoiceGainNode = null;
+                }
+            };
+            return [source1, source2];
         }
 
         function evaluateMirrorRecordingResult(avgCents) {
@@ -2617,8 +2681,8 @@
 
         /**
          * 8. Comparação Especial (Auto-Tune):
-         * No final da gravação, exibe e reproduz apenas os dois áudios:
-         * 1º Áudio: Voz Original (Gravada) -> 2º Áudio: Voz Corrigida na Afinação (Auto-Tune na oitava exata)
+         * 1º Nota Original -> 2º Áudio Gravado -> 3º Áudio Gravado Corrigido na Afinação (Auto-Tune)
+         * -> 4º Os 2 Áudios Gravados Juntos (Voz Gravada + Voz Corrigida, sem a nota guia)
          */
         async function playSpecialAutoTuneSequence(noteToCompare = lastComparisonNote || currentNote, { evaluateAfter = false, avgCents = null } = {}) {
             if (!noteToCompare || (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl)) return;
@@ -2628,42 +2692,68 @@
             const voiceDur = lastRecordedVoiceBuffer
                 ? Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration))
                 : 2.8;
+            const originDur = 1.65;
             const gapSec = 0.35;
 
-            // 1º ÁUDIO: VOZ ORIGINAL (GRAVADA)
-            highlightMirrorStepButton('playOnlyUserVoiceBtn');
-            mirrorStatusBadgeEl.textContent = '1/2 · Voz Original';
-            mirrorProgressBarEl.style.width = '50%';
-            instructionEl.textContent = '1º · Ouvindo a SUA VOZ ORIGINAL (gravada)...';
-            feedbackEl.textContent = 'Perceba como sua voz foi captada originalmente.';
-            await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume });
+            // 1ª ETAPA: NOTA ORIGINAL
+            highlightMirrorStepButton('playOnlyOriginBtn');
+            mirrorStatusBadgeEl.textContent = '1/4 · Nota Original';
+            mirrorProgressBarEl.style.width = '25%';
+            instructionEl.textContent = `1º · Ouvindo a NOTA ORIGINAL (${noteToCompare.name})...`;
+            feedbackEl.textContent = 'Escute o centro exato da nota de referência.';
+            await SoundFontEngine.playNote(noteToCompare.freq, { duration: originDur, velocity: 0.92 });
 
-            // 2º ÁUDIO: VOZ CORRIGIDA NA AFINAÇÃO E OITAVA EXATA DA NOTA EMITIDA (AUTO-TUNE)
-            const step2DelayMs = Math.round((voiceDur + gapSec) * 1000);
+            // 2ª ETAPA: ÁUDIO GRAVADO (VOZ ORIGINAL DO USUÁRIO)
+            const step2DelayMs = Math.round((originDur + gapSec) * 1000);
             const t2 = setTimeout(async () => {
+                highlightMirrorStepButton('playOnlyUserVoiceBtn');
+                mirrorStatusBadgeEl.textContent = '2/4 · Áudio Gravado';
+                mirrorProgressBarEl.style.width = '50%';
+                instructionEl.textContent = '2º · Ouvindo o SEU ÁUDIO GRAVADO (sem correção)...';
+                feedbackEl.textContent = 'Perceba como sua voz foi captada originalmente.';
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume });
+            }, step2DelayMs);
+            comparisonTimers.push(t2);
+
+            // 3ª ETAPA: ÁUDIO GRAVADO CORRIGIDO NA AFINAÇÃO E OITAVA EXATA DA NOTA EMITIDA (AUTO-TUNE)
+            const step3DelayMs = step2DelayMs + Math.round((voiceDur + gapSec) * 1000);
+            const t3 = setTimeout(async () => {
                 const exactKey = SoundFontEngine.toNoteKey(noteToCompare.freq);
                 highlightMirrorStepButton('playAutoTunedVoiceBtn');
-                mirrorStatusBadgeEl.textContent = `2/2 · Voz Corrigida (${exactKey})!`;
-                mirrorProgressBarEl.style.width = '100%';
-                instructionEl.textContent = `2º · Ouvindo a SUA VOZ CORRIGIDA (${noteToCompare.name} · ${exactKey} · ${noteToCompare.freq.toFixed(1)} Hz)!`;
-                feedbackEl.textContent = `Compare os dois áudios: sua voz original vs. sua voz corrigida na oitava exata (${exactKey})!`;
+                mirrorStatusBadgeEl.textContent = `3/4 · Voz Corrigida (${exactKey})!`;
+                mirrorProgressBarEl.style.width = '75%';
+                instructionEl.textContent = `3º · Ouvindo o SEU ÁUDIO CORRIGIDO (${noteToCompare.name} · ${exactKey} · ${noteToCompare.freq.toFixed(1)} Hz)!`;
+                feedbackEl.textContent = `Sua voz foi realinhada (Auto-Tune) exatamente para ${noteToCompare.name} na oitava ${exactKey}!`;
                 userDetectedNoteEl.textContent = `${noteToCompare.name} (${exactKey})`;
                 userCentsDisplayEl.textContent = '0 c';
                 updateNeedlePosition(0);
                 const bufferToPlay = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
                 await playRecordedVoiceBuffer(bufferToPlay, { duration: voiceDur, gain: recordedVoiceVolume });
-            }, step2DelayMs);
-            comparisonTimers.push(t2);
+            }, step3DelayMs);
+            comparisonTimers.push(t3);
+
+            // 4ª ETAPA (FINAL): OS DOIS ÁUDIOS GRAVADOS JUNTOS (VOZ ORIGINAL + VOZ CORRIGIDA)
+            const step4DelayMs = step3DelayMs + Math.round((voiceDur + gapSec) * 1000);
+            const t4 = setTimeout(async () => {
+                highlightMirrorStepButton('playBothTogetherBtn');
+                mirrorStatusBadgeEl.textContent = '4/4 · Os 2 Áudios Juntos!';
+                mirrorProgressBarEl.style.width = '100%';
+                instructionEl.textContent = '4º · Ouvindo OS 2 ÁUDIOS GRAVADOS JUNTOS (Voz Original + Voz Corrigida)!';
+                feedbackEl.textContent = 'Escute simultaneamente a sua gravação original junto com a sua voz afinada!';
+                const bufferToPlay = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
+                await playTwoVoiceBuffersTogether(lastRecordedVoiceBuffer, bufferToPlay, { duration: voiceDur, gain: recordedVoiceVolume });
+            }, step4DelayMs);
+            comparisonTimers.push(t4);
 
             // CONCLUSÃO DA COMPARAÇÃO ESPECIAL
-            const finishDelayMs = step2DelayMs + Math.round((voiceDur + 0.25) * 1000);
+            const finishDelayMs = step4DelayMs + Math.round((voiceDur + 0.25) * 1000);
             const tEnd = setTimeout(() => {
                 highlightMirrorStepButton(null);
                 mirrorStatusBadgeEl.textContent = 'Comparação Especial concluída ✓';
                 if (evaluateAfter) {
                     evaluateMirrorRecordingResult(avgCents);
                 }
-                instructionEl.textContent = 'Toque em "🎤 Voz Original" ou "✨ Voz Corrigida" para ouvir cada um dos dois áudios!';
+                instructionEl.textContent = 'Use os botões do Espelho Auditivo para reouvir qualquer etapa ou sorteie a próxima nota!';
             }, finishDelayMs);
             comparisonTimers.push(tEnd);
         }
@@ -2699,14 +2789,16 @@
             if (mirrorAutoTuneInfoEl) {
                 mirrorAutoTuneInfoEl.textContent = `Auto-Tune → ${noteToPlay.name} (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
             }
-            mirrorBothInfoEl.textContent = `${noteToPlay.name} + Sua Voz`;
+            mirrorBothInfoEl.textContent = currentPath === 'special'
+                ? 'Áudio Gravado + Corrigido'
+                : `${noteToPlay.name} + Sua Voz`;
 
             // 1. EMITE A NOTA DE ORIGEM
             instructionEl.textContent = `1. Ouça a nota de origem (${noteToPlay.name})... A gravação iniciará automaticamente!`;
             feedbackEl.textContent = 'Prepare o fôlego: a gravação de 3 segundos começa logo após o som.';
             mirrorStatusBadgeEl.textContent = '🔊 Emitindo referência...';
             mirrorProgressBarEl.style.width = '0%';
-            highlightMirrorStepButton(currentPath === 'special' ? null : 'playOnlyOriginBtn');
+            highlightMirrorStepButton('playOnlyOriginBtn');
 
             await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.15, velocity: 0.92 });
 
@@ -2783,7 +2875,7 @@
                     if (replaySpecialAutoTuneBtn) replaySpecialAutoTuneBtn.disabled = false;
 
                     if (currentPath === 'special') {
-                        mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação Especial pronta:</strong> Escutando apenas os dois áudios: <strong>1º Voz Original</strong> → <strong>2º Voz Corrigida (${SoundFontEngine.toNoteKey(noteToPlay.freq)})</strong>!`;
+                        mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação Especial pronta:</strong> 1º Nota Original (${noteToPlay.name}) → 2º Áudio Gravado → 3º Voz Corrigida (${SoundFontEngine.toNoteKey(noteToPlay.freq)}) → 4º Os 2 Áudios Gravados Juntos!`;
                         await playSpecialAutoTuneSequence(noteToPlay, { evaluateAfter: true, avgCents });
                     } else {
                         mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação pronta:</strong> 1º Nota de Origem (${noteToPlay.name}) → 2º Sua Voz → 3º As Duas Juntas!`;
@@ -3371,11 +3463,17 @@
                     ? Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration))
                     : 2.8;
                 highlightMirrorStepButton('playBothTogetherBtn');
-                mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
-                await Promise.all([
-                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.85 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: recordedVoiceVolume })
-                ]);
+                if (currentPath === 'special') {
+                    mirrorStatusBadgeEl.textContent = '4ª Etapa · Os 2 Áudios Juntos';
+                    const bufferToPlay = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
+                    await playTwoVoiceBuffersTogether(lastRecordedVoiceBuffer, bufferToPlay, { duration: dur, gain: recordedVoiceVolume });
+                } else {
+                    mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
+                    await Promise.all([
+                        SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.85 }),
+                        playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: recordedVoiceVolume })
+                    ]);
+                }
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
             });
