@@ -1168,16 +1168,40 @@
 
         // Estado da Gravação Automática de 3s & Comparação (Espelho Auditivo)
         const VOICE_RECORD_DURATION_MS = 3000;
+        let userMicStream = null;
         let voiceRecorderProcessor = null;
-        let toneRecorder = null;
+        let nativeMediaRecorder = null;
+        let mediaRecorderChunks = [];
         let isRecordingVoice3s = false;
         let recordedPcmChunks = [];
         let recordedPitchSamples = [];
         let lastRecordedVoiceBuffer = null;
+        let lastRecordedVoiceBlobUrl = null;
+        let lastRecordedVoiceHasPcm = false;
         let lastComparisonNote = null;
         let activeRecordedVoiceSource = null;
+        let activeHtmlAudioElement = null;
         let comparisonTimers = [];
         let recordingProgressInterval = null;
+
+        /**
+         * Obtém o AudioContext nativo real do navegador (desembrulhando o proxy standardized-audio-context do Tone.js quando presente).
+         */
+        function getNativeBrowserAudioContext() {
+            if (window.Tone && Tone.context && Tone.context.rawContext) {
+                if (Tone.context.rawContext._nativeAudioContext) {
+                    return Tone.context.rawContext._nativeAudioContext;
+                }
+                if (Tone.context.rawContext._context && Tone.context.rawContext._context._nativeAudioContext) {
+                    return Tone.context.rawContext._context._nativeAudioContext;
+                }
+            }
+            if (!window._appNativeAudioContext) {
+                const NativeAudioCtx = window.AudioContext || window.webkitAudioContext;
+                window._appNativeAudioContext = new NativeAudioCtx();
+            }
+            return window._appNativeAudioContext;
+        }
 
         // =========================================================================
         // 3.1 CAMADA REUTILIZÁVEL DE ÁUDIO SOUNDFONT (FluidR3_GM) + FALLBACK
@@ -1205,12 +1229,7 @@
              */
             async ensureAudioContext() {
                 if (!audioContext) {
-                    if (window.Tone && Tone.context && Tone.context.rawContext) {
-                        audioContext = Tone.context.rawContext;
-                    } else {
-                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                        audioContext = new AudioCtx();
-                    }
+                    audioContext = getNativeBrowserAudioContext();
                 }
                 if (audioContext.state === 'suspended') {
                     await audioContext.resume();
@@ -2000,24 +2019,42 @@
             return currentPath === 'mirror';
         }
 
-        function setupVoiceRecorderGraph() {
-            if (!audioContext || !mic) return;
-            try {
-                if (!voiceRecorderProcessor) {
-                    voiceRecorderProcessor = audioContext.createScriptProcessor(2048, 1, 1);
-                    const silentGain = audioContext.createGain();
-                    silentGain.gain.value = 0;
+        async function setupVoiceRecorderGraph() {
+            const nativeCtx = getNativeBrowserAudioContext();
+            if (nativeCtx.state === 'suspended') {
+                await nativeCtx.resume();
+            }
 
-                    const nativeStream = mic._stream || (mic._mediaStream && mic._mediaStream.mediaStream);
-                    if (nativeStream instanceof MediaStream) {
-                        const streamSource = audioContext.createMediaStreamSource(nativeStream);
-                        streamSource.connect(voiceRecorderProcessor);
-                    } else if (window.Tone && typeof Tone.connect === 'function') {
-                        Tone.connect(mic, voiceRecorderProcessor);
+            if (!userMicStream) {
+                const candidateStream = mic && (mic._stream || (mic._mediaStream && mic._mediaStream.mediaStream));
+                if (candidateStream instanceof MediaStream) {
+                    userMicStream = candidateStream;
+                } else {
+                    try {
+                        userMicStream = await navigator.mediaDevices.getUserMedia({
+                            audio: {
+                                echoCancellation: false,
+                                noiseSuppression: false,
+                                autoGainControl: false
+                            }
+                        });
+                    } catch (e) {
+                        userMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     }
+                }
+            }
 
-                    voiceRecorderProcessor.connect(silentGain);
-                    silentGain.connect(audioContext.destination);
+            try {
+                if (!voiceRecorderProcessor && userMicStream) {
+                    const streamSource = nativeCtx.createMediaStreamSource(userMicStream);
+                    voiceRecorderProcessor = nativeCtx.createScriptProcessor(2048, 1, 1);
+                    const keepAliveGain = nativeCtx.createGain();
+                    // Ganho mínimo não-zero (-100 dB) impede que o Chromium otimize/desative o ScriptProcessorNode
+                    keepAliveGain.gain.setValueAtTime(0.00001, nativeCtx.currentTime);
+
+                    streamSource.connect(voiceRecorderProcessor);
+                    voiceRecorderProcessor.connect(keepAliveGain);
+                    keepAliveGain.connect(nativeCtx.destination);
 
                     voiceRecorderProcessor.onaudioprocess = (event) => {
                         if (!isRecordingVoice3s) return;
@@ -2025,14 +2062,53 @@
                         recordedPcmChunks.push(new Float32Array(inputData));
                     };
                 }
-
-                if (!toneRecorder && window.Tone && Tone.Recorder) {
-                    toneRecorder = new Tone.Recorder();
-                    mic.connect(toneRecorder);
-                }
             } catch (err) {
-                console.warn('Aviso ao configurar captador de voz para comparação:', err);
+                console.warn('Aviso ao configurar ScriptProcessorNode nativo:', err);
             }
+        }
+
+        function startNativeMediaRecorder() {
+            mediaRecorderChunks = [];
+            if (!userMicStream || typeof window.MediaRecorder === 'undefined') return;
+            try {
+                nativeMediaRecorder = new MediaRecorder(userMicStream);
+                nativeMediaRecorder.ondataavailable = (ev) => {
+                    if (ev.data && ev.data.size > 0) {
+                        mediaRecorderChunks.push(ev.data);
+                    }
+                };
+                nativeMediaRecorder.start();
+            } catch (e) {
+                console.warn('Aviso ao iniciar MediaRecorder nativo:', e);
+                nativeMediaRecorder = null;
+            }
+        }
+
+        function stopNativeMediaRecorder() {
+            return new Promise((resolve) => {
+                if (!nativeMediaRecorder || nativeMediaRecorder.state === 'inactive') {
+                    resolve(null);
+                    return;
+                }
+                nativeMediaRecorder.onstop = () => {
+                    try {
+                        const mimeType = nativeMediaRecorder.mimeType || 'audio/webm';
+                        const blob = new Blob(mediaRecorderChunks, { type: mimeType });
+                        if (lastRecordedVoiceBlobUrl) {
+                            URL.revokeObjectURL(lastRecordedVoiceBlobUrl);
+                        }
+                        lastRecordedVoiceBlobUrl = blob.size > 0 ? URL.createObjectURL(blob) : null;
+                        resolve(blob);
+                    } catch (e) {
+                        resolve(null);
+                    }
+                };
+                try {
+                    nativeMediaRecorder.stop();
+                } catch (e) {
+                    resolve(null);
+                }
+            });
         }
 
         function clearComparisonTimers() {
@@ -2052,6 +2128,13 @@
                     activeRecordedVoiceSource.stop();
                 } catch (e) {}
                 activeRecordedVoiceSource = null;
+            }
+            if (activeHtmlAudioElement) {
+                try {
+                    activeHtmlAudioElement.pause();
+                    activeHtmlAudioElement.currentTime = 0;
+                } catch (e) {}
+                activeHtmlAudioElement = null;
             }
             SoundFontEngine.stopAllNotes(0.08);
             highlightMirrorStepButton(null);
@@ -2082,6 +2165,7 @@
             }
 
             let rawSamples = null;
+            let pcmPeak = 0;
             if (totalLength > 0) {
                 rawSamples = new Float32Array(totalLength);
                 let offset = 0;
@@ -2089,18 +2173,25 @@
                     rawSamples.set(recordedPcmChunks[i], offset);
                     offset += recordedPcmChunks[i].length;
                 }
-            } else if (fallbackBlob && fallbackBlob.size > 0) {
+                for (let i = 0; i < rawSamples.length; i++) {
+                    const a = Math.abs(rawSamples[i]);
+                    if (a > pcmPeak) pcmPeak = a;
+                }
+            }
+
+            // Se os chunks PCM estiverem vazios ou silenciosos, decodifica o Blob gravado pelo MediaRecorder no AudioContext nativo
+            if ((!rawSamples || pcmPeak < 0.0005) && fallbackBlob && fallbackBlob.size > 0) {
                 try {
                     const arrBuf = await fallbackBlob.arrayBuffer();
                     const decoded = await SoundFontEngine.decodeAudioDataCompat(ctx, arrBuf);
                     rawSamples = new Float32Array(decoded.getChannelData(0));
                 } catch (e) {
-                    console.warn('Falha ao decodificar fallbackBlob:', e);
+                    console.warn('Aviso ao decodificar Blob no AudioContext nativo:', e);
                 }
             }
 
             if (!rawSamples || rawSamples.length === 0) {
-                // Caso nenhum pacote tenha sido capturado, retorna 2s de silêncio seguro
+                lastRecordedVoiceHasPcm = false;
                 return ctx.createBuffer(1, sampleRate * 2, sampleRate);
             }
 
@@ -2115,7 +2206,7 @@
                     sumSq += s * s;
                 }
                 const rms = Math.sqrt(sumSq / windowSize);
-                if (rms > 0.011) {
+                if (rms > 0.008) {
                     trimStart = Math.max(0, i - Math.floor(sampleRate * 0.03));
                     break;
                 }
@@ -2128,8 +2219,10 @@
                 if (abs > maxPeak) maxPeak = abs;
             }
 
-            // Normalização suave de amplitude (evita distorção e garante audibilidade ao lado do SoundFont)
-            const normFactor = maxPeak > 0.008 ? Math.min(5.5, 0.88 / maxPeak) : 1.0;
+            lastRecordedVoiceHasPcm = maxPeak > 0.0004;
+
+            // Normalização de amplitude para garantir que a voz gravada soe clara e no mesmo nível do instrumento
+            const normFactor = maxPeak > 0.001 ? Math.min(12.0, 0.92 / maxPeak) : 1.0;
             const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(trimmed.length / 4));
             const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(trimmed.length / 4));
 
@@ -2149,47 +2242,73 @@
             return outBuffer;
         }
 
-        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 0.95 } = {}) {
-            if (!audioBuffer) return null;
+        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 1.1 } = {}) {
             const ctx = await SoundFontEngine.ensureAudioContext();
 
             if (activeRecordedVoiceSource) {
                 try {
                     activeRecordedVoiceSource.stop();
                 } catch (e) {}
+                activeRecordedVoiceSource = null;
+            }
+            if (activeHtmlAudioElement) {
+                try {
+                    activeHtmlAudioElement.pause();
+                    activeHtmlAudioElement.currentTime = 0;
+                } catch (e) {}
+                activeHtmlAudioElement = null;
             }
 
-            const source = ctx.createBufferSource();
-            source.buffer = audioBuffer;
+            // Caso o AudioBuffer contenha sinal de voz válido, reproduz via Web Audio API com ganho reforçado
+            if (audioBuffer && lastRecordedVoiceHasPcm) {
+                const source = ctx.createBufferSource();
+                source.buffer = audioBuffer;
 
-            const voiceGain = ctx.createGain();
-            voiceGain.gain.setValueAtTime(gain, ctx.currentTime);
+                const voiceGain = ctx.createGain();
+                voiceGain.gain.setValueAtTime(gain, ctx.currentTime);
 
-            source.connect(voiceGain);
-            voiceGain.connect(ctx.destination);
-            source.start(ctx.currentTime);
+                source.connect(voiceGain);
+                voiceGain.connect(ctx.destination);
+                source.start(ctx.currentTime);
 
-            if (duration && duration < audioBuffer.duration) {
-                const stopTime = ctx.currentTime + duration;
-                voiceGain.gain.setValueAtTime(gain, Math.max(ctx.currentTime, stopTime - 0.04));
-                voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
-                source.stop(stopTime + 0.01);
-            }
-
-            activeRecordedVoiceSource = source;
-            source.onended = () => {
-                if (activeRecordedVoiceSource === source) {
-                    activeRecordedVoiceSource = null;
+                if (duration && duration < audioBuffer.duration) {
+                    const stopTime = ctx.currentTime + duration;
+                    voiceGain.gain.setValueAtTime(gain, Math.max(ctx.currentTime, stopTime - 0.04));
+                    voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
+                    source.stop(stopTime + 0.01);
                 }
-            };
-            return source;
+
+                activeRecordedVoiceSource = source;
+                source.onended = () => {
+                    if (activeRecordedVoiceSource === source) {
+                        activeRecordedVoiceSource = null;
+                    }
+                };
+                return source;
+            }
+
+            // Fallback direto via elemento <audio> HTML5 usando o Blob URL do MediaRecorder
+            if (lastRecordedVoiceBlobUrl) {
+                const audioEl = new Audio(lastRecordedVoiceBlobUrl);
+                audioEl.volume = 1.0;
+                activeHtmlAudioElement = audioEl;
+                try {
+                    await audioEl.play();
+                } catch (e) {
+                    console.warn('Erro ao reproduzir áudio HTML5:', e);
+                }
+                return audioEl;
+            }
+            return null;
         }
 
         async function playFullComparisonSequence(noteToCompare = lastComparisonNote || currentNote, { evaluateAfter = false, avgCents = null } = {}) {
-            if (!noteToCompare || !lastRecordedVoiceBuffer) return;
+            if (!noteToCompare || (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl)) return;
             stopVoiceComparisonPlayback();
 
-            const voiceDur = Math.max(1.4, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+            const voiceDur = lastRecordedVoiceBuffer
+                ? Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration))
+                : 2.8;
             const originDur = 1.65;
             const gapSec = 0.35;
 
@@ -2209,7 +2328,7 @@
                 mirrorProgressBarEl.style.width = '66%';
                 instructionEl.textContent = '2º · Ouvindo a SUA VOZ GRAVADA...';
                 feedbackEl.textContent = 'Observe a altura do seu ataque e a estabilidade da sustentação.';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.95 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 1.15 });
             }, step2DelayMs);
             comparisonTimers.push(t2);
 
@@ -2222,8 +2341,8 @@
                 instructionEl.textContent = `3º · Ouvindo AS DUAS JUNTAS (${noteToCompare.name} + Sua Voz)!`;
                 feedbackEl.textContent = 'Perceba a fusão em uníssono (ou os batimentos acústicos se houver diferença).';
                 await Promise.all([
-                    SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.82 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.95 })
+                    SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.78 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 1.15 })
                 ]);
             }, step3DelayMs);
             comparisonTimers.push(t3);
@@ -2248,7 +2367,7 @@
                         } else {
                             const hint = avgCents < 0 ? 'um pouco grave (♭)' : 'um pouco agudo (♯)';
                             userResultDisplay.textContent = avgCents < 0 ? 'Grave (♭)' : 'Agudo (♯)';
-                            feedbackEl.textContent = `Sua gravação ficou ${hint} (média: ${sign}${avgCents} c). Ouça novamente os botões abaixo ou tente de novo!`;
+                            feedbackEl.textContent = `Sua gravação ficou ${hint} (média: ${sign}${avgCents} c). Ouça novamente nos botões abaixo ou tente de novo!`;
                             displayArea.style.background = 'rgba(244, 162, 97, 0.28)';
                             displayArea.style.borderColor = '#F4A261';
                         }
@@ -2263,6 +2382,8 @@
 
         async function playRecordAndCompare(noteToPlay = currentNote) {
             if (!audioContext && !synth) return;
+            await setupVoiceRecorderGraph();
+
             if (!noteToPlay) {
                 const pool = getActiveNotesPool();
                 noteToPlay = pool[Math.floor(Math.random() * pool.length)];
@@ -2306,11 +2427,7 @@
                 listening = true;
                 actionTaken = false;
 
-                if (toneRecorder && toneRecorder.state !== 'started') {
-                    try {
-                        toneRecorder.start();
-                    } catch (e) {}
-                }
+                startNativeMediaRecorder();
 
                 if (mirrorRecDotEl) {
                     mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-[#E76F51] animate-pulse inline-block shadow-[0_0_8px_#E76F51]';
@@ -2345,14 +2462,8 @@
                     mirrorProgressBarEl.style.width = '100%';
                     mirrorStatusBadgeEl.textContent = 'Processando áudio...';
 
-                    let fallbackBlob = null;
-                    if (toneRecorder && toneRecorder.state === 'started') {
-                        try {
-                            fallbackBlob = await toneRecorder.stop();
-                        } catch (e) {}
-                    }
-
-                    lastRecordedVoiceBuffer = await buildProcessedVoiceAudioBuffer(fallbackBlob);
+                    const recordedBlob = await stopNativeMediaRecorder();
+                    lastRecordedVoiceBuffer = await buildProcessedVoiceAudioBuffer(recordedBlob);
 
                     let avgCents = null;
                     let avgFreq = null;
@@ -2390,7 +2501,7 @@
             try {
                 statusEl.textContent = 'Inicializando motor de áudio...';
                 await Tone.start();
-                audioContext = Tone.context.rawContext;
+                audioContext = getNativeBrowserAudioContext();
                 await SoundFontEngine.ensureAudioContext();
 
                 // Mantém Tone.Synth inicializado como fallback imediato e para o glissando contínuo
@@ -2410,7 +2521,7 @@
                 mic = new Tone.UserMedia();
                 await mic.open();
                 mic.connect(analyser);
-                setupVoiceRecorderGraph();
+                await setupVoiceRecorderGraph();
 
                 statusEl.textContent = 'Microfone e Coro Vocal (FluidR3_GM) prontos · Biofeedback e Espelho Vocal 3s ativos';
                 startButton.classList.add('hidden');
@@ -2906,12 +3017,14 @@
 
         if (playOnlyUserVoiceBtn) {
             playOnlyUserVoiceBtn.addEventListener('click', async () => {
-                if (!lastRecordedVoiceBuffer) return;
+                if (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl) return;
                 stopVoiceComparisonPlayback();
-                const dur = Math.max(1.4, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+                const dur = lastRecordedVoiceBuffer
+                    ? Math.max(1.4, Math.min(3.0, lastRecordedVoiceBuffer.duration))
+                    : 2.8;
                 highlightMirrorStepButton('playOnlyUserVoiceBtn');
                 mirrorStatusBadgeEl.textContent = '2ª Etapa · Sua Voz';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.95 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 1.15 });
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
             });
@@ -2920,14 +3033,16 @@
         if (playBothTogetherBtn) {
             playBothTogetherBtn.addEventListener('click', async () => {
                 const note = lastComparisonNote || currentNote;
-                if (!note || !lastRecordedVoiceBuffer) return;
+                if (!note || (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl)) return;
                 stopVoiceComparisonPlayback();
-                const dur = Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration));
+                const dur = lastRecordedVoiceBuffer
+                    ? Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration))
+                    : 2.8;
                 highlightMirrorStepButton('playBothTogetherBtn');
                 mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
                 await Promise.all([
-                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.82 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.95 })
+                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.78 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 1.15 })
                 ]);
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
