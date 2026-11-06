@@ -310,13 +310,19 @@
                         </div>
                     </div>
 
-                    <!-- Controle de Volume do Instrumento + Opções de sustentação e oitava -->
+                    <!-- Controle de Volume do Instrumento e da Gravação + Opções de sustentação e oitava -->
                     <div class="mt-3 pt-2.5 border-t border-white/10 space-y-2 text-xs text-brand-light/85">
                         <div class="flex items-center justify-between gap-3">
                             <label for="instrumentVolumeSlider" class="text-brand-light/75 shrink-0">Volume da Referência:</label>
                             <input type="range" id="instrumentVolumeSlider" min="0.1" max="1.0" step="0.05" value="0.85"
                                 class="w-full accent-[#2A9D8F] cursor-pointer h-1.5 bg-[#264653] rounded-lg">
                             <span id="instrumentVolumeLabel" class="font-mono-tech text-brand-gold w-10 text-right">85%</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-3">
+                            <label for="recordedVoiceVolumeSlider" class="text-brand-light/75 shrink-0">Volume da Gravação:</label>
+                            <input type="range" id="recordedVoiceVolumeSlider" min="0.05" max="1.5" step="0.05" value="0.50"
+                                class="w-full accent-[#F4A261] cursor-pointer h-1.5 bg-[#264653] rounded-lg">
+                            <span id="recordedVoiceVolumeLabel" class="font-mono-tech text-brand-sandy w-10 text-right">50%</span>
                         </div>
                         <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -504,14 +510,22 @@
                             </button>
                         </div>
 
-                        <div class="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="mt-2.5 pt-2.5 border-t border-white/10 space-y-2 text-xs">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <div class="flex items-center gap-2.5 flex-1 min-w-[220px]">
+                                    <label for="mirrorVoiceVolumeSlider" class="text-[11px] text-brand-light/90 font-semibold shrink-0">🎤 Volume da Gravação:</label>
+                                    <input type="range" id="mirrorVoiceVolumeSlider" min="0.05" max="1.5" step="0.05" value="0.50"
+                                        class="w-full max-w-[180px] accent-[#F4A261] cursor-pointer h-1.5 bg-[#193039] rounded-lg">
+                                    <span id="mirrorVoiceVolumeLabel" class="font-mono-tech text-[11px] text-brand-sandy w-10 text-right">50%</span>
+                                </div>
+                                <button type="button" id="replayFullComparisonBtn" disabled
+                                    class="glass-btn-teal px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 shrink-0">
+                                    ↻ Reouvir Sequência (1 → 2 → Juntas)
+                                </button>
+                            </div>
                             <p id="mirrorSummaryText" class="text-[11px] text-brand-light/80">
                                 Clique em <strong>"🎙️ Emitir, Gravar 3s &amp; Comparar"</strong> (ou use a <strong>Trilha 7</strong>) para ouvir a referência, gravar 3s e escutar a comparação.
                             </p>
-                            <button type="button" id="replayFullComparisonBtn" disabled
-                                class="glass-btn-teal px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 shrink-0">
-                                ↻ Reouvir Sequência (1 → 2 → Juntas)
-                            </button>
                         </div>
                     </div>
 
@@ -1013,6 +1027,10 @@
         const timbreSelect = document.getElementById('timbreSelect');
         const instrumentVolumeSlider = document.getElementById('instrumentVolumeSlider');
         const instrumentVolumeLabel = document.getElementById('instrumentVolumeLabel');
+        const recordedVoiceVolumeSlider = document.getElementById('recordedVoiceVolumeSlider');
+        const recordedVoiceVolumeLabel = document.getElementById('recordedVoiceVolumeLabel');
+        const mirrorVoiceVolumeSlider = document.getElementById('mirrorVoiceVolumeSlider');
+        const mirrorVoiceVolumeLabel = document.getElementById('mirrorVoiceVolumeLabel');
         const sustainModeToggle = document.getElementById('sustainModeToggle');
         const strictOctaveToggle = document.getElementById('strictOctaveToggle');
 
@@ -1179,7 +1197,9 @@
         let lastRecordedVoiceBlobUrl = null;
         let lastRecordedVoiceHasPcm = false;
         let lastComparisonNote = null;
+        let recordedVoiceVolume = 0.50;
         let activeRecordedVoiceSource = null;
+        let activeRecordedVoiceGainNode = null;
         let activeHtmlAudioElement = null;
         let comparisonTimers = [];
         let recordingProgressInterval = null;
@@ -2129,6 +2149,7 @@
                 } catch (e) {}
                 activeRecordedVoiceSource = null;
             }
+            activeRecordedVoiceGainNode = null;
             if (activeHtmlAudioElement) {
                 try {
                     activeHtmlAudioElement.pause();
@@ -2140,6 +2161,32 @@
             highlightMirrorStepButton(null);
             if (mirrorRecDotEl) {
                 mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-brand-light/40 inline-block';
+            }
+        }
+
+        function setRecordedVoiceVolume(value) {
+            const clamped = Math.max(0.05, Math.min(1.5, Number(value) || 0.50));
+            recordedVoiceVolume = clamped;
+            const pctText = `${Math.round(clamped * 100)}%`;
+
+            if (recordedVoiceVolumeSlider && Number(recordedVoiceVolumeSlider.value) !== clamped) {
+                recordedVoiceVolumeSlider.value = String(clamped);
+            }
+            if (recordedVoiceVolumeLabel) {
+                recordedVoiceVolumeLabel.textContent = pctText;
+            }
+            if (mirrorVoiceVolumeSlider && Number(mirrorVoiceVolumeSlider.value) !== clamped) {
+                mirrorVoiceVolumeSlider.value = String(clamped);
+            }
+            if (mirrorVoiceVolumeLabel) {
+                mirrorVoiceVolumeLabel.textContent = pctText;
+            }
+
+            if (activeRecordedVoiceGainNode && SoundFontEngine.audioCtx) {
+                activeRecordedVoiceGainNode.gain.setValueAtTime(clamped, SoundFontEngine.audioCtx.currentTime);
+            }
+            if (activeHtmlAudioElement) {
+                activeHtmlAudioElement.volume = Math.max(0.05, Math.min(1.0, clamped));
             }
         }
 
@@ -2242,7 +2289,7 @@
             return outBuffer;
         }
 
-        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 0.65 } = {}) {
+        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = recordedVoiceVolume } = {}) {
             const ctx = await SoundFontEngine.ensureAudioContext();
 
             if (activeRecordedVoiceSource) {
@@ -2251,6 +2298,7 @@
                 } catch (e) {}
                 activeRecordedVoiceSource = null;
             }
+            activeRecordedVoiceGainNode = null;
             if (activeHtmlAudioElement) {
                 try {
                     activeHtmlAudioElement.pause();
@@ -2259,13 +2307,14 @@
                 activeHtmlAudioElement = null;
             }
 
-            // Caso o AudioBuffer contenha sinal de voz válido, reproduz via Web Audio API com ganho equilibrado
+            // Caso o AudioBuffer contenha sinal de voz válido, reproduz via Web Audio API com o volume escolhido pelo usuário
             if (audioBuffer && lastRecordedVoiceHasPcm) {
                 const source = ctx.createBufferSource();
                 source.buffer = audioBuffer;
 
                 const voiceGain = ctx.createGain();
                 voiceGain.gain.setValueAtTime(gain, ctx.currentTime);
+                activeRecordedVoiceGainNode = voiceGain;
 
                 source.connect(voiceGain);
                 voiceGain.connect(ctx.destination);
@@ -2282,6 +2331,7 @@
                 source.onended = () => {
                     if (activeRecordedVoiceSource === source) {
                         activeRecordedVoiceSource = null;
+                        activeRecordedVoiceGainNode = null;
                     }
                 };
                 return source;
@@ -2290,7 +2340,7 @@
             // Fallback direto via elemento <audio> HTML5 usando o Blob URL do MediaRecorder
             if (lastRecordedVoiceBlobUrl) {
                 const audioEl = new Audio(lastRecordedVoiceBlobUrl);
-                audioEl.volume = Math.max(0.1, Math.min(1.0, gain));
+                audioEl.volume = Math.max(0.05, Math.min(1.0, gain));
                 activeHtmlAudioElement = audioEl;
                 try {
                     await audioEl.play();
@@ -2328,7 +2378,7 @@
                 mirrorProgressBarEl.style.width = '66%';
                 instructionEl.textContent = '2º · Ouvindo a SUA VOZ GRAVADA...';
                 feedbackEl.textContent = 'Observe a altura do seu ataque e a estabilidade da sustentação.';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.65 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume });
             }, step2DelayMs);
             comparisonTimers.push(t2);
 
@@ -2342,7 +2392,7 @@
                 feedbackEl.textContent = 'Perceba a fusão em uníssono (ou os batimentos acústicos se houver diferença).';
                 await Promise.all([
                     SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.85 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.60 })
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume })
                 ]);
             }, step3DelayMs);
             comparisonTimers.push(t3);
@@ -3026,7 +3076,7 @@
                     : 2.8;
                 highlightMirrorStepButton('playOnlyUserVoiceBtn');
                 mirrorStatusBadgeEl.textContent = '2ª Etapa · Sua Voz';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.65 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: recordedVoiceVolume });
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
             });
@@ -3044,7 +3094,7 @@
                 mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
                 await Promise.all([
                     SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.85 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.60 })
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: recordedVoiceVolume })
                 ]);
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
@@ -3114,12 +3164,24 @@
             await setInstrument(timbreSelect.value);
         });
 
-        // Controle de Volume via GainNode
+        // Controle de Volume da Referência via GainNode
         instrumentVolumeSlider.addEventListener('input', () => {
             const val = parseFloat(instrumentVolumeSlider.value);
             instrumentVolumeLabel.textContent = `${Math.round(val * 100)}%`;
             SoundFontEngine.setVolume(val);
         });
+
+        // Controle de Volume da Gravação (Sua Voz) sincronizado nos dois seletores
+        if (recordedVoiceVolumeSlider) {
+            recordedVoiceVolumeSlider.addEventListener('input', () => {
+                setRecordedVoiceVolume(parseFloat(recordedVoiceVolumeSlider.value));
+            });
+        }
+        if (mirrorVoiceVolumeSlider) {
+            mirrorVoiceVolumeSlider.addEventListener('input', () => {
+                setRecordedVoiceVolume(parseFloat(mirrorVoiceVolumeSlider.value));
+            });
+        }
 
         // Atualização de Oitava da Referência (Oitava Grave vs. Oitava Acima +8va)
         async function applyReferenceOctaveChange(newMode) {
