@@ -434,12 +434,6 @@
                                 Pedal Tônico: OFF
                             </button>
                         </div>
-                        <div id="autoMirrorOptionRow" class="hidden flex items-center justify-center">
-                            <label class="inline-flex items-center gap-2 cursor-pointer text-xs text-brand-light/85 bg-[#264653]/75 px-3 py-1.5 rounded-xl border border-white/15">
-                                <input type="checkbox" id="autoRecordCompareToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
-                                <span>Gravar minha voz (3s) e reproduzir comparação automaticamente após cada emissão</span>
-                            </label>
-                        </div>
                         <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando ativação de áudio pelo usuário...</p>
                     </div>
 
@@ -951,8 +945,6 @@
         const recordCompareButton = document.getElementById('recordCompareButton');
         const replayNoteButton = document.getElementById('replayNoteButton');
         const droneToggleButton = document.getElementById('droneToggleButton');
-        const autoMirrorOptionRow = document.getElementById('autoMirrorOptionRow');
-        const autoRecordCompareToggle = document.getElementById('autoRecordCompareToggle');
 
         // Elementos do Painel Espelho Auditivo (Gravação 3s & Comparação)
         const mirrorRecDotEl = document.getElementById('mirrorRecDot');
@@ -2005,7 +1997,7 @@
         //     (1º Nota de Origem -> 2º Sua Voz -> 3º As Duas Juntas)
         // =========================================================================
         function shouldUseAutoMirrorMode() {
-            return currentPath === 'mirror' || (autoRecordCompareToggle && autoRecordCompareToggle.checked);
+            return currentPath === 'mirror';
         }
 
         function setupVoiceRecorderGraph() {
@@ -2426,7 +2418,6 @@
                 recordCompareButton.classList.remove('hidden');
                 replayNoteButton.classList.remove('hidden');
                 droneToggleButton.classList.remove('hidden');
-                if (autoMirrorOptionRow) autoMirrorOptionRow.classList.remove('hidden');
                 updateDroneButtonLabel();
 
                 if (currentPath === 'freelab') {
