@@ -261,6 +261,14 @@
                             </select>
                         </div>
 
+                        <div class="col-span-2">
+                            <label for="refOctaveSelect" class="block text-xs text-brand-light/75 mb-1">Oitava das Notas de Referência</label>
+                            <select id="refOctaveSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                                <option value="low" selected>Oitava Grave — Padrão (Sol2–Sol3 / Dó3–Dó4)</option>
+                                <option value="high">Oitava Acima (+8va) — Aguda (Sol3–Sol4 / Dó4–Dó5)</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label for="toleranceSelect" class="block text-xs text-brand-light/75 mb-1">Rigor da Afinação</label>
                             <select id="toleranceSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
@@ -514,11 +522,21 @@
                         </p>
                     </div>
 
-                    <!-- Teclado de Referência Auditiva Rápida -->
+                    <!-- Teclado de Referência Auditiva Rápida + Controle de Oitava da Referência -->
                     <div class="glass-panel mt-4 p-4 rounded-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <p id="keyboardTitle" class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo — Vozes Agudas (de Dó a Dó)</p>
-                            <span class="text-[11px] text-brand-light/70">Clique em uma nota para ouvi-la e defini-la como alvo</span>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <div>
+                                <p id="keyboardTitle" class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo — Vozes Agudas (de Dó a Dó)</p>
+                                <span class="text-[11px] text-brand-light/70">Clique em uma nota para ouvi-la e defini-la como alvo</span>
+                            </div>
+                            <div class="inline-flex items-center gap-1 bg-[#264653]/90 p-1 rounded-xl border border-white/15" role="group" aria-label="Controle de oitava das notas de referência">
+                                <button type="button" id="refOctaveLowBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#2A9D8F] text-brand-light shadow-sm">
+                                    Oitava Grave
+                                </button>
+                                <button type="button" id="refOctaveHighBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all text-brand-light/75 hover:text-brand-light">
+                                    Oitava Acima (+8va)
+                                </button>
+                            </div>
                         </div>
                         <div id="referenceKeyboard" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-13 gap-1.5" style="grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));">
                             <!-- Botões das 13 notas (Sol a Sol ou Dó a Dó) gerados via JS -->
@@ -805,6 +823,9 @@
         // Seletores de Configuração
         const scaleSelect = document.getElementById('scaleSelect');
         const octaveSelect = document.getElementById('octaveSelect');
+        const refOctaveSelect = document.getElementById('refOctaveSelect');
+        const refOctaveLowBtn = document.getElementById('refOctaveLowBtn');
+        const refOctaveHighBtn = document.getElementById('refOctaveHighBtn');
         const toleranceSelect = document.getElementById('toleranceSelect');
         const timbreSelect = document.getElementById('timbreSelect');
         const instrumentVolumeSlider = document.getElementById('instrumentVolumeSlider');
@@ -1616,8 +1637,36 @@
             return octaveSelect.value === 'graves';
         }
 
+        function isReferenceOctaveUp() {
+            return refOctaveSelect && refOctaveSelect.value === 'high';
+        }
+
+        function syncReferenceOctaveButtons() {
+            if (!refOctaveLowBtn || !refOctaveHighBtn) return;
+            const isUp = isReferenceOctaveUp();
+            if (isUp) {
+                refOctaveHighBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#2A9D8F] text-brand-light shadow-sm';
+                refOctaveLowBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all text-brand-light/75 hover:text-brand-light';
+            } else {
+                refOctaveLowBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#2A9D8F] text-brand-light shadow-sm';
+                refOctaveHighBtn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all text-brand-light/75 hover:text-brand-light';
+            }
+        }
+
         function getAllChromaticNotesInCurrentOctave() {
-            return isVozesGravesSelected() ? notesVozesGravesSolASol : notesVozesAgudasDoADo;
+            const baseNotes = isVozesGravesSelected() ? notesVozesGravesSolASol : notesVozesAgudasDoADo;
+            const mult = isReferenceOctaveUp() ? 2 : 1;
+            const midiOffset = isReferenceOctaveUp() ? 12 : 0;
+            return baseNotes.map(n => {
+                const shiftedFreq = Number((n.freq * mult).toFixed(2));
+                const shiftedMidi = n.midi + midiOffset;
+                return {
+                    ...n,
+                    freq: shiftedFreq,
+                    midi: shiftedMidi,
+                    noteKey: SoundFontEngine.toNoteKey(shiftedFreq)
+                };
+            });
         }
 
         function getActiveNotesPool() {
@@ -1632,9 +1681,10 @@
         }
 
         function getCurrentTonicInfo() {
+            const mult = isReferenceOctaveUp() ? 2 : 1;
             return isVozesGravesSelected()
-                ? { label: 'Sol', freq: 98.00 }
-                : { label: 'Dó', freq: 130.81 };
+                ? { label: 'Sol', freq: Number((98.00 * mult).toFixed(2)) }
+                : { label: 'Dó', freq: Number((130.81 * mult).toFixed(2)) };
         }
 
         function findClosestNoteInfo(freq) {
@@ -1683,17 +1733,20 @@
 
         function renderReferenceKeyboard() {
             const allNotes = getAllChromaticNotesInCurrentOctave();
+            syncReferenceOctaveButtons();
             if (keyboardTitleEl) {
-                keyboardTitleEl.textContent = isVozesGravesSelected()
-                    ? 'Diapasão Interativo — Vozes Graves (de Sol a Sol)'
-                    : 'Diapasão Interativo — Vozes Agudas (de Dó a Dó)';
+                const regionText = isVozesGravesSelected()
+                    ? 'Vozes Graves (de Sol a Sol)'
+                    : 'Vozes Agudas (de Dó a Dó)';
+                const octText = isReferenceOctaveUp() ? 'Oitava Acima (+8va)' : 'Oitava Grave';
+                keyboardTitleEl.textContent = `Diapasão Interativo — ${regionText} · ${octText}`;
             }
 
             referenceKeyboardEl.innerHTML = allNotes.map((n, idx) => {
                 const isSharp = n.name.includes('#') || n.name.includes('b');
                 const displayLabel = idx === allNotes.length - 1 ? `${n.name}'` : n.name;
                 return `
-                    <button data-note="${n.name}" data-freq="${n.freq}"
+                    <button data-note="${n.name}" data-freq="${n.freq}" data-semitone="${n.semitone}"
                         class="ref-key-btn rounded-xl py-2 px-1 text-center transition-all border ${
                             isSharp
                                 ? 'bg-[#264653]/95 border-white/15 text-brand-gold hover:bg-[#264653]'
@@ -1709,7 +1762,8 @@
                 btn.addEventListener('click', async () => {
                     const name = btn.getAttribute('data-note');
                     const freq = parseFloat(btn.getAttribute('data-freq'));
-                    currentNote = { name, freq };
+                    const semitone = parseInt(btn.getAttribute('data-semitone'), 10);
+                    currentNote = { name, freq, semitone };
                     errorCount = 0;
                     updateAttemptBadge();
                     targetNoteDisplayEl.textContent = name;
@@ -2279,6 +2333,64 @@
             instrumentVolumeLabel.textContent = `${Math.round(val * 100)}%`;
             SoundFontEngine.setVolume(val);
         });
+
+        // Atualização de Oitava da Referência (Oitava Grave vs. Oitava Acima +8va)
+        async function applyReferenceOctaveChange(newMode) {
+            if (refOctaveSelect && newMode && refOctaveSelect.value !== newMode) {
+                refOctaveSelect.value = newMode;
+            }
+            renderReferenceKeyboard();
+            updateDroneButtonLabel();
+
+            if (droneActive && droneSynth) {
+                const tonic = getCurrentTonicInfo();
+                droneSynth.setNote(tonic.freq);
+            }
+
+            const allChrom = getAllChromaticNotesInCurrentOctave();
+            if (currentNote) {
+                const matched = allChrom.find(n =>
+                    (typeof currentNote.semitone === 'number' && n.semitone === currentNote.semitone) ||
+                    n.name === currentNote.name
+                );
+                if (matched) {
+                    currentNote = matched;
+                    targetFreqSubEl.textContent = `Referência: ${currentNote.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(currentNote.freq)})`;
+                }
+            }
+            if (currentBaseNote) {
+                const matchedBase = allChrom.find(n =>
+                    (typeof currentBaseNote.semitone === 'number' && n.semitone === currentBaseNote.semitone) ||
+                    n.name === currentBaseNote.name
+                );
+                if (matchedBase) {
+                    currentBaseNote = matchedBase;
+                }
+            }
+
+            if (audioContext) {
+                await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, getActiveNotesPool());
+                if (currentNote) {
+                    repeatRound();
+                }
+            }
+        }
+
+        if (refOctaveSelect) {
+            refOctaveSelect.addEventListener('change', () => {
+                applyReferenceOctaveChange(refOctaveSelect.value);
+            });
+        }
+        if (refOctaveLowBtn) {
+            refOctaveLowBtn.addEventListener('click', () => {
+                applyReferenceOctaveChange('low');
+            });
+        }
+        if (refOctaveHighBtn) {
+            refOctaveHighBtn.addEventListener('click', () => {
+                applyReferenceOctaveChange('high');
+            });
+        }
 
         // Atualização de Região Vocal (Vozes Graves: Sol a Sol | Vozes Agudas: Dó a Dó)
         octaveSelect.addEventListener('change', async () => {
