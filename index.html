@@ -170,7 +170,7 @@
                         <span class="text-xs font-mono-tech uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Estúdio Pedagógico</span>
                     </div>
                     <p class="text-brand-light/75 text-sm mt-1">
-                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo e amostras General MIDI (FluidR3_GM).
+                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo.
                     </p>
                 </div>
 
@@ -2221,8 +2221,8 @@
 
             lastRecordedVoiceHasPcm = maxPeak > 0.0004;
 
-            // Normalização de amplitude para garantir que a voz gravada soe clara e no mesmo nível do instrumento
-            const normFactor = maxPeak > 0.001 ? Math.min(12.0, 0.92 / maxPeak) : 1.0;
+            // Normalização suave de amplitude para manter a voz gravada natural e equilibrada, sem ficar muito forte
+            const normFactor = maxPeak > 0.002 ? Math.min(3.5, 0.52 / maxPeak) : 1.0;
             const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(trimmed.length / 4));
             const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(trimmed.length / 4));
 
@@ -2236,13 +2236,13 @@
                 } else if (i > trimmed.length - fadeOutSamples) {
                     env = (trimmed.length - i) / fadeOutSamples;
                 }
-                channelOut[i] = Math.max(-0.98, Math.min(0.98, trimmed[i] * normFactor * env));
+                channelOut[i] = Math.max(-0.85, Math.min(0.85, trimmed[i] * normFactor * env));
             }
 
             return outBuffer;
         }
 
-        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 1.1 } = {}) {
+        async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = 0.65 } = {}) {
             const ctx = await SoundFontEngine.ensureAudioContext();
 
             if (activeRecordedVoiceSource) {
@@ -2259,7 +2259,7 @@
                 activeHtmlAudioElement = null;
             }
 
-            // Caso o AudioBuffer contenha sinal de voz válido, reproduz via Web Audio API com ganho reforçado
+            // Caso o AudioBuffer contenha sinal de voz válido, reproduz via Web Audio API com ganho equilibrado
             if (audioBuffer && lastRecordedVoiceHasPcm) {
                 const source = ctx.createBufferSource();
                 source.buffer = audioBuffer;
@@ -2290,7 +2290,7 @@
             // Fallback direto via elemento <audio> HTML5 usando o Blob URL do MediaRecorder
             if (lastRecordedVoiceBlobUrl) {
                 const audioEl = new Audio(lastRecordedVoiceBlobUrl);
-                audioEl.volume = 1.0;
+                audioEl.volume = Math.max(0.1, Math.min(1.0, gain));
                 activeHtmlAudioElement = audioEl;
                 try {
                     await audioEl.play();
@@ -2328,7 +2328,7 @@
                 mirrorProgressBarEl.style.width = '66%';
                 instructionEl.textContent = '2º · Ouvindo a SUA VOZ GRAVADA...';
                 feedbackEl.textContent = 'Observe a altura do seu ataque e a estabilidade da sustentação.';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 1.15 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.65 });
             }, step2DelayMs);
             comparisonTimers.push(t2);
 
@@ -2341,8 +2341,8 @@
                 instructionEl.textContent = `3º · Ouvindo AS DUAS JUNTAS (${noteToCompare.name} + Sua Voz)!`;
                 feedbackEl.textContent = 'Perceba a fusão em uníssono (ou os batimentos acústicos se houver diferença).';
                 await Promise.all([
-                    SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.78 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 1.15 })
+                    SoundFontEngine.playNote(noteToCompare.freq, { duration: voiceDur, velocity: 0.85 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: 0.60 })
                 ]);
             }, step3DelayMs);
             comparisonTimers.push(t3);
@@ -3026,7 +3026,7 @@
                     : 2.8;
                 highlightMirrorStepButton('playOnlyUserVoiceBtn');
                 mirrorStatusBadgeEl.textContent = '2ª Etapa · Sua Voz';
-                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 1.15 });
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.65 });
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
             });
@@ -3043,8 +3043,8 @@
                 highlightMirrorStepButton('playBothTogetherBtn');
                 mirrorStatusBadgeEl.textContent = '3ª Etapa · As Duas Juntas';
                 await Promise.all([
-                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.78 }),
-                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 1.15 })
+                    SoundFontEngine.playNote(note.freq, { duration: dur, velocity: 0.85 }),
+                    playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: dur, gain: 0.60 })
                 ]);
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
