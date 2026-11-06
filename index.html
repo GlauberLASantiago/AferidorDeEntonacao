@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,9 @@
     <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --color-coral: #E76F51;
@@ -80,10 +83,12 @@
             color: #F8F9FA;
             transition: transform 0.15s ease, background-color 0.25s ease, box-shadow 0.25s ease;
         }
+
         .glass-btn-teal:hover:not(:disabled) {
             background: rgba(42, 157, 143, 0.58);
             box-shadow: 0 0 22px rgba(42, 157, 143, 0.45);
         }
+
         .glass-btn-teal:active:not(:disabled) {
             transform: scale(0.98);
         }
@@ -94,10 +99,12 @@
             color: #F8F9FA;
             transition: transform 0.15s ease, background-color 0.25s ease, box-shadow 0.25s ease;
         }
+
         .glass-btn-sandy:hover:not(:disabled) {
             background: rgba(244, 162, 97, 0.48);
             box-shadow: 0 0 22px rgba(244, 162, 97, 0.4);
         }
+
         .glass-btn-sandy:active:not(:disabled) {
             transform: scale(0.98);
         }
@@ -108,10 +115,12 @@
             color: #F8F9FA;
             transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
         }
+
         .glass-btn-neutral:hover:not(:disabled) {
             background: rgba(248, 249, 250, 0.14);
             border-color: #E9C46A;
         }
+
         .glass-btn-neutral:active:not(:disabled) {
             transform: scale(0.98);
         }
@@ -145,6 +154,7 @@
             border-color: #2A9D8F;
             color: #F8F9FA;
         }
+
         .badge-locked {
             background: rgba(248, 249, 250, 0.04);
             border-color: rgba(248, 249, 250, 0.09);
@@ -152,6 +162,7 @@
         }
     </style>
 </head>
+
 <body class="flex flex-col items-center justify-between min-h-[100dvh] p-4 md:p-6">
 
     <div class="relative z-10 w-full max-w-6xl mx-auto">
@@ -161,36 +172,48 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <div class="flex items-center gap-2.5 flex-wrap">
-                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-brand-teal/25 border border-brand-teal text-brand-gold">
+                        <span
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-brand-teal/25 border border-brand-teal text-brand-gold">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                             </svg>
                         </span>
-                        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-brand-light">Aferidor de Entonação</h1>
-                        <span class="text-xs font-mono-tech uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Estúdio Pedagógico</span>
+                        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-brand-light">Aferidor de Entonação
+                        </h1>
+                        <span
+                            class="text-xs font-mono-tech uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Estúdio
+                            Pedagógico</span>
                     </div>
                     <p class="text-brand-light/75 text-sm mt-1">
-                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo.
+                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual
+                        contínuo.
                     </p>
                 </div>
 
                 <!-- Navigation Tabs -->
                 <nav class="flex flex-wrap gap-2" aria-label="Seções do Aplicativo">
-                    <button data-tab="tab-studio" class="nav-tab tab-active glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                    <button data-tab="tab-studio"
+                        class="nav-tab tab-active glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
                         </svg>
                         Estúdio de Prática
                     </button>
-                    <button data-tab="tab-tips" class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                    <button data-tab="tab-tips"
+                        class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
                         </svg>
                         Como Afinar a Voz &amp; Aquecimento
                     </button>
-                    <button data-tab="tab-science" class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                    <button data-tab="tab-science"
+                        class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
                         </svg>
                         Ciência &amp; Pedagogia
                     </button>
@@ -209,56 +232,76 @@
                 <!-- 1. Caminhos Pedagógicos (6 Trilhas) -->
                 <div class="glass-card rounded-3xl p-5">
                     <div class="flex items-center justify-between mb-3">
-                        <h2 class="text-sm font-bold uppercase tracking-wider text-brand-gold">1. Escolha o Caminho Pedagógico</h2>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-brand-gold">1. Escolha o Caminho
+                            Pedagógico</h2>
                         <span id="activePathBadge" class="text-xs text-brand-light/70 font-mono-tech">Trilha 1</span>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="pathSelector">
-                        <button data-path="unison" class="path-btn path-card-active glass-panel p-3 rounded-2xl text-left transition-all">
+                        <button data-path="unison"
+                            class="path-btn path-card-active glass-panel p-3 rounded-2xl text-left transition-all">
                             <p class="font-semibold text-sm text-brand-light">1. Uníssono Guiado</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça uma nota isolada e reproduza sua altura com precisão.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça uma nota isolada e reproduza sua altura
+                                com precisão.</p>
                         </button>
-                        <button data-path="stepwise" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                        <button data-path="stepwise"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">2. Escada Vocal (Graus)</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Suba e desça graus conjuntos passo a passo.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Suba e desça graus conjuntos passo a passo.
+                            </p>
                         </button>
-                        <button data-path="intervals" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                        <button data-path="intervals"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">3. Saltos &amp; Intervalos</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a tônica + intervalo melódico e cante a 2ª nota alvo.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a tônica + intervalo melódico e cante a
+                                2ª nota alvo.</p>
                         </button>
-                        <button data-path="audiation" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                        <button data-path="audiation"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">4. Memória &amp; Audiation</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a nota, retenha 3s em silêncio mental e ataque afinado.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a nota, retenha 3s em silêncio mental e
+                                ataque afinado.</p>
                         </button>
-                        <button data-path="triads" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                        <button data-path="triads"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">5. Arpejos &amp; Tríades</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Entoe arpejos maiores e menores (1º, 3º e 5º graus).</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Entoe arpejos maiores e menores (1º, 3º e 5º
+                                graus).</p>
                         </button>
-                        <button data-path="freelab" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
-                            <p class="font-semibold text-sm text-brand-light">6. Laboratório Livre</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Afinador contínuo, curva vocal e teclado sem erros.</p>
+                        <button data-path="scalerest"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">6. Repouso Após Escala</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Escala rápida (semicolcheias) repousando em nota longa para você entoar.</p>
                         </button>
-                        <button data-path="mirror" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-gold/30">
+                        <button data-path="mirror"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-gold/30">
                             <div class="flex items-center justify-between gap-1">
                                 <p class="font-semibold text-sm text-brand-gold">7. Espelho Vocal</p>
-                                <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-teal text-brand-light">3s</span>
+                                <span
+                                    class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-teal text-brand-light">3s</span>
                             </div>
-                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º Sua Voz → 3º As Duas Juntas.</p>
+                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º
+                                Sua Voz → 3º As Duas Juntas.</p>
                         </button>
-                        <button data-path="special" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-coral/40">
+                        <button data-path="special"
+                            class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-coral/40">
                             <div class="flex items-center justify-between gap-1">
                                 <p class="font-semibold text-sm text-brand-gold">8. Comparação Especial</p>
-                                <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-coral/35 border border-brand-coral text-brand-light">Auto-Tune</span>
+                                <span
+                                    class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-coral/35 border border-brand-coral text-brand-light">Auto-Tune</span>
                             </div>
-                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º Gravado → 3º Corrigido → 4º Os 2 Áudios Juntos.</p>
+                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º
+                                Gravado → 3º Corrigido → 4º Os 2 Áudios Juntos.</p>
                         </button>
                     </div>
 
                     <!-- Configurações Pedagógicas -->
                     <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-3 text-left">
                         <div>
-                            <label for="tonicSelect" class="block text-xs text-brand-light/75 mb-1">Tônica (Nota Base)</label>
-                            <select id="tonicSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="tonicSelect" class="block text-xs text-brand-light/75 mb-1">Tônica (Nota
+                                Base)</label>
+                            <select id="tonicSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <option value="C" selected>Dó (C)</option>
                                 <option value="C#">Dó♯ (C♯)</option>
                                 <option value="Db">Ré♭ (D♭)</option>
@@ -280,8 +323,10 @@
                         </div>
 
                         <div>
-                            <label for="scaleSelect" class="block text-xs text-brand-light/75 mb-1">Tipo de Escala</label>
-                            <select id="scaleSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="scaleSelect" class="block text-xs text-brand-light/75 mb-1">Tipo de
+                                Escala</label>
+                            <select id="scaleSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <optgroup label="Diatônicas &amp; Menores">
                                     <option value="diatonic" selected>Maior Natural (Jônio)</option>
                                     <option value="minor_natural">Menor Natural (Eólio)</option>
@@ -316,24 +361,30 @@
                         </div>
 
                         <div>
-                            <label for="octaveSelect" class="block text-xs text-brand-light/75 mb-1">Classificação / Região Vocal</label>
-                            <select id="octaveSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="octaveSelect" class="block text-xs text-brand-light/75 mb-1">Classificação /
+                                Região Vocal</label>
+                            <select id="octaveSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <option value="graves">Vozes Graves (Tessitura Grave)</option>
                                 <option value="agudas" selected>Vozes Agudas (Tessitura Média/Aguda)</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="refOctaveSelect" class="block text-xs text-brand-light/75 mb-1">Oitava de Referência</label>
-                            <select id="refOctaveSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="refOctaveSelect" class="block text-xs text-brand-light/75 mb-1">Oitava de
+                                Referência</label>
+                            <select id="refOctaveSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <option value="low" selected>Oitava Padrão (Grave)</option>
                                 <option value="high">Oitava Acima (+8va)</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="toleranceSelect" class="block text-xs text-brand-light/75 mb-1">Rigor da Afinação</label>
-                            <select id="toleranceSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="toleranceSelect" class="block text-xs text-brand-light/75 mb-1">Rigor da
+                                Afinação</label>
+                            <select id="toleranceSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <option value="65" selected>Iniciante (±65 cents)</option>
                                 <option value="38">Intermediário (±38 cents)</option>
                                 <option value="20">Avançado / Coral (±20 cents)</option>
@@ -341,8 +392,10 @@
                         </div>
 
                         <div>
-                            <label for="timbreSelect" class="block text-xs text-brand-light/75 mb-1">Instrumento / Timbre (GM)</label>
-                            <select id="timbreSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                            <label for="timbreSelect" class="block text-xs text-brand-light/75 mb-1">Instrumento /
+                                Timbre (GM)</label>
+                            <select id="timbreSelect"
+                                class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
                                 <optgroup label="SoundFont General MIDI (FluidR3_GM)">
                                     <option value="choir_aahs" selected>Coro Vocal (Choir Aahs)</option>
                                     <option value="voice_oohs">Voz Suave (Voice Oohs)</option>
@@ -370,24 +423,31 @@
                     <!-- Controle de Volume do Instrumento e da Gravação + Opções de sustentação e oitava -->
                     <div class="mt-3 pt-2.5 border-t border-white/10 space-y-2 text-xs text-brand-light/85">
                         <div class="flex items-center justify-between gap-3">
-                            <label for="instrumentVolumeSlider" class="text-brand-light/75 shrink-0">Volume da Referência:</label>
+                            <label for="instrumentVolumeSlider" class="text-brand-light/75 shrink-0">Volume da
+                                Referência:</label>
                             <input type="range" id="instrumentVolumeSlider" min="0.1" max="1.0" step="0.05" value="0.85"
                                 class="w-full accent-[#2A9D8F] cursor-pointer h-1.5 bg-[#264653] rounded-lg">
-                            <span id="instrumentVolumeLabel" class="font-mono-tech text-brand-gold w-10 text-right">85%</span>
+                            <span id="instrumentVolumeLabel"
+                                class="font-mono-tech text-brand-gold w-10 text-right">85%</span>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <label for="recordedVoiceVolumeSlider" class="text-brand-light/75 shrink-0">Volume da Gravação:</label>
-                            <input type="range" id="recordedVoiceVolumeSlider" min="0.05" max="1.5" step="0.05" value="0.50"
+                            <label for="recordedVoiceVolumeSlider" class="text-brand-light/75 shrink-0">Volume da
+                                Gravação:</label>
+                            <input type="range" id="recordedVoiceVolumeSlider" min="0.05" max="1.5" step="0.05"
+                                value="0.50"
                                 class="w-full accent-[#F4A261] cursor-pointer h-1.5 bg-[#264653] rounded-lg">
-                            <span id="recordedVoiceVolumeLabel" class="font-mono-tech text-brand-sandy w-10 text-right">50%</span>
+                            <span id="recordedVoiceVolumeLabel"
+                                class="font-mono-tech text-brand-sandy w-10 text-right">50%</span>
                         </div>
                         <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="sustainModeToggle" checked class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                                <input type="checkbox" id="sustainModeToggle" checked
+                                    class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
                                 <span>Exigir nota sustentada (0.45s)</span>
                             </label>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="strictOctaveToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                                <input type="checkbox" id="strictOctaveToggle"
+                                    class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
                                 <span>Exigir oitava exata</span>
                             </label>
                         </div>
@@ -398,8 +458,10 @@
                 <div class="glass-card rounded-3xl p-5">
                     <div class="flex items-center justify-between mb-2">
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-brand-gold font-bold">Jornada Vocal (Sem Backend)</p>
-                            <h3 id="levelTitle" class="text-lg font-bold text-brand-light">Nível 1 · Ouvinte Curioso</h3>
+                            <p class="text-xs uppercase tracking-wider text-brand-gold font-bold">Jornada Vocal (Sem
+                                Backend)</p>
+                            <h3 id="levelTitle" class="text-lg font-bold text-brand-light">Nível 1 · Ouvinte Curioso
+                            </h3>
                         </div>
                         <div class="text-right">
                             <span id="xpDisplay" class="font-mono-tech text-sm font-bold text-brand-gold">0 XP</span>
@@ -409,7 +471,9 @@
 
                     <!-- Barra de XP -->
                     <div class="w-full bg-[#264653]/90 rounded-full h-2.5 mb-4 overflow-hidden border border-white/10">
-                        <div id="xpBar" class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] via-[#E9C46A] to-[#F4A261] h-full rounded-full" style="width: 0%"></div>
+                        <div id="xpBar"
+                            class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] via-[#E9C46A] to-[#F4A261] h-full rounded-full"
+                            style="width: 0%"></div>
                     </div>
 
                     <!-- Estatísticas de Gamificação -->
@@ -436,16 +500,22 @@
                     <div class="mb-4">
                         <div class="flex justify-between text-[11px] text-brand-light/75 mb-1">
                             <span>Aproveitamento Total (<span id="scoreTotal">0</span> rodadas)</span>
-                            <button id="resetProgressBtn" class="text-brand-light/75 hover:text-brand-coral underline transition-colors">Zerar dados</button>
+                            <button id="resetProgressBtn"
+                                class="text-brand-light/75 hover:text-brand-coral underline transition-colors">Zerar
+                                dados</button>
                         </div>
-                        <div class="w-full bg-white/10 rounded-full h-1.5" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="scoreBarContainer">
-                            <div id="scoreBar" class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] to-[#E9C46A] h-1.5 rounded-full" style="width: 0%"></div>
+                        <div class="w-full bg-white/10 rounded-full h-1.5" role="progressbar" aria-valuemin="0"
+                            aria-valuemax="100" aria-valuenow="0" id="scoreBarContainer">
+                            <div id="scoreBar"
+                                class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] to-[#E9C46A] h-1.5 rounded-full"
+                                style="width: 0%"></div>
                         </div>
                     </div>
 
                     <!-- Missões de Estudo Guiado -->
                     <div class="mb-4 pt-3 border-t border-white/10">
-                        <p class="text-xs uppercase tracking-wider text-brand-gold mb-2 font-semibold">Missões Pedagógicas (+40 XP)</p>
+                        <p class="text-xs uppercase tracking-wider text-brand-gold mb-2 font-semibold">Missões
+                            Pedagógicas (+40 XP)</p>
                         <div id="missionsList" class="space-y-2 text-left">
                             <!-- Preenchido via JS -->
                         </div>
@@ -453,7 +523,8 @@
 
                     <!-- Conquistas / Badges -->
                     <div>
-                        <p class="text-xs uppercase tracking-wider text-brand-light/75 mb-2 font-semibold">Conquistas Desbloqueáveis</p>
+                        <p class="text-xs uppercase tracking-wider text-brand-light/75 mb-2 font-semibold">Conquistas
+                            Desbloqueáveis</p>
                         <div id="badgesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
                             <!-- Preenchido via JS -->
                         </div>
@@ -467,51 +538,71 @@
                 <div class="glass-card rounded-3xl p-6 md:p-7">
 
                     <!-- Dica Pedagógica Contextual do Caminho Atual -->
-                    <div class="glass-panel rounded-2xl p-3.5 mb-5 flex items-start gap-3 text-left border-l-4 border-l-brand-gold">
+                    <div
+                        class="glass-panel rounded-2xl p-3.5 mb-5 flex items-start gap-3 text-left border-l-4 border-l-brand-gold">
                         <div class="text-brand-gold mt-0.5 shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                             </svg>
                         </div>
                         <div class="text-xs text-brand-light/90 leading-relaxed" id="pedagogicalBanner">
-                            <strong class="text-brand-gold">Dica de Audiation e Imitação:</strong> Comece a mentalizar ou emitir suavemente a nota ainda enquanto ouve a referência para alinhar os batimentos acústicos. Em caso de erro, a mesma nota será repetida até 3 vezes consecutivas antes de mudar.
+                            <strong class="text-brand-gold">Dica de Audiation e Imitação:</strong> Comece a mentalizar
+                            ou emitir suavemente a nota ainda enquanto ouve a referência para alinhar os batimentos
+                            acústicos. Em caso de erro, a mesma nota será repetida até 3 vezes consecutivas antes de
+                            mudar.
                         </div>
                     </div>
 
                     <!-- Controles Principais -->
                     <div id="controlArea" class="space-y-3">
                         <div class="flex flex-wrap gap-2.5">
-                            <button id="startButton" class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base tracking-wide">
+                            <button id="startButton"
+                                class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base tracking-wide">
                                 INICIAR MICROFONE E ÁUDIO
                             </button>
-                            <button id="nextNoteButton" class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base hidden">
+                            <button id="nextNoteButton"
+                                class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base hidden">
                                 Sortear / Próxima Nota
                             </button>
-                            <button id="recordCompareButton" class="glass-btn-sandy font-bold py-3.5 px-4 rounded-2xl text-sm hidden" title="Emite a nota de origem, grava sua voz por 3 segundos e toca uma depois da outra e depois as duas juntas">
+                            <button id="recordCompareButton"
+                                class="glass-btn-sandy font-bold py-3.5 px-4 rounded-2xl text-sm hidden"
+                                title="Emite a nota de origem, grava sua voz por 3 segundos e toca uma depois da outra e depois as duas juntas">
                                 🎙️ Emitir, Gravar 3s &amp; Comparar
                             </button>
-                            <button id="replayNoteButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ouvir a nota alvo novamente">
+                            <button id="replayNoteButton"
+                                class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden"
+                                title="Ouvir a nota alvo novamente">
                                 Ouvir Nota
                             </button>
-                            <button id="droneToggleButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ligar/Desligar Nota Pedal Tônica">
+                            <button id="droneToggleButton"
+                                class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden"
+                                title="Ligar/Desligar Nota Pedal Tônica">
                                 Pedal Tônico: OFF
                             </button>
                         </div>
-                        <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando ativação de áudio pelo usuário...</p>
+                        <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando
+                            ativação de áudio pelo usuário...</p>
                     </div>
 
                     <!-- Painel Central da Nota Alvo -->
-                    <div id="displayArea" class="glass-panel mt-4 p-6 rounded-3xl color-transition text-center relative overflow-hidden">
+                    <div id="displayArea"
+                        class="glass-panel mt-4 p-6 rounded-3xl color-transition text-center relative overflow-hidden">
                         <div class="flex items-center justify-between text-xs font-mono-tech text-brand-light/70 mb-1">
                             <span id="attemptCounterBadge">Repetições após erro: 0/3</span>
-                            <span id="intervalBadge" class="hidden uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-gold/50 text-brand-gold"></span>
+                            <span id="intervalBadge"
+                                class="hidden uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-gold/50 text-brand-gold"></span>
                         </div>
 
-                        <p id="instruction" class="text-base md:text-lg text-brand-light font-medium mt-1">Pressione INICIAR para ativar o microfone</p>
+                        <p id="instruction" class="text-base md:text-lg text-brand-light font-medium mt-1">Pressione
+                            INICIAR para ativar o microfone</p>
 
                         <div class="my-4 flex flex-col items-center justify-center">
-                            <p id="targetNoteDisplay" class="text-6xl md:text-7xl font-bold tracking-tight text-brand-light drop-shadow-lg leading-none py-2">-</p>
-                            <p id="targetFreqSub" class="text-xs font-mono-tech text-brand-gold mt-1">Referência: — Hz</p>
+                            <p id="targetNoteDisplay"
+                                class="text-6xl md:text-7xl font-bold tracking-tight text-brand-light drop-shadow-lg leading-none py-2">
+                                -</p>
+                            <p id="targetFreqSub" class="text-xs font-mono-tech text-brand-gold mt-1">Referência: — Hz
+                            </p>
                         </div>
 
                         <!-- Barra de Estabilidade Vocal (Sustain Progress) -->
@@ -521,66 +612,91 @@
                                 <span id="sustainPctLabel" class="font-mono-tech text-brand-gold">0%</span>
                             </div>
                             <div class="w-full bg-[#264653]/90 rounded-full h-2 overflow-hidden border border-white/15">
-                                <div id="sustainBar" class="bg-[#2A9D8F] h-full transition-all duration-75" style="width: 0%"></div>
+                                <div id="sustainBar" class="bg-[#2A9D8F] h-full transition-all duration-75"
+                                    style="width: 0%"></div>
                             </div>
                         </div>
 
-                        <p id="feedback" class="text-base md:text-lg font-semibold min-h-[1.75rem] text-brand-light mt-2">&nbsp;</p>
+                        <p id="feedback"
+                            class="text-base md:text-lg font-semibold min-h-[1.75rem] text-brand-light mt-2">&nbsp;</p>
                     </div>
 
                     <!-- Painel Espelho Vocal: Gravação Automática (3s) & Comparação (Sequencial + As Duas Juntas) -->
                     <div id="voiceMirrorPanel" class="glass-panel mt-4 p-4 rounded-2xl border border-brand-gold/25">
                         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                             <div class="flex items-center gap-2">
-                                <span id="mirrorRecDot" class="w-2.5 h-2.5 rounded-full bg-brand-light/40 inline-block"></span>
-                                <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Espelho Auditivo · Gravação (3s) &amp; Comparação</p>
+                                <span id="mirrorRecDot"
+                                    class="w-2.5 h-2.5 rounded-full bg-brand-light/40 inline-block"></span>
+                                <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Espelho Auditivo ·
+                                    Gravação (3s) &amp; Comparação</p>
                             </div>
-                            <span id="mirrorStatusBadge" class="text-[11px] font-mono-tech text-brand-light/75">Pronto para gravar</span>
+                            <span id="mirrorStatusBadge" class="text-[11px] font-mono-tech text-brand-light/75">Pronto
+                                para gravar</span>
                         </div>
 
                         <!-- Barra de contagem de 3 segundos da gravação -->
                         <div class="w-full bg-[#193039] rounded-full h-2 mb-3 overflow-hidden border border-white/15">
-                            <div id="mirrorProgressBar" class="bg-gradient-to-r from-[#E76F51] via-[#F4A261] to-[#2A9D8F] h-full transition-all duration-100" style="width: 0%"></div>
+                            <div id="mirrorProgressBar"
+                                class="bg-gradient-to-r from-[#E76F51] via-[#F4A261] to-[#2A9D8F] h-full transition-all duration-100"
+                                style="width: 0%"></div>
                         </div>
 
                         <!-- Etapas da Comparação (Trilha 7: Espelho Vocal | Trilha 8: Comparação Especial Auto-Tune) -->
                         <div id="mirrorButtonsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <button type="button" id="playOnlyOriginBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span id="originStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-gold">1ª Etapa (Individual)</span>
+                                <span id="originStepLabel"
+                                    class="block text-[10px] font-mono-tech uppercase text-brand-gold">1ª Etapa
+                                    (Individual)</span>
                                 <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota Original</span>
-                                <span id="mirrorOriginInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Referência do app</span>
+                                <span id="mirrorOriginInfo"
+                                    class="block text-[10px] text-brand-light/70 mt-0.5">Referência do app</span>
                             </button>
 
                             <button type="button" id="playOnlyUserVoiceBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span id="userVoiceStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-sandy">2ª Etapa (Individual)</span>
-                                <span id="userVoiceStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎤 Áudio Gravado</span>
-                                <span id="mirrorVoiceInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Aguardando gravação</span>
+                                <span id="userVoiceStepLabel"
+                                    class="block text-[10px] font-mono-tech uppercase text-brand-sandy">2ª Etapa
+                                    (Individual)</span>
+                                <span id="userVoiceStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎤
+                                    Áudio Gravado</span>
+                                <span id="mirrorVoiceInfo"
+                                    class="block text-[10px] text-brand-light/70 mt-0.5">Aguardando gravação</span>
                             </button>
 
                             <button type="button" id="playAutoTunedVoiceBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span id="autoTuneStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-coral">3ª Etapa · Auto-Tune</span>
+                                <span id="autoTuneStepLabel"
+                                    class="block text-[10px] font-mono-tech uppercase text-brand-coral">3ª Etapa ·
+                                    Auto-Tune</span>
                                 <span class="block text-xs font-bold text-brand-light mt-0.5">✨ Voz Corrigida</span>
-                                <span id="mirrorAutoTuneInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Afinação corrigida</span>
+                                <span id="mirrorAutoTuneInfo"
+                                    class="block text-[10px] text-brand-light/70 mt-0.5">Afinação corrigida</span>
                             </button>
 
                             <button type="button" id="playBothTogetherBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span id="bothTogetherStepLabel" class="block text-[10px] font-mono-tech uppercase text-brand-teal">Etapa Final (Juntas)</span>
-                                <span id="bothTogetherStepTitle" class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
-                                <span id="mirrorBothInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Origem + Sua Voz</span>
+                                <span id="bothTogetherStepLabel"
+                                    class="block text-[10px] font-mono-tech uppercase text-brand-teal">Etapa Final
+                                    (Juntas)</span>
+                                <span id="bothTogetherStepTitle"
+                                    class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
+                                <span id="mirrorBothInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Origem +
+                                    Sua Voz</span>
                             </button>
                         </div>
 
                         <div class="mt-2.5 pt-2.5 border-t border-white/10 space-y-2 text-xs">
                             <div class="flex flex-wrap items-center justify-between gap-3">
                                 <div class="flex items-center gap-2.5 flex-1 min-w-[220px]">
-                                    <label for="mirrorVoiceVolumeSlider" class="text-[11px] text-brand-light/90 font-semibold shrink-0">🎤 Volume da Gravação:</label>
-                                    <input type="range" id="mirrorVoiceVolumeSlider" min="0.05" max="1.5" step="0.05" value="0.50"
+                                    <label for="mirrorVoiceVolumeSlider"
+                                        class="text-[11px] text-brand-light/90 font-semibold shrink-0">🎤 Volume da
+                                        Gravação:</label>
+                                    <input type="range" id="mirrorVoiceVolumeSlider" min="0.05" max="1.5" step="0.05"
+                                        value="0.50"
                                         class="w-full max-w-[160px] accent-[#F4A261] cursor-pointer h-1.5 bg-[#193039] rounded-lg">
-                                    <span id="mirrorVoiceVolumeLabel" class="font-mono-tech text-[11px] text-brand-sandy w-10 text-right">50%</span>
+                                    <span id="mirrorVoiceVolumeLabel"
+                                        class="font-mono-tech text-[11px] text-brand-sandy w-10 text-right">50%</span>
                                 </div>
                                 <div class="flex flex-wrap gap-1.5">
                                     <button type="button" id="replayFullComparisonBtn" disabled
@@ -594,7 +710,9 @@
                                 </div>
                             </div>
                             <p id="mirrorSummaryText" class="text-[11px] text-brand-light/80">
-                                Escolha a <strong>Trilha 7 (Espelho Vocal)</strong> ou a <strong>Trilha 8 (Comparação Especial · Auto-Tune)</strong>, ou clique em <strong>"🎙️ Emitir, Gravar 3s &amp; Comparar"</strong>.
+                                Escolha a <strong>Trilha 7 (Espelho Vocal)</strong> ou a <strong>Trilha 8 (Comparação
+                                    Especial · Auto-Tune)</strong>, ou clique em <strong>"🎙️ Emitir, Gravar 3s &amp;
+                                    Comparar"</strong>.
                             </p>
                         </div>
                     </div>
@@ -608,13 +726,18 @@
                         </div>
 
                         <!-- Régua de Cents (-100 a +100) -->
-                        <div class="relative w-full h-8 bg-[#193039] rounded-xl border border-white/15 overflow-hidden flex items-center">
+                        <div
+                            class="relative w-full h-8 bg-[#193039] rounded-xl border border-white/15 overflow-hidden flex items-center">
                             <!-- Zona Central (Tolerância em #2A9D8F) -->
-                            <div id="toleranceZone" class="absolute h-full bg-[#2A9D8F]/25 border-x border-[#2A9D8F]/70 left-1/2 -translate-x-1/2" style="width: 35%;"></div>
+                            <div id="toleranceZone"
+                                class="absolute h-full bg-[#2A9D8F]/25 border-x border-[#2A9D8F]/70 left-1/2 -translate-x-1/2"
+                                style="width: 35%;"></div>
                             <!-- Linha central exata -->
                             <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E9C46A] -translate-x-1/2"></div>
                             <!-- Indicador / Agulha Dinâmica -->
-                            <div id="pitchNeedle" class="needle-transition absolute top-1 bottom-1 w-3 rounded-full bg-brand-light/50 shadow-lg -translate-x-1/2" style="left: 50%;"></div>
+                            <div id="pitchNeedle"
+                                class="needle-transition absolute top-1 bottom-1 w-3 rounded-full bg-brand-light/50 shadow-lg -translate-x-1/2"
+                                style="left: 50%;"></div>
                         </div>
 
                         <!-- Gráfico de Contorno Vocal no Tempo (SINGAD / Sing & See Style) -->
@@ -623,17 +746,20 @@
                                 <span>Traçado de Contorno Vocal no Tempo (Ataque e Sustentação)</span>
                                 <span class="font-mono-tech text-brand-gold">Linha central = Alvo</span>
                             </div>
-                            <canvas id="pitchContourCanvas" width="560" height="84" class="w-full h-20 bg-[#193039]/95 rounded-xl border border-white/15"></canvas>
+                            <canvas id="pitchContourCanvas" width="560" height="84"
+                                class="w-full h-20 bg-[#193039]/95 rounded-xl border border-white/15"></canvas>
                         </div>
 
                         <!-- Leitura Técnica Instantânea do Usuário -->
-                        <div id="userResultArea" class="mt-3 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
+                        <div id="userResultArea"
+                            class="mt-3 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
                             <div>
                                 <p class="text-[11px] text-brand-light/70 uppercase">Sua Nota Detectada</p>
                                 <p id="userDetectedNote" class="text-lg font-bold font-mono-tech text-brand-light">-</p>
                             </div>
                             <div>
-                                <p id="userResultLabel" class="text-[11px] text-brand-light/70 uppercase">Diagnóstico</p>
+                                <p id="userResultLabel" class="text-[11px] text-brand-light/70 uppercase">Diagnóstico
+                                </p>
                                 <p id="userResultDisplay" class="text-base font-semibold text-brand-gold">-</p>
                             </div>
                             <div>
@@ -646,21 +772,26 @@
                     <!-- Painel de Diagnóstico Vocal Inteligente da Sessão -->
                     <div class="glass-panel mt-4 p-4 rounded-2xl text-left">
                         <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Diagnóstico Pedagógico da Sua Voz</p>
-                            <span id="diagSamplesCount" class="text-[11px] font-mono-tech text-brand-light/70">0 medições</span>
+                            <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Diagnóstico Pedagógico
+                                da Sua Voz</p>
+                            <span id="diagSamplesCount" class="text-[11px] font-mono-tech text-brand-light/70">0
+                                medições</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2">
                             <div class="bg-[#264653]/80 rounded-xl p-2.5 border border-white/10">
                                 <p class="text-[10px] uppercase text-brand-light/70">Tendência Direcional</p>
-                                <p id="diagTendency" class="text-sm font-semibold text-brand-light mt-0.5">Aguardando prática...</p>
+                                <p id="diagTendency" class="text-sm font-semibold text-brand-light mt-0.5">Aguardando
+                                    prática...</p>
                             </div>
                             <div class="bg-[#264653]/80 rounded-xl p-2.5 border border-white/10">
                                 <p class="text-[10px] uppercase text-brand-light/70">Desvio Médio Absoluto</p>
-                                <p id="diagAvgError" class="text-sm font-semibold font-mono-tech text-brand-teal mt-0.5">— cents</p>
+                                <p id="diagAvgError"
+                                    class="text-sm font-semibold font-mono-tech text-brand-teal mt-0.5">— cents</p>
                             </div>
                         </div>
                         <p id="diagRecommendation" class="text-xs text-brand-light/85 leading-relaxed">
-                            Realize pelo menos 3 tentativas para receber uma análise personalizada sobre seu ataque vocal, tendência de altura e recomendação técnica.
+                            Realize pelo menos 3 tentativas para receber uma análise personalizada sobre seu ataque
+                            vocal, tendência de altura e recomendação técnica.
                         </p>
                     </div>
 
@@ -668,19 +799,26 @@
                     <div class="glass-panel mt-4 p-4 rounded-2xl">
                         <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
                             <div>
-                                <p id="keyboardTitle" class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo — Vozes Agudas (de Dó a Dó)</p>
-                                <span class="text-[11px] text-brand-light/70">Clique em uma nota para ouvi-la e defini-la como alvo</span>
+                                <p id="keyboardTitle"
+                                    class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão
+                                    Interativo — Vozes Agudas (de Dó a Dó)</p>
+                                <span class="text-[11px] text-brand-light/70">Clique em uma nota para ouvi-la e
+                                    defini-la como alvo</span>
                             </div>
-                            <div class="inline-flex items-center gap-1 bg-[#264653]/90 p-1 rounded-xl border border-white/15" role="group" aria-label="Controle de oitava das notas de referência">
-                                <button type="button" id="refOctaveLowBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#2A9D8F] text-brand-light shadow-sm">
+                            <div class="inline-flex items-center gap-1 bg-[#264653]/90 p-1 rounded-xl border border-white/15"
+                                role="group" aria-label="Controle de oitava das notas de referência">
+                                <button type="button" id="refOctaveLowBtn"
+                                    class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#2A9D8F] text-brand-light shadow-sm">
                                     Oitava Grave
                                 </button>
-                                <button type="button" id="refOctaveHighBtn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all text-brand-light/75 hover:text-brand-light">
+                                <button type="button" id="refOctaveHighBtn"
+                                    class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all text-brand-light/75 hover:text-brand-light">
                                     Oitava Acima (+8va)
                                 </button>
                             </div>
                         </div>
-                        <div id="referenceKeyboard" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-13 gap-1.5" style="grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));">
+                        <div id="referenceKeyboard" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-13 gap-1.5"
+                            style="grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));">
                             <!-- Botões das 13 notas (Sol a Sol ou Dó a Dó) gerados via JS -->
                         </div>
                     </div>
@@ -698,10 +836,15 @@
             <div class="glass-card rounded-3xl p-6 md:p-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Preparação Fisiológica</span>
-                        <h2 class="text-2xl font-bold text-brand-light mt-2">Aquecimento Vocal Guiado (Toque para Ouvir e Acompanhar)</h2>
+                        <span
+                            class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Preparação
+                            Fisiológica</span>
+                        <h2 class="text-2xl font-bold text-brand-light mt-2">Aquecimento Vocal Guiado (Toque para Ouvir
+                            e Acompanhar)</h2>
                         <p class="text-brand-light/85 text-sm mt-1">
-                            Antes de medir sua afinação, calibre a elasticidade das pregas vocais e o fluxo de ar com estes 3 exercícios adaptados automaticamente para a sua região vocal selecionada (Sol a Sol ou Dó a Dó):
+                            Antes de medir sua afinação, calibre a elasticidade das pregas vocais e o fluxo de ar com
+                            estes 3 exercícios adaptados automaticamente para a sua região vocal selecionada (Sol a Sol
+                            ou Dó a Dó):
                         </p>
                     </div>
                 </div>
@@ -712,23 +855,29 @@
                             <span class="text-xs font-mono-tech text-brand-gold">Exercício 1 · TVSO / Glissando</span>
                             <h3 class="text-base font-bold text-brand-light mt-1">Sirene Vocal Suave (1º → 5º → 1º)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
-                                Deslize continuamente com um <em>"vuuu"</em> ou vibração de lábios (<em>"brrr"</em>) sem degraus. Ativa a transição suave entre os músculos tireoaritenóideo (TA) e cricotireoideo (CT).
+                                Deslize continuamente com um <em>"vuuu"</em> ou vibração de lábios (<em>"brrr"</em>) sem
+                                degraus. Ativa a transição suave entre os músculos tireoaritenóideo (TA) e
+                                cricotireoideo (CT).
                             </p>
                         </div>
-                        <button data-warmup="siren" class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                        <button data-warmup="siren"
+                            class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
                             Ouvir Exemplo de Sirene Vocal
                         </button>
                     </div>
 
                     <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
                         <div>
-                            <span class="text-xs font-mono-tech text-brand-sandy">Exercício 2 · Ressonância Frontal</span>
+                            <span class="text-xs font-mono-tech text-brand-sandy">Exercício 2 · Ressonância
+                                Frontal</span>
                             <h3 class="text-base font-bold text-brand-light mt-1">Humming de 3 Graus (1–2–3–2–1)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
-                                Cante de boca fechada (<em>"hummm"</em>) sentindo cócegas nos lábios e maçãs do rosto. Ajuda a posicionar a voz na "máscara" e evita que a nota fique calante (grave).
+                                Cante de boca fechada (<em>"hummm"</em>) sentindo cócegas nos lábios e maçãs do rosto.
+                                Ajuda a posicionar a voz na "máscara" e evita que a nota fique calante (grave).
                             </p>
                         </div>
-                        <button data-warmup="humming" class="warmup-btn glass-btn-sandy w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                        <button data-warmup="humming"
+                            class="warmup-btn glass-btn-sandy w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
                             Ouvir Grau Conjunto (1-2-3-2-1)
                         </button>
                     </div>
@@ -738,10 +887,13 @@
                             <span class="text-xs font-mono-tech text-brand-gold">Exercício 3 · Salto Harmônico</span>
                             <h3 class="text-base font-bold text-brand-light mt-1">Tríade Maior (1–3–5–3–1)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
-                                Cante com <em>"muuu"</em> ou <em>"nooo"</em> mantendo o espaço interno da boca estável. Ao subir para o 5º grau, pense na nota apontando "de cima para baixo" sem apertar a garganta.
+                                Cante com <em>"muuu"</em> ou <em>"nooo"</em> mantendo o espaço interno da boca estável.
+                                Ao subir para o 5º grau, pense na nota apontando "de cima para baixo" sem apertar a
+                                garganta.
                             </p>
                         </div>
-                        <button data-warmup="triad" class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                        <button data-warmup="triad"
+                            class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
                             Ouvir Arpejo (1-3-5-3-1)
                         </button>
                     </div>
@@ -751,10 +903,15 @@
             <!-- 6 Pilares de Como Afinar a Voz -->
             <div class="glass-card rounded-3xl p-6 md:p-8">
                 <div class="max-w-3xl">
-                    <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-teal text-brand-gold">Guia Técnico Vocal</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">Como Afinar a Voz: 6 Pilares Práticos de Fisiologia e Percepção</h2>
+                    <span
+                        class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-teal text-brand-gold">Guia
+                        Técnico Vocal</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">Como Afinar a Voz: 6 Pilares
+                        Práticos de Fisiologia e Percepção</h2>
                     <p class="text-brand-light/85 text-sm md:text-base mt-2 leading-relaxed">
-                        A afinação resulta da coordenação entre <strong>escuta atenta</strong>, <strong>imagem mental sonora (audiation)</strong> e <strong>estabilidade do fluxo de ar</strong> nas pregas vocais.
+                        A afinação resulta da coordenação entre <strong>escuta atenta</strong>, <strong>imagem mental
+                            sonora (audiation)</strong> e <strong>estabilidade do fluxo de ar</strong> nas pregas
+                        vocais.
                     </p>
                 </div>
 
@@ -763,7 +920,9 @@
                         <p class="text-xs font-mono-tech text-brand-gold uppercase">Passo 01 · Pré-Fonação</p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">1. Escute Internamente (Audiation)</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Nunca ataque uma nota "no escuro". Ouça a referência, faça uma pausa mental de meio segundo e <strong>imagine a nota soando na sua própria voz</strong> antes de emitir o som. As pregas vocais se ajustam silenciosamente durante a imaginação sonora.
+                            Nunca ataque uma nota "no escuro". Ouça a referência, faça uma pausa mental de meio segundo
+                            e <strong>imagine a nota soando na sua própria voz</strong> antes de emitir o som. As pregas
+                            vocais se ajustam silenciosamente durante a imaginação sonora.
                         </p>
                     </div>
 
@@ -771,23 +930,31 @@
                         <p class="text-xs font-mono-tech text-brand-teal uppercase">Passo 02 · Sincronia Acústica</p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">2. Ataque Simultâneo Suave</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Comece a cantarolar com lábios fechados (<em>"hummm"</em>) ou com a consoante <em>"vuuu"</em> <strong>enquanto o som de referência ainda está tocando</strong>. Quando duas ondas chegam à mesma frequência, você sente a vibração estabilizar sem batimentos.
+                            Comece a cantarolar com lábios fechados (<em>"hummm"</em>) ou com a consoante
+                            <em>"vuuu"</em> <strong>enquanto o som de referência ainda está tocando</strong>. Quando
+                            duas ondas chegam à mesma frequência, você sente a vibração estabilizar sem batimentos.
                         </p>
                     </div>
 
                     <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-sandy">
-                        <p class="text-xs font-mono-tech text-brand-sandy uppercase">Passo 03 · Estabilidade Subglótica</p>
+                        <p class="text-xs font-mono-tech text-brand-sandy uppercase">Passo 03 · Estabilidade Subglótica
+                        </p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">3. Apoio Respiratório Constante</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            A frequência das pregas vocais depende diretamente da pressão de ar. Se você solta ar demais no início, a nota sobe demais (♯); se o ar acaba no final, a nota despenca (♭). Mantenha uma coluna de ar contínua e calma, como quem sopra uma vela sem apagá-la.
+                            A frequência das pregas vocais depende diretamente da pressão de ar. Se você solta ar demais
+                            no início, a nota sobe demais (♯); se o ar acaba no final, a nota despenca (♭). Mantenha uma
+                            coluna de ar contínua e calma, como quem sopra uma vela sem apagá-la.
                         </p>
                     </div>
 
                     <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-coral">
-                        <p class="text-xs font-mono-tech text-brand-coral uppercase">Passo 04 · Correção de Grave (♭)</p>
+                        <p class="text-xs font-mono-tech text-brand-coral uppercase">Passo 04 · Correção de Grave (♭)
+                        </p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">4. Quando a Nota Fica Baixa (Calante)</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Se o medidor aponta <strong>Grave / Abaixo</strong>, evite esticar o pescoço. Em vez disso: (a) ilumine a vogal com um leve sorriso interno nas maçãs do rosto, (b) aumente sutilmente a energia do fluxo de ar abdominal e (c) pense na nota apontando para a testa.
+                            Se o medidor aponta <strong>Grave / Abaixo</strong>, evite esticar o pescoço. Em vez disso:
+                            (a) ilumine a vogal com um leve sorriso interno nas maçãs do rosto, (b) aumente sutilmente a
+                            energia do fluxo de ar abdominal e (c) pense na nota apontando para a testa.
                         </p>
                     </div>
 
@@ -795,7 +962,9 @@
                         <p class="text-xs font-mono-tech text-brand-gold uppercase">Passo 05 · Correção de Agudo (♯)</p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">5. Quando a Nota Passa do Ponto</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Cantar acima da nota geralmente ocorre por excesso de tensão na mandíbula, língua retraída ou pressão excessiva de ar. Solte os ombros, pense numa leve sensação de bocejo na faringe e ataque a nota "de cima para baixo", suavizando o volume.
+                            Cantar acima da nota geralmente ocorre por excesso de tensão na mandíbula, língua retraída
+                            ou pressão excessiva de ar. Solte os ombros, pense numa leve sensação de bocejo na faringe e
+                            ataque a nota "de cima para baixo", suavizando o volume.
                         </p>
                     </div>
 
@@ -803,7 +972,9 @@
                         <p class="text-xs font-mono-tech text-brand-teal uppercase">Passo 06 · Prática Estruturada</p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">6. Comece na Sua Região Confortável</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Escolha <strong>Vozes Graves (de Sol a Sol)</strong> ou <strong>Vozes Agudas (de Dó a Dó)</strong> conforme sua comodidade vocal, iniciando pelo repertório Pentatônico ou Diatônico com o timbre <em>Coro Vocal (Choir Aahs)</em>.
+                            Escolha <strong>Vozes Graves (de Sol a Sol)</strong> ou <strong>Vozes Agudas (de Dó a
+                                Dó)</strong> conforme sua comodidade vocal, iniciando pelo repertório Pentatônico ou
+                            Diatônico com o timbre <em>Coro Vocal (Choir Aahs)</em>.
                         </p>
                     </div>
                 </div>
@@ -816,10 +987,15 @@
         <section id="tab-science" class="tab-content hidden space-y-6">
             <div class="glass-card rounded-3xl p-6 md:p-8">
                 <div class="max-w-3xl">
-                    <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Fundamentação Científica</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">O que a Pesquisa em Cognição e Educação Musical Explica Sobre Cantar Afinado?</h2>
+                    <span
+                        class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Fundamentação
+                        Científica</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">O que a Pesquisa em Cognição e
+                        Educação Musical Explica Sobre Cantar Afinado?</h2>
                     <p class="text-brand-light/85 text-sm md:text-base mt-2 leading-relaxed">
-                        Décadas de estudos em neurociência cognitiva da música, acústica vocal e educação musical demonstram que a afinação vocal não é um "dom genético binário", mas uma <strong>habilidade sensório-motora treinável</strong>.
+                        Décadas de estudos em neurociência cognitiva da música, acústica vocal e educação musical
+                        demonstram que a afinação vocal não é um "dom genético binário", mas uma <strong>habilidade
+                            sensório-motora treinável</strong>.
                     </p>
                 </div>
 
@@ -831,14 +1007,30 @@
                                 <span>INTEGRAÇÃO SENSÓRIO-MOTORA</span>
                                 <span>Hutchins &amp; Moreno (2013); Moreti et al. (2012)</span>
                             </div>
-                            <h3 class="text-lg font-bold text-brand-light">1. Por que pessoas com bom ouvido podem desafinar ao cantar?</h3>
+                            <h3 class="text-lg font-bold text-brand-light">1. Por que pessoas com bom ouvido podem
+                                desafinar ao cantar?</h3>
                             <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                                A <em>amusia congênita</em> (incapacidade perceptual severa de distinguir alturas) afeta menos de 1,5% a 4% da população. O <strong>Modelo de Dupla Representação Vinculada</strong> (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Hutchins &amp; Moreno, 2013</a>) e estudos de triagem vocal (<a href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Moreti et al., 2012</a>) demonstram que a maioria dos cantores imprecisos discrimina notas ao ouvir, mas apresenta falha na <strong>tradução sensório-motora</strong>: o cérebro reconhece o som alvo, mas ainda está calibrando o comando motor laríngeo correspondente.
+                                A <em>amusia congênita</em> (incapacidade perceptual severa de distinguir alturas) afeta
+                                menos de 1,5% a 4% da população. O <strong>Modelo de Dupla Representação
+                                    Vinculada</strong> (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Hutchins &amp; Moreno,
+                                    2013</a>) e estudos de triagem vocal (<a
+                                    href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Moreti et al., 2012</a>)
+                                demonstram que a maioria dos cantores imprecisos discrimina notas ao ouvir, mas
+                                apresenta falha na <strong>tradução sensório-motora</strong>: o cérebro reconhece o som
+                                alvo, mas ainda está calibrando o comando motor laríngeo correspondente.
                             </p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/10 text-xs font-mono-tech flex flex-wrap gap-3">
-                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo (PMC3817506 · Open Access) ↗</a>
-                            <a href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo SciELO (Moreti et al., 2012) ↗</a>
+                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo (PMC3817506 · Open Access) ↗</a>
+                            <a href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo SciELO (Moreti et al., 2012) ↗</a>
                         </div>
                     </article>
 
@@ -849,13 +1041,24 @@
                                 <span>IMAGÉTICA AUDITIVA &amp; AUDIATION</span>
                                 <span>Gordon (1997); Pfordresher &amp; Halpern (2013)</span>
                             </div>
-                            <h3 class="text-lg font-bold text-brand-light">2. O Papel da Audiation e da Memória Tonal Pré-Fonatória</h3>
+                            <h3 class="text-lg font-bold text-brand-light">2. O Papel da Audiation e da Memória Tonal
+                                Pré-Fonatória</h3>
                             <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                                Edwin Gordon cunhou o termo <strong>Audiation</strong> para descrever a capacidade de ouvir e compreender musicalmente um som na mente mesmo quando ele não está fisicamente presente. Estudos sobre imagética auditiva e representação vocal (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Hutchins &amp; Moreno, 2013</a>) mostram que formar uma imagem mental nítida da altura antes do ataque vocal (treinada na <strong>Trilha 4</strong> deste app) prepara os microajustes pré-fonatórios da frequência fundamental ($f_0$).
+                                Edwin Gordon cunhou o termo <strong>Audiation</strong> para descrever a capacidade de
+                                ouvir e compreender musicalmente um som na mente mesmo quando ele não está fisicamente
+                                presente. Estudos sobre imagética auditiva e representação vocal (<a
+                                    href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Hutchins &amp; Moreno,
+                                    2013</a>) mostram que formar uma imagem mental nítida da altura antes do ataque
+                                vocal (treinada na <strong>Trilha 4</strong> deste app) prepara os microajustes
+                                pré-fonatórios da frequência fundamental ($f_0$).
                             </p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/10 text-xs font-mono-tech flex flex-wrap gap-3">
-                            <a href="https://doi.org/10.3389/fpsyg.2013.00825" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo em Frontiers in Psychology (CC-BY) ↗</a>
+                            <a href="https://doi.org/10.3389/fpsyg.2013.00825" target="_blank" rel="noopener noreferrer"
+                                class="text-brand-teal hover:text-brand-gold underline">Ler artigo em Frontiers in
+                                Psychology (CC-BY) ↗</a>
                         </div>
                     </article>
 
@@ -866,14 +1069,26 @@
                                 <span>BIOFEEDBACK VISUAL EM TEMPO REAL</span>
                                 <span>Blanco, Tassani &amp; Ramirez (2021)</span>
                             </div>
-                            <h3 class="text-lg font-bold text-brand-light">3. Por que o Feedback Visual Contínuo Acelera a Afinação?</h3>
+                            <h3 class="text-lg font-bold text-brand-light">3. Por que o Feedback Visual Contínuo Acelera
+                                a Afinação?</h3>
                             <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                                Quando um iniciante erra uma nota, saber apenas que "errou" não informa a direção da correção motora. Pesquisas experimentais em acesso aberto (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Blanco, Tassani &amp; Ramirez, 2021</a>) comprovam que exibir em tempo real o <strong>erro direcional e o contorno de altura no tempo</strong> permite ao cantor calibrar simultaneamente o ataque e a sustentação da nota com ganhos significativos de precisão.
+                                Quando um iniciante erra uma nota, saber apenas que "errou" não informa a direção da
+                                correção motora. Pesquisas experimentais em acesso aberto (<a
+                                    href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Blanco, Tassani &amp;
+                                    Ramirez, 2021</a>) comprovam que exibir em tempo real o <strong>erro direcional e o
+                                    contorno de altura no tempo</strong> permite ao cantor calibrar simultaneamente o
+                                ataque e a sustentação da nota com ganhos significativos de precisão.
                             </p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/10 text-xs font-mono-tech flex flex-wrap gap-3">
-                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo (PMC8297736 · Open Access) ↗</a>
-                            <a href="https://doi.org/10.3389/fpsyg.2021.684693" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Frontiers DOI ↗</a>
+                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo (PMC8297736 · Open Access) ↗</a>
+                            <a href="https://doi.org/10.3389/fpsyg.2021.684693" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-brand-teal hover:text-brand-gold underline">Frontiers DOI ↗</a>
                         </div>
                     </article>
 
@@ -884,14 +1099,29 @@
                                 <span>TIMBRE VOCAL &amp; TESSITURA</span>
                                 <span>Lévêque &amp; Schön (2013); Martinho &amp; Constantini (2020)</span>
                             </div>
-                            <h3 class="text-lg font-bold text-brand-light">4. Efeito da Semelhança Timbrística Vocal (Choir Aahs) e Tessitura</h3>
+                            <h3 class="text-lg font-bold text-brand-light">4. Efeito da Semelhança Timbrística Vocal
+                                (Choir Aahs) e Tessitura</h3>
                             <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                                Estudos neurofisiológicos com EEG (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Lévêque &amp; Schön, 2013</a>) revelam que ouvir um timbre vocal humano ativa diretamente os ritmos sensório-motores cerebrais muito mais do que timbres sintéticos, facilitando a imitação da altura. Além disso, respeitar a classificação entre <strong>Vozes Graves e Vozes Agudas</strong> (<a href="https://doi.org/10.1590/2317-1782/20202019079" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Martinho &amp; Constantini, 2020</a>) evita esforço laríngeo desnecessário.
+                                Estudos neurofisiológicos com EEG (<a
+                                    href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Lévêque &amp; Schön,
+                                    2013</a>) revelam que ouvir um timbre vocal humano ativa diretamente os ritmos
+                                sensório-motores cerebrais muito mais do que timbres sintéticos, facilitando a imitação
+                                da altura. Além disso, respeitar a classificação entre <strong>Vozes Graves e Vozes
+                                    Agudas</strong> (<a href="https://doi.org/10.1590/2317-1782/20202019079"
+                                    target="_blank" rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Martinho &amp; Constantini,
+                                    2020</a>) evita esforço laríngeo desnecessário.
                             </p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/10 text-xs font-mono-tech flex flex-wrap gap-3">
-                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo PLOS ONE (PMC3827177) ↗</a>
-                            <a href="https://doi.org/10.1590/2317-1782/20202019079" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo SciELO (CoDAS, 2020) ↗</a>
+                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo PLOS ONE (PMC3827177) ↗</a>
+                            <a href="https://doi.org/10.1590/2317-1782/20202019079" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo SciELO (CoDAS, 2020) ↗</a>
                         </div>
                     </article>
 
@@ -902,14 +1132,31 @@
                                 <span>BIOMECÂNICA LARÍNGEA, ACOPLAMENTO FONTE-FILTRO E ETVSO</span>
                                 <span>Titze (2008); Cielo et al. (2013)</span>
                             </div>
-                            <h3 class="text-lg font-bold text-brand-light">5. Fisiologia da Frequência Fundamental: Equilíbrio entre CT, TA e Trato Vocal Semiocluído</h3>
+                            <h3 class="text-lg font-bold text-brand-light">5. Fisiologia da Frequência Fundamental:
+                                Equilíbrio entre CT, TA e Trato Vocal Semiocluído</h3>
                             <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                                Segundo <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Ingo Titze (2008)</a> e <a href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank" rel="noopener noreferrer" class="text-brand-gold underline hover:text-brand-sandy">Cielo et al. (2013)</a>, a estabilidade da frequência fundamental ($f_0$) depende da coordenação entre o músculo <strong>cricotireoideo (CT)</strong> (que alonga a prega vocal para notas agudas), o músculo <strong>tireoaritenóideo (TA)</strong> e a impedância acústica do trato vocal. Os <strong>Exercícios de Trato Vocal Semiocluído (ETVSO)</strong> — como <em>humming</em>, vibração de lábios e glissandos suaves presentes na aba de Aquecimento — aumentam a inertância acústica supraglótica, reduzem o limiar de pressão fonatória e estabilizam a afinação sem tensão cervical.
+                                Segundo <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Ingo Titze (2008)</a> e <a
+                                    href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold underline hover:text-brand-sandy">Cielo et al. (2013)</a>, a
+                                estabilidade da frequência fundamental ($f_0$) depende da coordenação entre o músculo
+                                <strong>cricotireoideo (CT)</strong> (que alonga a prega vocal para notas agudas), o
+                                músculo <strong>tireoaritenóideo (TA)</strong> e a impedância acústica do trato vocal.
+                                Os <strong>Exercícios de Trato Vocal Semiocluído (ETVSO)</strong> — como
+                                <em>humming</em>, vibração de lábios e glissandos suaves presentes na aba de Aquecimento
+                                — aumentam a inertância acústica supraglótica, reduzem o limiar de pressão fonatória e
+                                estabilizam a afinação sem tensão cervical.
                             </p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-white/10 text-xs font-mono-tech flex flex-wrap gap-3">
-                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler artigo de Titze (PMC2811547 · Open Access) ↗</a>
-                            <a href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler revisão ETVSO em Português (SciELO / CEFAC) ↗</a>
+                            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                artigo de Titze (PMC2811547 · Open Access) ↗</a>
+                            <a href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank"
+                                rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">Ler
+                                revisão ETVSO em Português (SciELO / CEFAC) ↗</a>
                         </div>
                     </article>
                 </div>
@@ -918,22 +1165,33 @@
                 <div class="glass-panel rounded-2xl p-6 mt-6 border border-brand-gold/30">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                         <div>
-                            <span class="text-xs font-mono-tech uppercase text-brand-gold">Acesso Livre e Gratuito (Open Access)</span>
-                            <h3 class="text-xl font-bold text-brand-light">Bibliografia Completa para Consulta Direta</h3>
+                            <span class="text-xs font-mono-tech uppercase text-brand-gold">Acesso Livre e Gratuito (Open
+                                Access)</span>
+                            <h3 class="text-xl font-bold text-brand-light">Bibliografia Completa para Consulta Direta
+                            </h3>
                         </div>
-                        <span class="text-xs font-mono-tech px-2.5 py-1 rounded-lg bg-[#2A9D8F]/25 border border-[#2A9D8F] text-brand-light">
+                        <span
+                            class="text-xs font-mono-tech px-2.5 py-1 rounded-lg bg-[#2A9D8F]/25 border border-[#2A9D8F] text-brand-light">
                             100% Artigos Abertos (PMC / SciELO / Frontiers / PLOS)
                         </span>
                     </div>
 
-                    <ol class="space-y-3.5 text-xs md:text-sm text-brand-light/90 list-decimal list-inside leading-relaxed">
+                    <ol
+                        class="space-y-3.5 text-xs md:text-sm text-brand-light/90 list-decimal list-inside leading-relaxed">
                         <li class="p-3 rounded-xl bg-[#264653]/70 border border-white/10">
                             <strong>BLANCO, A. D.; TASSANI, S.; RAMIREZ, R.</strong> (2021).
-                            <em>Effects of Visual and Auditory Feedback in Violin and Singing Voice Pitch Matching Tasks.</em>
+                            <em>Effects of Visual and Auditory Feedback in Violin and Singing Voice Pitch Matching
+                                Tasks.</em>
                             <strong>Frontiers in Psychology</strong>, v. 12, art. 684693.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto (PubMed Central: PMC8297736) ↗</a>
-                                <a href="https://doi.org/10.3389/fpsyg.2021.684693" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">DOI: 10.3389/fpsyg.2021.684693 ↗</a>
+                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8297736/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto
+                                    (PubMed Central: PMC8297736) ↗</a>
+                                <a href="https://doi.org/10.3389/fpsyg.2021.684693" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-teal hover:text-brand-gold underline">DOI:
+                                    10.3389/fpsyg.2021.684693 ↗</a>
                             </div>
                         </li>
 
@@ -942,7 +1200,10 @@
                             <em>Exercícios de trato vocal semiocluído: revisão de literatura.</em>
                             <strong>Revista CEFAC</strong>, v. 15, n. 6, p. 1679–1689.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em Português (SciELO Brasil) ↗</a>
+                                <a href="https://doi.org/10.1590/S1516-18462013005000041" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em
+                                    Português (SciELO Brasil) ↗</a>
                             </div>
                         </li>
 
@@ -951,8 +1212,14 @@
                             <em>The Linked Dual Representation model of vocal perception and production.</em>
                             <strong>Frontiers in Psychology</strong>, v. 4, art. 825.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto (PubMed Central: PMC3817506) ↗</a>
-                                <a href="https://doi.org/10.3389/fpsyg.2013.00825" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">DOI: 10.3389/fpsyg.2013.00825 ↗</a>
+                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3817506/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto
+                                    (PubMed Central: PMC3817506) ↗</a>
+                                <a href="https://doi.org/10.3389/fpsyg.2013.00825" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-teal hover:text-brand-gold underline">DOI:
+                                    10.3389/fpsyg.2013.00825 ↗</a>
                             </div>
                         </li>
 
@@ -961,17 +1228,27 @@
                             <em>Listening to the Human Voice Alters Sensorimotor Brain Rhythms.</em>
                             <strong>PLOS ONE</strong>, v. 8, n. 11, e80659.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto (PubMed Central: PMC3827177) ↗</a>
-                                <a href="https://doi.org/10.1371/journal.pone.0080659" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">DOI: 10.1371/journal.pone.0080659 ↗</a>
+                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3827177/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto
+                                    (PubMed Central: PMC3827177) ↗</a>
+                                <a href="https://doi.org/10.1371/journal.pone.0080659" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-teal hover:text-brand-gold underline">DOI:
+                                    10.1371/journal.pone.0080659 ↗</a>
                             </div>
                         </li>
 
                         <li class="p-3 rounded-xl bg-[#264653]/70 border border-white/10">
                             <strong>MARTINHO, D. H. C.; CONSTANTINI, A. C.</strong> (2020).
-                            <em>Efeitos imediatos de exercícios de trato vocal semiocluído em vozes graves e agudas: estudo sobre a autopercepção.</em>
+                            <em>Efeitos imediatos de exercícios de trato vocal semiocluído em vozes graves e agudas:
+                                estudo sobre a autopercepção.</em>
                             <strong>CoDAS</strong>, v. 32, n. 5, e20190079.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://doi.org/10.1590/2317-1782/20202019079" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em Português (SciELO Brasil) ↗</a>
+                                <a href="https://doi.org/10.1590/2317-1782/20202019079" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em
+                                    Português (SciELO Brasil) ↗</a>
                             </div>
                         </li>
 
@@ -980,17 +1257,25 @@
                             <em>Triagem da Afinação Vocal: comparação do desempenho de musicistas e não musicistas.</em>
                             <strong>Jornal da Sociedade Brasileira de Fonoaudiologia</strong>, v. 24, n. 4, p. 368–373.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em Português (SciELO Brasil) ↗</a>
+                                <a href="https://doi.org/10.1590/S2179-64912012000400013" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto em
+                                    Português (SciELO Brasil) ↗</a>
                             </div>
                         </li>
 
                         <li class="p-3 rounded-xl bg-[#264653]/70 border border-white/10">
                             <strong>TITZE, I. R.</strong> (2008).
                             <em>Nonlinear source–filter coupling in phonation: Theory.</em>
-                            <strong>The Journal of the Acoustical Society of America</strong>, v. 123, n. 5, p. 2733–2749.
+                            <strong>The Journal of the Acoustical Society of America</strong>, v. 123, n. 5, p.
+                            2733–2749.
                             <div class="mt-1.5 flex flex-wrap gap-3 font-mono-tech text-xs">
-                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto (PubMed Central: PMC2811547) ↗</a>
-                                <a href="https://doi.org/10.1121/1.2832337" target="_blank" rel="noopener noreferrer" class="text-brand-teal hover:text-brand-gold underline">DOI: 10.1121/1.2832337 ↗</a>
+                                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2811547/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-brand-gold hover:text-brand-sandy underline">Texto Completo Aberto
+                                    (PubMed Central: PMC2811547) ↗</a>
+                                <a href="https://doi.org/10.1121/1.2832337" target="_blank" rel="noopener noreferrer"
+                                    class="text-brand-teal hover:text-brand-gold underline">DOI: 10.1121/1.2832337 ↗</a>
                             </div>
                         </li>
                     </ol>
@@ -1003,18 +1288,19 @@
             <p>Desenvolvido pelo professor <strong class="text-brand-gold">Glauber Santiago</strong> — DAC/UFSCar</p>
             <p class="flex flex-wrap items-center justify-center gap-1.5">
                 <a href="https://aprenda-musica-comigo.web.app/" target="_blank" rel="noopener noreferrer"
-                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">aprenda-musica-comigo.web.app</a>
+                    class="text-brand-gold hover:text-brand-sandy underline transition-colors">aprenda-musica-comigo.web.app</a>
                 <span>•</span>
                 <a href="https://servidores.ufscar.br/glauber/" target="_blank" rel="noopener noreferrer"
-                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">servidores.ufscar.br/glauber/</a>
+                    class="text-brand-gold hover:text-brand-sandy underline transition-colors">servidores.ufscar.br/glauber/</a>
                 <span>•</span>
                 <a href="https://glauberia.web.app/" target="_blank" rel="noopener noreferrer"
-                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">https://glauberia.web.app/</a>
+                    class="text-brand-gold hover:text-brand-sandy underline transition-colors">https://glauberia.web.app/</a>
             </p>
             <p class="text-brand-light/75">
-                Apoio: Grupo de Estudos e Pesquisas sobre Inovação em Educação, Tecnologias e Linguagens (Grupo Horizonte-UFSCar) —
+                Apoio: Grupo de Estudos e Pesquisas sobre Inovação em Educação, Tecnologias e Linguagens (Grupo
+                Horizonte-UFSCar) —
                 <a href="https://grupohorizonte.ufscar.br/" target="_blank" rel="noopener noreferrer"
-                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">grupohorizonte.ufscar.br</a>
+                    class="text-brand-gold hover:text-brand-sandy underline transition-colors">grupohorizonte.ufscar.br</a>
             </p>
         </footer>
 
@@ -1128,23 +1414,23 @@
 
         // Catálogo Enarmônico de Tônicas (D# !== Eb, C# !== Db, F# !== Gb, etc.)
         const TONICS_CATALOG = {
-            'C':  { id: 'C',  step: 0, alter: 0,  pitchClass: 0,  name: 'dó',  label: 'Dó (C)',   preferSharps: true },
-            'C#': { id: 'C#', step: 0, alter: 1,  pitchClass: 1,  name: 'dó♯', label: 'Dó♯ (C♯)', preferSharps: true },
-            'Db': { id: 'Db', step: 1, alter: -1, pitchClass: 1,  name: 'ré♭', label: 'Ré♭ (D♭)', preferSharps: false },
-            'D':  { id: 'D',  step: 1, alter: 0,  pitchClass: 2,  name: 'ré',  label: 'Ré (D)',   preferSharps: true },
-            'D#': { id: 'D#', step: 1, alter: 1,  pitchClass: 3,  name: 'ré♯', label: 'Ré♯ (D♯)', preferSharps: true },
-            'Eb': { id: 'Eb', step: 2, alter: -1, pitchClass: 3,  name: 'mi♭', label: 'Mi♭ (E♭)', preferSharps: false },
-            'E':  { id: 'E',  step: 2, alter: 0,  pitchClass: 4,  name: 'mi',  label: 'Mi (E)',   preferSharps: true },
-            'F':  { id: 'F',  step: 3, alter: 0,  pitchClass: 5,  name: 'fá',  label: 'Fá (F)',   preferSharps: false },
-            'F#': { id: 'F#', step: 3, alter: 1,  pitchClass: 6,  name: 'fá♯', label: 'Fá♯ (F♯)', preferSharps: true },
-            'Gb': { id: 'Gb', step: 4, alter: -1, pitchClass: 6,  name: 'sol♭',label: 'Sol♭ (G♭)',preferSharps: false },
-            'G':  { id: 'G',  step: 4, alter: 0,  pitchClass: 7,  name: 'sol', label: 'Sol (G)',  preferSharps: true },
-            'G#': { id: 'G#', step: 4, alter: 1,  pitchClass: 8,  name: 'sol♯',label: 'Sol♯ (G♯)',preferSharps: true },
-            'Ab': { id: 'Ab', step: 5, alter: -1, pitchClass: 8,  name: 'lá♭', label: 'Lá♭ (A♭)', preferSharps: false },
-            'A':  { id: 'A',  step: 5, alter: 0,  pitchClass: 9,  name: 'lá',  label: 'Lá (A)',   preferSharps: true },
-            'A#': { id: 'A#', step: 5, alter: 1,  pitchClass: 10, name: 'lá♯', label: 'Lá♯ (A♯)', preferSharps: true },
+            'C': { id: 'C', step: 0, alter: 0, pitchClass: 0, name: 'dó', label: 'Dó (C)', preferSharps: true },
+            'C#': { id: 'C#', step: 0, alter: 1, pitchClass: 1, name: 'dó♯', label: 'Dó♯ (C♯)', preferSharps: true },
+            'Db': { id: 'Db', step: 1, alter: -1, pitchClass: 1, name: 'ré♭', label: 'Ré♭ (D♭)', preferSharps: false },
+            'D': { id: 'D', step: 1, alter: 0, pitchClass: 2, name: 'ré', label: 'Ré (D)', preferSharps: true },
+            'D#': { id: 'D#', step: 1, alter: 1, pitchClass: 3, name: 'ré♯', label: 'Ré♯ (D♯)', preferSharps: true },
+            'Eb': { id: 'Eb', step: 2, alter: -1, pitchClass: 3, name: 'mi♭', label: 'Mi♭ (E♭)', preferSharps: false },
+            'E': { id: 'E', step: 2, alter: 0, pitchClass: 4, name: 'mi', label: 'Mi (E)', preferSharps: true },
+            'F': { id: 'F', step: 3, alter: 0, pitchClass: 5, name: 'fá', label: 'Fá (F)', preferSharps: false },
+            'F#': { id: 'F#', step: 3, alter: 1, pitchClass: 6, name: 'fá♯', label: 'Fá♯ (F♯)', preferSharps: true },
+            'Gb': { id: 'Gb', step: 4, alter: -1, pitchClass: 6, name: 'sol♭', label: 'Sol♭ (G♭)', preferSharps: false },
+            'G': { id: 'G', step: 4, alter: 0, pitchClass: 7, name: 'sol', label: 'Sol (G)', preferSharps: true },
+            'G#': { id: 'G#', step: 4, alter: 1, pitchClass: 8, name: 'sol♯', label: 'Sol♯ (G♯)', preferSharps: true },
+            'Ab': { id: 'Ab', step: 5, alter: -1, pitchClass: 8, name: 'lá♭', label: 'Lá♭ (A♭)', preferSharps: false },
+            'A': { id: 'A', step: 5, alter: 0, pitchClass: 9, name: 'lá', label: 'Lá (A)', preferSharps: true },
+            'A#': { id: 'A#', step: 5, alter: 1, pitchClass: 10, name: 'lá♯', label: 'Lá♯ (A♯)', preferSharps: true },
             'Bb': { id: 'Bb', step: 6, alter: -1, pitchClass: 10, name: 'si♭', label: 'Si♭ (B♭)', preferSharps: false },
-            'B':  { id: 'B',  step: 6, alter: 0,  pitchClass: 11, name: 'si',  label: 'Si (B)',   preferSharps: true }
+            'B': { id: 'B', step: 6, alter: 0, pitchClass: 11, name: 'si', label: 'Si (B)', preferSharps: true }
         };
 
         const SCALES_CATALOG = {
@@ -1352,9 +1638,13 @@
                 badge: 'Trilha 5 · Arpejos & Tríades',
                 banner: '<strong class="text-brand-gold">Trilha 5 (Tríades e Sentido Harmônico):</strong> Percorra os graus de acordes maiores e menores (1º, 3º e 5º graus) para consolidar a afinação harmônica e coral.'
             },
+            scalerest: {
+                badge: 'Trilha 6 · Repouso Após Escala',
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala rapidamente (como semicolcheias) e repousa em uma <strong>nota longa alvo</strong>. As trajetórias variam aleatoriamente entre <em>Ascendente (Tônica → Oitava)</em>, <em>Descendente (Oitava → Tônica)</em>, <em>Dupla (Ida e Volta: Tônica → Oitava → Tônica)</em> e <em>Dupla (Volta e Ida: Oitava → Tônica → Oitava)</em> para treinar a precisão vocal imediata após agilidade melódica!'
+            },
             freelab: {
-                badge: 'Trilha 6 · Laboratório Livre',
-                banner: '<strong class="text-brand-gold">Trilha 6 (Laboratório Livre):</strong> Cante qualquer nota livremente ou clique no Diapasão Interativo abaixo para observar sua curva vocal sem contagem de erros.'
+                badge: 'Trilha 6 · Repouso Após Escala',
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala rapidamente (como semicolcheias) e repousa em uma <strong>nota longa alvo</strong>. As trajetórias variam aleatoriamente entre <em>Ascendente (Tônica → Oitava)</em>, <em>Descendente (Oitava → Tônica)</em>, <em>Dupla (Ida e Volta: Tônica → Oitava → Tônica)</em> e <em>Dupla (Volta e Ida: Oitava → Tônica → Oitava)</em> para treinar a precisão vocal imediata após agilidade melódica!'
             },
             mirror: {
                 badge: 'Trilha 7 · Espelho Vocal (3s)',
@@ -1367,7 +1657,7 @@
         };
 
         const levelsConfig = [
-            { minXp: 0,   title: 'Nível 1 · Ouvinte Curioso' },
+            { minXp: 0, title: 'Nível 1 · Ouvinte Curioso' },
             { minXp: 100, title: 'Nível 2 · Explorador Sonoro' },
             { minXp: 250, title: 'Nível 3 · Voz Estável' },
             { minXp: 500, title: 'Nível 4 · Afinador Coral' },
@@ -1376,17 +1666,17 @@
 
         const missionsCatalog = [
             { id: 'm_sustain3', title: 'Sustentar 3 notas afinadas', target: 3, key: 'scoreCorrect' },
-            { id: 'm_fine2',    title: '2 acertos com erro ≤ 20 cents', target: 2, key: 'fineHits' },
-            { id: 'm_adv2',     title: '2 acertos em Intervalos, Tríades ou Audiation', target: 2, key: 'advancedPathHits' }
+            { id: 'm_fine2', title: '2 acertos com erro ≤ 20 cents', target: 2, key: 'fineHits' },
+            { id: 'm_adv2', title: '2 acertos em Intervalos, Tríades ou Audiation', target: 2, key: 'advancedPathHits' }
         ];
 
         const badgesCatalog = [
-            { id: 'first_hit',   title: '1º Uníssono',    desc: 'Acertou a primeira nota' },
-            { id: 'bullseye',    title: 'Na Mosca!',      desc: 'Erro menor que 12 cents' },
-            { id: 'streak_5',    title: 'Série de 5',     desc: '5 acertos seguidos' },
-            { id: 'step_climber',title: 'Escada Vocal',   desc: 'Completou 5 graus seguidos' },
-            { id: 'interval_pro',title: 'Ouvido Relativo',desc: 'Acertou 3 intervalos ou tríades' },
-            { id: 'choir_master',title: 'Precisão Coral', desc: 'Acertou no rigor ±20 cents' }
+            { id: 'first_hit', title: '1º Uníssono', desc: 'Acertou a primeira nota' },
+            { id: 'bullseye', title: 'Na Mosca!', desc: 'Erro menor que 12 cents' },
+            { id: 'streak_5', title: 'Série de 5', desc: '5 acertos seguidos' },
+            { id: 'step_climber', title: 'Escada Vocal', desc: 'Completou 5 graus seguidos' },
+            { id: 'interval_pro', title: 'Ouvido Relativo', desc: 'Acertou 3 intervalos ou tríades' },
+            { id: 'choir_master', title: 'Precisão Coral', desc: 'Acertou no rigor ±20 cents' }
         ];
 
         // =========================================================================
@@ -1412,6 +1702,7 @@
         let errorCount = 0;
         const MAX_CONSECUTIVE_REPEATS = 3;
         let audiationTimer = null;
+        let lastScaleRestPattern = null;
 
         // Contadores de sustentação em tempo real
         let sustainFrames = 0;
@@ -2040,7 +2331,7 @@
                     gameState.stepwiseHit++;
                     if (gameState.stepwiseHit >= 5) unlockBadge('step_climber');
                 }
-                if (currentPath === 'intervals' || currentPath === 'triads' || currentPath === 'audiation') {
+                if (currentPath === 'intervals' || currentPath === 'triads' || currentPath === 'audiation' || currentPath === 'scalerest') {
                     gameState.advancedPathHits = (gameState.advancedPathHits || 0) + 1;
                     gameState.intervalsHit++;
                     if (gameState.intervalsHit >= 3) unlockBadge('interval_pro');
@@ -2249,7 +2540,7 @@
                 if (anyMatch) {
                     noteName = anyMatch.name;
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             if (!noteName) {
                 noteName = tonic.preferSharps ? chromaticPitchNamesSharps[noteIndex] : chromaticPitchNamesFlats[noteIndex];
@@ -2410,10 +2701,10 @@
                                 echoCancellation: false,
                                 noiseSuppression: false,
                                 autoGainControl: false
-                            }).catch(() => {});
+                            }).catch(() => { });
                         }
                     }
-                } catch (e) {}
+                } catch (e) { }
             }
 
             if (!micStreamSourceNode && userMicStream) {
@@ -2591,13 +2882,13 @@
             if (activeRecordedVoiceSource) {
                 try {
                     activeRecordedVoiceSource.stop();
-                } catch (e) {}
+                } catch (e) { }
                 activeRecordedVoiceSource = null;
             }
             if (activeRecordedVoiceSource2) {
                 try {
                     activeRecordedVoiceSource2.stop();
-                } catch (e) {}
+                } catch (e) { }
                 activeRecordedVoiceSource2 = null;
             }
             activeRecordedVoiceGainNode = null;
@@ -2605,7 +2896,7 @@
                 try {
                     activeHtmlAudioElement.pause();
                     activeHtmlAudioElement.currentTime = 0;
-                } catch (e) {}
+                } catch (e) { }
                 activeHtmlAudioElement = null;
             }
             SoundFontEngine.stopAllNotes(0.08);
@@ -3021,7 +3312,7 @@
             if (activeRecordedVoiceSource) {
                 try {
                     activeRecordedVoiceSource.stop();
-                } catch (e) {}
+                } catch (e) { }
                 activeRecordedVoiceSource = null;
             }
             activeRecordedVoiceGainNode = null;
@@ -3029,7 +3320,7 @@
                 try {
                     activeHtmlAudioElement.pause();
                     activeHtmlAudioElement.currentTime = 0;
-                } catch (e) {}
+                } catch (e) { }
                 activeHtmlAudioElement = null;
             }
 
@@ -3096,11 +3387,11 @@
             }
 
             if (activeRecordedVoiceSource) {
-                try { activeRecordedVoiceSource.stop(); } catch (e) {}
+                try { activeRecordedVoiceSource.stop(); } catch (e) { }
                 activeRecordedVoiceSource = null;
             }
             if (activeRecordedVoiceSource2) {
-                try { activeRecordedVoiceSource2.stop(); } catch (e) {}
+                try { activeRecordedVoiceSource2.stop(); } catch (e) { }
                 activeRecordedVoiceSource2 = null;
             }
             activeRecordedVoiceGainNode = null;
@@ -3345,14 +3636,72 @@
                 ? 'Áudio Gravado + Corrigido'
                 : `${noteToPlay.name} + Sua Voz`;
 
-            // 1. EMITE A NOTA DE ORIGEM
-            instructionEl.textContent = `1. Ouça a nota de origem (${noteToPlay.name})... A gravação iniciará automaticamente!`;
-            feedbackEl.textContent = 'Prepare o fôlego: a gravação de 3 segundos começa logo após o som.';
-            mirrorStatusBadgeEl.textContent = '🔊 Emitindo referência...';
-            mirrorProgressBarEl.style.width = '0%';
-            highlightMirrorStepButton('playOnlyOriginBtn');
+            // 1. EMITE A NOTA OU SEQUÊNCIA DE REFERÊNCIA
+            let preRecordingDelayMs = 1350;
 
-            await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.15, velocity: 0.92 });
+            if (currentPath === 'scalerest' || currentPath === 'freelab') {
+                const pool = getActiveNotesPool();
+                if (pool && pool.length >= 2) {
+                    const patterns = ['asc', 'desc', 'asc_desc', 'desc_asc'];
+                    const chosenPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                    lastScaleRestPattern = chosenPattern;
+                    const asc = pool.slice();
+                    const desc = pool.slice().reverse();
+                    let fullSeq = [];
+                    let patternLabel = '';
+                    if (chosenPattern === 'asc') {
+                        fullSeq = asc;
+                        patternLabel = 'Escala Ascendente (Tônica → Oitava)';
+                    } else if (chosenPattern === 'desc') {
+                        fullSeq = desc;
+                        patternLabel = 'Escala Descendente (Oitava → Tônica)';
+                    } else if (chosenPattern === 'asc_desc') {
+                        fullSeq = asc.concat(desc.slice(1));
+                        patternLabel = 'Escala Dupla (Tônica → Oitava → Tônica)';
+                    } else {
+                        fullSeq = desc.concat(asc.slice(1));
+                        patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
+                    }
+                    const rapidNotes = fullSeq.slice(0, -1);
+                    noteToPlay = fullSeq[fullSeq.length - 1];
+                    currentNote = noteToPlay;
+                    currentBaseNote = fullSeq[0];
+                    lastComparisonNote = noteToPlay;
+
+                    targetNoteDisplayEl.textContent = noteToPlay.name;
+                    targetFreqSubEl.textContent = `Alvo (Repouso): ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
+                    intervalBadgeEl.classList.remove('hidden');
+                    intervalBadgeEl.textContent = patternLabel;
+
+                    instructionEl.textContent = `1. Ouvindo ${patternLabel}... Repouso em ${noteToPlay.name.toUpperCase()}!`;
+                    feedbackEl.textContent = 'A gravação iniciará logo após a nota longa de repouso.';
+                    mirrorStatusBadgeEl.textContent = '🔊 Executando escala e repouso...';
+                    mirrorProgressBarEl.style.width = '0%';
+
+                    await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, fullSeq.map(n => n.freq));
+
+                    const sixteenthDuration = 0.115;
+                    const sixteenthStep = 0.110;
+                    const restDuration = 1.35;
+
+                    rapidNotes.forEach((n, idx) => {
+                        SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.82 });
+                    });
+                    const restDelay = rapidNotes.length * sixteenthStep;
+                    SoundFontEngine.playNote(noteToPlay.freq, { duration: restDuration, delay: restDelay, velocity: 0.95 });
+
+                    preRecordingDelayMs = Math.round((restDelay + restDuration + 0.35) * 1000);
+                }
+            } else {
+                instructionEl.textContent = `1. Ouça a nota de origem (${noteToPlay.name})... A gravação iniciará automaticamente!`;
+                feedbackEl.textContent = 'Prepare o fôlego: a gravação de 3 segundos começa logo após o som.';
+                mirrorStatusBadgeEl.textContent = '🔊 Emitindo referência...';
+                mirrorProgressBarEl.style.width = '0%';
+                highlightMirrorStepButton('playOnlyOriginBtn');
+
+                await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.15, velocity: 0.92 });
+                preRecordingDelayMs = 1350;
+            }
 
             // 2. INICIA AUTOMATICAMENTE A GRAVAÇÃO DA VOZ POR 3 SEGUNDOS
             const startRecTimer = setTimeout(async () => {
@@ -3501,11 +3850,8 @@
             drawPitchContour();
             updateSustainProgress(0);
 
-            if (currentPath === 'freelab') {
-                listening = true;
-                actionTaken = false;
-                intervalBadgeEl.classList.add('hidden');
-                instructionEl.textContent = 'Laboratório Livre: Cante qualquer nota para observar sua curva vocal';
+            if (currentPath === 'scalerest' || currentPath === 'freelab') {
+                playScaleRestAndSetupListener();
                 return;
             }
 
@@ -3582,7 +3928,9 @@
             drawPitchContour();
             updateSustainProgress(0);
 
-            if (currentPath === 'audiation') {
+            if (currentPath === 'scalerest' || currentPath === 'freelab') {
+                playScaleRestAndSetupListener(lastScaleRestPattern);
+            } else if (currentPath === 'audiation') {
                 playAudiationAndSetupListener(currentNote);
             } else if (currentPath === 'intervals' && currentBaseNote) {
                 playIntervalAndSetupListener(currentBaseNote, currentNote);
@@ -3674,6 +4022,81 @@
                 listening = true;
                 actionTaken = false;
             }, 2600);
+        };
+
+        const playScaleRestAndSetupListener = async (patternType = null) => {
+            const pool = getActiveNotesPool();
+            if (!pool || pool.length < 2) return;
+
+            stopVoiceComparisonPlayback();
+            listening = false;
+            actionTaken = true;
+            feedbackEl.innerHTML = '&nbsp;';
+            userResultLabel.textContent = 'Diagnóstico';
+            userResultDisplay.textContent = '-';
+            userDetectedNoteEl.textContent = '-';
+            userCentsDisplayEl.textContent = '—';
+            resetDisplayColors();
+
+            const patterns = ['asc', 'desc', 'asc_desc', 'desc_asc'];
+            const chosenPattern = (patternType && patterns.includes(patternType))
+                ? patternType
+                : patterns[Math.floor(Math.random() * patterns.length)];
+            lastScaleRestPattern = chosenPattern;
+
+            const asc = pool.slice();
+            const desc = pool.slice().reverse();
+            let fullSeq = [];
+            let patternLabel = '';
+
+            if (chosenPattern === 'asc') {
+                fullSeq = asc;
+                patternLabel = 'Escala Ascendente (Tônica → Oitava)';
+            } else if (chosenPattern === 'desc') {
+                fullSeq = desc;
+                patternLabel = 'Escala Descendente (Oitava → Tônica)';
+            } else if (chosenPattern === 'asc_desc') {
+                fullSeq = asc.concat(desc.slice(1));
+                patternLabel = 'Escala Dupla (Tônica → Oitava → Tônica)';
+            } else {
+                fullSeq = desc.concat(asc.slice(1));
+                patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
+            }
+
+            const rapidNotes = fullSeq.slice(0, -1);
+            const targetNote = fullSeq[fullSeq.length - 1];
+            currentNote = targetNote;
+            currentBaseNote = fullSeq[0];
+            lastComparisonNote = targetNote;
+
+            targetNoteDisplayEl.textContent = targetNote.name;
+            targetFreqSubEl.textContent = `Alvo (Repouso): ${targetNote.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(targetNote.freq)})`;
+            intervalBadgeEl.classList.remove('hidden');
+            intervalBadgeEl.textContent = patternLabel;
+
+            instructionEl.textContent = `Ouça ${patternLabel}... Repouso em ${targetNote.name.toUpperCase()}!`;
+            feedbackEl.textContent = 'Escala em semicolcheias executando... Prepare o fôlego para o repouso.';
+
+            await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, fullSeq.map(n => n.freq));
+
+            const sixteenthDuration = 0.12;
+            const sixteenthStep = 0.115;
+            const restDuration = 1.4;
+
+            rapidNotes.forEach((n, idx) => {
+                SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.82 });
+            });
+
+            const restDelay = rapidNotes.length * sixteenthStep;
+            SoundFontEngine.playNote(targetNote.freq, { duration: restDuration, delay: restDelay, velocity: 0.95 });
+
+            const waitMs = Math.round((restDelay + restDuration + 0.3) * 1000);
+            setTimeout(() => {
+                instructionEl.textContent = `AGORA CANTE E SUSTENTE O REPOUSO (${targetNote.name.toUpperCase()})`;
+                feedbackEl.textContent = 'Entoe a nota longa de repouso com firmeza e precisão.';
+                listening = true;
+                actionTaken = false;
+            }, waitMs);
         };
 
         function resetDisplayColors() {
@@ -4281,4 +4704,5 @@
         drawPitchContour();
     </script>
 </body>
+
 </html>
