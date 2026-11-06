@@ -30,8 +30,9 @@ O **Aferidor de Entonação** é uma aplicação web interativa desenvolvida par
 - **Controle de Oitava das Notas de Referência:**
   - **Oitava Grave (Padrão):** `Sol2–Sol3` (`98,0–196,0 Hz`) para Vozes Graves | `Dó3–Dó4` (`130,8–261,6 Hz`) para Vozes Agudas.
   - **Oitava Acima (`+8va`):** `Sol3–Sol4` (`196,0–392,0 Hz`) para Vozes Graves | `Dó4–Dó5` (`261,6–523,3 Hz`) para Vozes Agudas.
-- **Tônica (Nota Base) e Catálogo de Escalas (22 Tipos):**
-  - **Tônica:** Seleção livre das 12 notas cromáticas (`Dó (C)` a `Si (B)`), atualizando automaticamente o Diapasão Interativo, os exercícios e o Pedal Tônico.
+- **Tônica (Nota Base) com Enarmonia Precisa e Catálogo de Escalas (22 Tipos):**
+  - **Enarmonia Teórica Rigorosa:** Distinção tonal exata entre notas enarmônicas (ex.: `D♯` não é igual a `E♭`, `C♯` não é igual a `D♭`, `F♯` não é igual a `G♭`). A tônica escolhida determina a correta soletração das notas da escala (um nome de letra para cada grau diatônico), intervalos melódicos (terças maiores/menores com o salto de letra exato) e tríades harmônicas (ex.: 3ª menor de Dó é Mi♭ e não Ré♯; 3ª maior de Ré é Fá♯ e não Sol♭; 3ª maior de Ré♯ é Fá𝄪 e não Sol).
+  - **Tônica:** Seleção individual de todas as 17 tonalidades enarmônicas (`C`, `C♯`, `D♭`, `D`, `D♯`, `E♭`, `E`, `F`, `F♯`, `G♭`, `G`, `G♯`, `A♭`, `A`, `A♯`, `B♭`, `B`), atualizando automaticamente o Diapasão Interativo, os exercícios e o Pedal Tônico.
   - **Tipos de Escala:** *Maior Natural (Jônio)*, *Menor Natural (Eólio)*, *Menor Harmônica*, *Menor Melódica*, *Pentatônica Maior*, *Pentatônica Menor*, *Blues (Hexatônica)*, *Modos Gregos (Dórico, Frígio, Lídio, Mixolídio / Nordestina, Lócrio)*, *Cromática (12 semitons)*, *Tons Inteiros (Hexafônica)*, *Acústica (Lídio Dominante)*, *Frígio Dominante (Cigana Espanhola)*, *Menor Cigana (Húngara)*, *Diminuta (Semitom–Tom e Tom–Semitom)*, *Bebop Maior*, *Bebop Dominante* e *Hirajoshi (Pentatônica Japonesa)*.
 - **Níveis de Rigor (Tolerância):** *Iniciante (`±65 cents`)*, *Intermediário (`±38 cents`)* e *Avançado / Coral (`±20 cents`)*.
 

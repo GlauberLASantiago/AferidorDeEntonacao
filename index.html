@@ -259,18 +259,23 @@
                         <div>
                             <label for="tonicSelect" class="block text-xs text-brand-light/75 mb-1">Tônica (Nota Base)</label>
                             <select id="tonicSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
-                                <option value="0" selected>Dó (C)</option>
-                                <option value="1">Dó♯ / Ré♭ (C♯/D♭)</option>
-                                <option value="2">Ré (D)</option>
-                                <option value="3">Ré♯ / Mi♭ (D♯/E♭)</option>
-                                <option value="4">Mi (E)</option>
-                                <option value="5">Fá (F)</option>
-                                <option value="6">Fá♯ / Sol♭ (F♯/G♭)</option>
-                                <option value="7">Sol (G)</option>
-                                <option value="8">Sol♯ / Lá♭ (G♯/A♭)</option>
-                                <option value="9">Lá (A)</option>
-                                <option value="10">Lá♯ / Si♭ (A♯/B♭)</option>
-                                <option value="11">Si (B)</option>
+                                <option value="C" selected>Dó (C)</option>
+                                <option value="C#">Dó♯ (C♯)</option>
+                                <option value="Db">Ré♭ (D♭)</option>
+                                <option value="D">Ré (D)</option>
+                                <option value="D#">Ré♯ (D♯)</option>
+                                <option value="Eb">Mi♭ (E♭)</option>
+                                <option value="E">Mi (E)</option>
+                                <option value="F">Fá (F)</option>
+                                <option value="F#">Fá♯ (F♯)</option>
+                                <option value="Gb">Sol♭ (G♭)</option>
+                                <option value="G">Sol (G)</option>
+                                <option value="G#">Sol♯ (G♯)</option>
+                                <option value="Ab">Lá♭ (A♭)</option>
+                                <option value="A">Lá (A)</option>
+                                <option value="A#">Lá♯ (A♯)</option>
+                                <option value="Bb">Si♭ (B♭)</option>
+                                <option value="B">Si (B)</option>
                             </select>
                         </div>
 
@@ -1104,71 +1109,227 @@
         const strictOctaveToggle = document.getElementById('strictOctaveToggle');
 
         // =========================================================================
-        // 2. DADOS MUSICAIS: TÔNICAS, CATÁLOGO DE ESCALAS E REGIÕES VOCAIS
+        // 2. DADOS MUSICAIS: TÔNICAS, ENARMONIA PRECISA, CATÁLOGO DE ESCALAS E INTERVALOS
         // =========================================================================
-        // Nomes cromáticos padrão para detecção de altura
-        const chromaticPitchNames = [
-            'dó', 'dó#', 'ré', 'ré#', 'mi', 'fá', 'fá#', 'sol', 'láb', 'lá', 'sib', 'si'
-        ];
+        const STEP_NATURAL_SEMITONES = [0, 2, 4, 5, 7, 9, 11]; // 0=Dó, 1=Ré, 2=Mi, 3=Fá, 4=Sol, 5=Lá, 6=Si
+        const STEP_NAMES_LOWER = ['dó', 'ré', 'mi', 'fá', 'sol', 'lá', 'si'];
+        const STEP_NAMES_CAP = ['Dó', 'Ré', 'Mi', 'Fá', 'Sol', 'Lá', 'Si'];
 
-        const TONICS_CATALOG = [
-            { pitchClass: 0,  name: 'dó',  label: 'Dó (C)' },
-            { pitchClass: 1,  name: 'dó#', label: 'Dó♯ / Ré♭ (C♯/D♭)' },
-            { pitchClass: 2,  name: 'ré',  label: 'Ré (D)' },
-            { pitchClass: 3,  name: 'ré#', label: 'Ré♯ / Mi♭ (D♯/E♭)' },
-            { pitchClass: 4,  name: 'mi',  label: 'Mi (E)' },
-            { pitchClass: 5,  name: 'fá',  label: 'Fá (F)' },
-            { pitchClass: 6,  name: 'fá#', label: 'Fá♯ / Sol♭ (F♯/G♭)' },
-            { pitchClass: 7,  name: 'sol', label: 'Sol (G)' },
-            { pitchClass: 8,  name: 'láb', label: 'Sol♯ / Lá♭ (G♯/A♭)' },
-            { pitchClass: 9,  name: 'lá',  label: 'Lá (A)' },
-            { pitchClass: 10, name: 'sib', label: 'Lá♯ / Si♭ (A♯/B♭)' },
-            { pitchClass: 11, name: 'si',  label: 'Si (B)' }
-        ];
+        // Tabelas cromáticas de referência para notas de passagem fora da escala
+        const chromaticPitchNamesSharps = ['dó', 'dó♯', 'ré', 'ré♯', 'mi', 'fá', 'fá♯', 'sol', 'sol♯', 'lá', 'lá♯', 'si'];
+        const chromaticStepsSharps = [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6];
+        const chromaticAltersSharps = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
+
+        const chromaticPitchNamesFlats = ['dó', 'ré♭', 'ré', 'mi♭', 'mi', 'fá', 'sol♭', 'sol', 'lá♭', 'lá', 'si♭', 'si'];
+        const chromaticStepsFlats = [0, 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6];
+        const chromaticAltersFlats = [0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0];
+
+        const chromaticPitchNames = chromaticPitchNamesSharps;
+
+        // Catálogo Enarmônico de Tônicas (D# !== Eb, C# !== Db, F# !== Gb, etc.)
+        const TONICS_CATALOG = {
+            'C':  { id: 'C',  step: 0, alter: 0,  pitchClass: 0,  name: 'dó',  label: 'Dó (C)',   preferSharps: true },
+            'C#': { id: 'C#', step: 0, alter: 1,  pitchClass: 1,  name: 'dó♯', label: 'Dó♯ (C♯)', preferSharps: true },
+            'Db': { id: 'Db', step: 1, alter: -1, pitchClass: 1,  name: 'ré♭', label: 'Ré♭ (D♭)', preferSharps: false },
+            'D':  { id: 'D',  step: 1, alter: 0,  pitchClass: 2,  name: 'ré',  label: 'Ré (D)',   preferSharps: true },
+            'D#': { id: 'D#', step: 1, alter: 1,  pitchClass: 3,  name: 'ré♯', label: 'Ré♯ (D♯)', preferSharps: true },
+            'Eb': { id: 'Eb', step: 2, alter: -1, pitchClass: 3,  name: 'mi♭', label: 'Mi♭ (E♭)', preferSharps: false },
+            'E':  { id: 'E',  step: 2, alter: 0,  pitchClass: 4,  name: 'mi',  label: 'Mi (E)',   preferSharps: true },
+            'F':  { id: 'F',  step: 3, alter: 0,  pitchClass: 5,  name: 'fá',  label: 'Fá (F)',   preferSharps: false },
+            'F#': { id: 'F#', step: 3, alter: 1,  pitchClass: 6,  name: 'fá♯', label: 'Fá♯ (F♯)', preferSharps: true },
+            'Gb': { id: 'Gb', step: 4, alter: -1, pitchClass: 6,  name: 'sol♭',label: 'Sol♭ (G♭)',preferSharps: false },
+            'G':  { id: 'G',  step: 4, alter: 0,  pitchClass: 7,  name: 'sol', label: 'Sol (G)',  preferSharps: true },
+            'G#': { id: 'G#', step: 4, alter: 1,  pitchClass: 8,  name: 'sol♯',label: 'Sol♯ (G♯)',preferSharps: true },
+            'Ab': { id: 'Ab', step: 5, alter: -1, pitchClass: 8,  name: 'lá♭', label: 'Lá♭ (A♭)', preferSharps: false },
+            'A':  { id: 'A',  step: 5, alter: 0,  pitchClass: 9,  name: 'lá',  label: 'Lá (A)',   preferSharps: true },
+            'A#': { id: 'A#', step: 5, alter: 1,  pitchClass: 10, name: 'lá♯', label: 'Lá♯ (A♯)', preferSharps: true },
+            'Bb': { id: 'Bb', step: 6, alter: -1, pitchClass: 10, name: 'si♭', label: 'Si♭ (B♭)', preferSharps: false },
+            'B':  { id: 'B',  step: 6, alter: 0,  pitchClass: 11, name: 'si',  label: 'Si (B)',   preferSharps: true }
+        };
 
         const SCALES_CATALOG = {
-            diatonic:          { label: 'Maior Natural (Jônio)',         semitones: [0, 2, 4, 5, 7, 9, 11, 12] },
-            minor_natural:     { label: 'Menor Natural (Eólio)',         semitones: [0, 2, 3, 5, 7, 8, 10, 12] },
-            minor_harmonic:    { label: 'Menor Harmônica',               semitones: [0, 2, 3, 5, 7, 8, 11, 12] },
-            minor_melodic:     { label: 'Menor Melódica',                semitones: [0, 2, 3, 5, 7, 9, 11, 12] },
-            pentatonic:        { label: 'Pentatônica Maior',             semitones: [0, 2, 4, 7, 9, 12] },
-            pentatonic_minor:  { label: 'Pentatônica Menor',             semitones: [0, 3, 5, 7, 10, 12] },
-            blues:             { label: 'Blues (Hexatônica)',            semitones: [0, 3, 5, 6, 7, 10, 12] },
-            dorian:            { label: 'Modo Dórico',                   semitones: [0, 2, 3, 5, 7, 9, 10, 12] },
-            phrygian:          { label: 'Modo Frígio',                   semitones: [0, 1, 3, 5, 7, 8, 10, 12] },
-            lydian:            { label: 'Modo Lídio',                    semitones: [0, 2, 4, 6, 7, 9, 11, 12] },
-            mixolydian:        { label: 'Modo Mixolídio (Nordestina)',   semitones: [0, 2, 4, 5, 7, 9, 10, 12] },
-            locrian:           { label: 'Modo Lócrio',                   semitones: [0, 1, 3, 5, 6, 8, 10, 12] },
-            chromatic:         { label: 'Cromática (12 semitons)',       semitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
-            whole_tone:        { label: 'Tons Inteiros (Hexafônica)',    semitones: [0, 2, 4, 6, 8, 10, 12] },
-            acoustic:          { label: 'Acústica (Lídio Dominante)',    semitones: [0, 2, 4, 6, 7, 9, 10, 12] },
-            phrygian_dominant: { label: 'Frígio Dominante (Cigana Esp.)',semitones: [0, 1, 4, 5, 7, 8, 10, 12] },
-            gypsy_minor:       { label: 'Menor Cigana (Húngara)',        semitones: [0, 2, 3, 6, 7, 8, 11, 12] },
-            diminished_hw:     { label: 'Diminuta (Semitom–Tom)',        semitones: [0, 1, 3, 4, 6, 7, 9, 10, 12] },
-            diminished_wh:     { label: 'Diminuta (Tom–Semitom)',        semitones: [0, 2, 3, 5, 6, 8, 9, 11, 12] },
-            bebop_major:       { label: 'Bebop Maior (8 notas)',         semitones: [0, 2, 4, 5, 7, 8, 9, 11, 12] },
-            bebop_dominant:    { label: 'Bebop Dominante (8 notas)',     semitones: [0, 2, 4, 5, 7, 9, 10, 11, 12] },
-            hirajoshi:         { label: 'Hirajoshi (Pentatônica Jap.)',  semitones: [0, 2, 3, 7, 8, 12] }
+            diatonic: {
+                label: 'Maior Natural (Jônio)',
+                semitones: [0, 2, 4, 5, 7, 9, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            minor_natural: {
+                label: 'Menor Natural (Eólio)',
+                semitones: [0, 2, 3, 5, 7, 8, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            minor_harmonic: {
+                label: 'Menor Harmônica',
+                semitones: [0, 2, 3, 5, 7, 8, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            minor_melodic: {
+                label: 'Menor Melódica',
+                semitones: [0, 2, 3, 5, 7, 9, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            pentatonic: {
+                label: 'Pentatônica Maior',
+                semitones: [0, 2, 4, 7, 9, 12],
+                degreeOffsets: [0, 1, 2, 4, 5, 7]
+            },
+            pentatonic_minor: {
+                label: 'Pentatônica Menor',
+                semitones: [0, 3, 5, 7, 10, 12],
+                degreeOffsets: [0, 2, 3, 4, 6, 7]
+            },
+            blues: {
+                label: 'Blues (Hexatônica)',
+                semitones: [0, 3, 5, 6, 7, 10, 12],
+                degreeOffsets: [0, 2, 3, 3, 4, 6, 7]
+            },
+            dorian: {
+                label: 'Modo Dórico',
+                semitones: [0, 2, 3, 5, 7, 9, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            phrygian: {
+                label: 'Modo Frígio',
+                semitones: [0, 1, 3, 5, 7, 8, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            lydian: {
+                label: 'Modo Lídio',
+                semitones: [0, 2, 4, 6, 7, 9, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            mixolydian: {
+                label: 'Modo Mixolídio (Nordestina)',
+                semitones: [0, 2, 4, 5, 7, 9, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            locrian: {
+                label: 'Modo Lócrio',
+                semitones: [0, 1, 3, 5, 6, 8, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            chromatic: {
+                label: 'Cromática (12 semitons)',
+                semitones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                degreeOffsets: [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6, 7]
+            },
+            whole_tone: {
+                label: 'Tons Inteiros (Hexafônica)',
+                semitones: [0, 2, 4, 6, 8, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 7]
+            },
+            acoustic: {
+                label: 'Acústica (Lídio Dominante)',
+                semitones: [0, 2, 4, 6, 7, 9, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            phrygian_dominant: {
+                label: 'Frígio Dominante (Cigana Esp.)',
+                semitones: [0, 1, 4, 5, 7, 8, 10, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            gypsy_minor: {
+                label: 'Menor Cigana (Húngara)',
+                semitones: [0, 2, 3, 6, 7, 8, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 7]
+            },
+            diminished_hw: {
+                label: 'Diminuta (Semitom–Tom)',
+                semitones: [0, 1, 3, 4, 6, 7, 9, 10, 12],
+                degreeOffsets: [0, 1, 1, 2, 3, 4, 4, 5, 7]
+            },
+            diminished_wh: {
+                label: 'Diminuta (Tom–Semitom)',
+                semitones: [0, 2, 3, 5, 6, 8, 9, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 3, 4, 5, 6, 7]
+            },
+            bebop_major: {
+                label: 'Bebop Maior (8 notas)',
+                semitones: [0, 2, 4, 5, 7, 8, 9, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 4, 5, 6, 7]
+            },
+            bebop_dominant: {
+                label: 'Bebop Dominante (8 notas)',
+                semitones: [0, 2, 4, 5, 7, 9, 10, 11, 12],
+                degreeOffsets: [0, 1, 2, 3, 4, 5, 6, 6, 7]
+            },
+            hirajoshi: {
+                label: 'Hirajoshi (Pentatônica Jap.)',
+                semitones: [0, 2, 3, 7, 8, 12],
+                degreeOffsets: [0, 1, 2, 4, 5, 7]
+            }
         };
 
         const melodicIntervals = [
-            { semitones: 2, label: '2ª Maior (+2 st)' },
-            { semitones: 3, label: '3ª Menor (+3 st)' },
-            { semitones: 4, label: '3ª Maior (+4 st)' },
-            { semitones: 5, label: '4ª Justa (+5 st)' },
-            { semitones: 7, label: '5ª Justa (+7 st)' },
+            { semitones: 2, degreeOffset: 1, label: '2ª Maior (+2 st)' },
+            { semitones: 3, degreeOffset: 2, label: '3ª Menor (+3 st)' },
+            { semitones: 4, degreeOffset: 2, label: '3ª Maior (+4 st)' },
+            { semitones: 5, degreeOffset: 3, label: '4ª Justa (+5 st)' },
+            { semitones: 7, degreeOffset: 4, label: '5ª Justa (+7 st)' },
         ];
 
         const triadPatternSemitones = [
-            { semitone: 0, degree: '1º Grau (Tônica)' },
-            { semitone: 4, degree: '3º Grau Maior (Mediante)' },
-            { semitone: 7, degree: '5º Grau (Dominante)' },
-            { semitone: 4, degree: '3º Grau Maior (Mediante)' },
-            { semitone: 0, degree: '1º Grau (Tônica)' },
-            { semitone: 3, degree: '3º Grau Menor' },
-            { semitone: 7, degree: '5º Grau (Dominante)' },
-            { semitone: 0, degree: '1º Grau (Tônica)' }
+            { semitone: 0, degreeOffset: 0, degree: '1º Grau (Tônica)' },
+            { semitone: 4, degreeOffset: 2, degree: '3º Grau Maior (Mediante)' },
+            { semitone: 7, degreeOffset: 4, degree: '5º Grau (Dominante)' },
+            { semitone: 4, degreeOffset: 2, degree: '3º Grau Maior (Mediante)' },
+            { semitone: 0, degreeOffset: 0, degree: '1º Grau (Tônica)' },
+            { semitone: 3, degreeOffset: 2, degree: '3º Grau Menor' },
+            { semitone: 7, degreeOffset: 4, degree: '5º Grau (Dominante)' },
+            { semitone: 0, degreeOffset: 0, degree: '1º Grau (Tônica)' }
         ];
+
+        function formatNoteName(step, alter, capitalize = false) {
+            const base = capitalize ? STEP_NAMES_CAP[step] : STEP_NAMES_LOWER[step];
+            let acc = '';
+            if (alter === 1) acc = '♯';
+            else if (alter === -1) acc = '♭';
+            else if (alter === 2) acc = '𝄪';
+            else if (alter === -2) acc = '𝄫';
+            return `${base}${acc}`;
+        }
+
+        function getTonicConfig() {
+            const key = tonicSelect ? tonicSelect.value : 'C';
+            return TONICS_CATALOG[key] || TONICS_CATALOG['C'];
+        }
+
+        function getEnharmonicNoteForDegree(tonic, degreeOffset, semitones) {
+            const targetStep = (tonic.step + degreeOffset) % 7;
+            const targetPitchClass = (tonic.pitchClass + semitones) % 12;
+            const nat = STEP_NATURAL_SEMITONES[targetStep];
+            const alter = ((targetPitchClass - nat + 18) % 12) - 6;
+            return {
+                step: targetStep,
+                alter,
+                pitchClass: targetPitchClass,
+                name: formatNoteName(targetStep, alter, false),
+                capitalName: formatNoteName(targetStep, alter, true)
+            };
+        }
+
+        function getIntervalTargetNote(baseNote, interval) {
+            const targetStep = (baseNote.step + interval.degreeOffset) % 7;
+            const targetPitchClass = (baseNote.pitchClass + interval.semitones) % 12;
+            const nat = STEP_NATURAL_SEMITONES[targetStep];
+            const alter = ((targetPitchClass - nat + 18) % 12) - 6;
+            const name = formatNoteName(targetStep, alter, false);
+            const capitalName = formatNoteName(targetStep, alter, true);
+            const midi = baseNote.midi + interval.semitones;
+            const freq = Number((440 * Math.pow(2, (midi - 69) / 12)).toFixed(2));
+            return {
+                step: targetStep,
+                alter,
+                pitchClass: targetPitchClass,
+                name,
+                capitalName,
+                semitone: (typeof baseNote.semitone === 'number' ? baseNote.semitone : 0) + interval.semitones,
+                midi,
+                freq,
+                noteKey: SoundFontEngine.toNoteKey(freq),
+                inScale: true
+            };
+        }
 
         const pathDescriptions = {
             unison: {
@@ -1977,45 +2138,80 @@
             }
         }
 
-        function getSelectedTonicPitchClass() {
-            const val = tonicSelect ? parseInt(tonicSelect.value, 10) : 0;
-            return Number.isFinite(val) ? ((val % 12) + 12) % 12 : 0;
-        }
-
         function getSelectedScaleConfig() {
             const key = scaleSelect ? scaleSelect.value : 'diatonic';
             return SCALES_CATALOG[key] || SCALES_CATALOG.diatonic;
         }
 
         function getRootMidiForCurrentSettings() {
-            const tonicPc = getSelectedTonicPitchClass();
+            const tonic = getTonicConfig();
             const octaveOffset = isReferenceOctaveUp() ? 12 : 0;
-            // Em Vozes Graves, posiciona a tônica na tessitura grave confortável (E2..Eb3, onde Sol = G2 / MIDI 43);
-            // em Vozes Agudas, posiciona na tessitura média/aguda (C3..B3, onde Dó = C3 / MIDI 48).
-            const baseMidi = isVozesGravesSelected()
-                ? (tonicPc >= 4 ? 36 + tonicPc : 48 + tonicPc)
-                : (48 + tonicPc);
+            // Em Vozes Graves, notas de Mi a Si ficam na oitava 2 (MIDI 40..47) e de Dó a Ré# na oitava 3 (MIDI 48..51);
+            // Em Vozes Agudas, todas as tônicas ficam na oitava 3 (MIDI 48..59).
+            let baseMidi;
+            if (isVozesGravesSelected()) {
+                baseMidi = tonic.pitchClass >= 4 ? (36 + tonic.pitchClass) : (48 + tonic.pitchClass);
+            } else {
+                baseMidi = 48 + tonic.pitchClass;
+            }
             return baseMidi + octaveOffset;
         }
 
         function getAllChromaticNotesInCurrentOctave() {
-            const tonicPc = getSelectedTonicPitchClass();
+            const tonic = getTonicConfig();
             const rootMidi = getRootMidiForCurrentSettings();
             const scaleCfg = getSelectedScaleConfig();
-            const scaleSet = new Set(scaleCfg.semitones);
-            const notes = [];
 
+            // Mapeia semitom -> nota enarmônica para todos os graus definidos na escala ativa
+            const scaleNotesMap = new Map();
+            const scaleSemitones = scaleCfg.semitones || [0, 2, 4, 5, 7, 9, 11, 12];
+            const degreeOffsets = scaleCfg.degreeOffsets || [0, 1, 2, 3, 4, 5, 6, 7];
+
+            for (let i = 0; i < scaleSemitones.length; i++) {
+                const st = scaleSemitones[i];
+                if (st > 12) continue;
+                const degOff = degreeOffsets[Math.min(i, degreeOffsets.length - 1)];
+                const enharm = getEnharmonicNoteForDegree(tonic, degOff, st);
+                scaleNotesMap.set(st, enharm);
+            }
+
+            const notes = [];
             for (let st = 0; st <= 12; st++) {
                 const midi = rootMidi + st;
-                const pc = (tonicPc + st) % 12;
                 const freq = Number((440 * Math.pow(2, (midi - 69) / 12)).toFixed(2));
+                const inScale = scaleNotesMap.has(st);
+                let noteName, step, alter, pitchClass;
+
+                if (inScale) {
+                    const enharm = scaleNotesMap.get(st);
+                    noteName = enharm.name;
+                    step = enharm.step;
+                    alter = enharm.alter;
+                    pitchClass = enharm.pitchClass;
+                } else {
+                    // Nota cromática fora da escala: segue a convenção de acidentes da armadura da tônica
+                    pitchClass = (tonic.pitchClass + st) % 12;
+                    if (tonic.preferSharps) {
+                        noteName = chromaticPitchNamesSharps[pitchClass];
+                        step = chromaticStepsSharps[pitchClass];
+                        alter = chromaticAltersSharps[pitchClass];
+                    } else {
+                        noteName = chromaticPitchNamesFlats[pitchClass];
+                        step = chromaticStepsFlats[pitchClass];
+                        alter = chromaticAltersFlats[pitchClass];
+                    }
+                }
+
                 notes.push({
-                    name: chromaticPitchNames[pc],
+                    name: noteName,
+                    step,
+                    alter,
+                    pitchClass,
                     semitone: st,
                     freq,
                     midi,
                     noteKey: SoundFontEngine.toNoteKey(freq),
-                    inScale: scaleSet.has(st)
+                    inScale
                 });
             }
             return notes;
@@ -2028,12 +2224,11 @@
         }
 
         function getCurrentTonicInfo() {
-            const tonicPc = getSelectedTonicPitchClass();
-            const tonicMeta = TONICS_CATALOG[tonicPc] || TONICS_CATALOG[0];
+            const tonic = getTonicConfig();
             const rootMidi = getRootMidiForCurrentSettings();
             const freq = Number((440 * Math.pow(2, (rootMidi - 69) / 12)).toFixed(2));
-            const shortName = tonicMeta.name.charAt(0).toUpperCase() + tonicMeta.name.slice(1);
-            return { label: shortName, fullLabel: tonicMeta.label, freq };
+            const shortName = formatNoteName(tonic.step, tonic.alter, true);
+            return { label: shortName, fullLabel: tonic.label, freq, tonic };
         }
 
         function findClosestNoteInfo(freq) {
@@ -2041,9 +2236,25 @@
             const midiRounded = Math.round(midiFloat);
             const noteIndex = ((midiRounded % 12) + 12) % 12;
             const octave = Math.floor(midiRounded / 12) - 1;
-            const noteName = chromaticPitchNames[noteIndex] || '?';
             const closestFreq = 440 * Math.pow(2, (midiRounded - 69) / 12);
             const centsFromClosest = Math.round(1200 * Math.log2(freq / closestFreq));
+
+            // Procura a denominação enarmônica exata da nota caso pertença à escala ou teclado ativo
+            const tonic = getTonicConfig();
+            let noteName;
+            try {
+                const activeNotes = getAllChromaticNotesInCurrentOctave();
+                const inScaleMatch = activeNotes.find(n => n.inScale && n.pitchClass === noteIndex);
+                const anyMatch = inScaleMatch || activeNotes.find(n => n.pitchClass === noteIndex);
+                if (anyMatch) {
+                    noteName = anyMatch.name;
+                }
+            } catch (e) {}
+
+            if (!noteName) {
+                noteName = tonic.preferSharps ? chromaticPitchNamesSharps[noteIndex] : chromaticPitchNamesFlats[noteIndex];
+            }
+
             return {
                 name: `${noteName}${octave}`,
                 cents: centsFromClosest,
@@ -2087,7 +2298,7 @@
             syncReferenceOctaveButtons();
             if (keyboardTitleEl) {
                 const octText = isReferenceOctaveUp() ? 'Oitava Acima (+8va)' : 'Oitava Padrão';
-                keyboardTitleEl.textContent = `Diapasão Interativo — Tônica: ${tonicInfo.label} · ${scaleCfg.label} · ${octText}`;
+                keyboardTitleEl.textContent = `Diapasão Interativo — Tônica: ${tonicInfo.fullLabel} · ${scaleCfg.label} · ${octText}`;
             }
 
             referenceKeyboardEl.innerHTML = allNotes.map((n, idx) => {
@@ -2110,22 +2321,25 @@
                 `;
             }).join('');
 
-            document.querySelectorAll('.ref-key-btn').forEach(btn => {
+            document.querySelectorAll('.ref-key-btn').forEach((btn, idx) => {
                 btn.addEventListener('click', async () => {
-                    const name = btn.getAttribute('data-note');
-                    const freq = parseFloat(btn.getAttribute('data-freq'));
-                    const semitone = parseInt(btn.getAttribute('data-semitone'), 10);
-                    currentNote = { name, freq, semitone };
+                    const notesList = getAllChromaticNotesInCurrentOctave();
+                    const noteObj = notesList[idx] || {
+                        name: btn.getAttribute('data-note'),
+                        freq: parseFloat(btn.getAttribute('data-freq')),
+                        semitone: parseInt(btn.getAttribute('data-semitone'), 10)
+                    };
+                    currentNote = noteObj;
                     errorCount = 0;
                     updateAttemptBadge();
-                    targetNoteDisplayEl.textContent = name;
-                    targetFreqSubEl.textContent = `Referência: ${freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(freq)})`;
+                    targetNoteDisplayEl.textContent = noteObj.name;
+                    targetFreqSubEl.textContent = `Referência: ${noteObj.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteObj.freq)})`;
 
                     listening = false;
                     if (shouldUseAutoMirrorMode() && analyser) {
                         await playRecordAndCompare(currentNote);
                     } else {
-                        await SoundFontEngine.playNote(freq, { duration: 1.0 });
+                        await SoundFontEngine.playNote(noteObj.freq, { duration: 1.0 });
                         setTimeout(() => {
                             if (analyser) {
                                 listening = true;
@@ -3314,10 +3528,10 @@
             }
 
             if (currentPath === 'triads') {
-                const allChrom = getAllChromaticNotesInCurrentOctave();
+                const rootNote = getAllChromaticNotesInCurrentOctave()[0];
                 const stepSpec = triadPatternSemitones[triadStepIndex % triadPatternSemitones.length];
                 triadStepIndex++;
-                currentNote = allChrom[stepSpec.semitone];
+                currentNote = getIntervalTargetNote(rootNote, stepSpec);
                 currentBaseNote = null;
                 intervalBadgeEl.classList.remove('hidden');
                 intervalBadgeEl.textContent = `${stepSpec.degree} (${currentNote.name})`;
@@ -3330,7 +3544,7 @@
                 const baseIdx = Math.floor(Math.random() * 5);
                 const baseNote = allChrom[baseIdx];
                 const chosenInterval = melodicIntervals[Math.floor(Math.random() * melodicIntervals.length)];
-                const targetNote = allChrom[baseIdx + chosenInterval.semitones];
+                const targetNote = getIntervalTargetNote(baseNote, chosenInterval);
 
                 currentBaseNote = baseNote;
                 currentNote = targetNote;
