@@ -271,7 +271,7 @@
                         <button data-path="scalerest"
                             class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">6. Repouso Após Escala</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Executa a escala rápida e toca a nota alvo longa (não a tônica) para você entoar.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Executa a escala rápida e toca a nota alvo longa (qualquer grau da escala) para você entoar.</p>
                         </button>
                         <button data-path="mirror"
                             class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-gold/30">
@@ -1640,11 +1640,11 @@
             },
             scalerest: {
                 badge: 'Trilha 6 · Repouso Após Escala',
-                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (um grau da escala diferente da tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (qualquer grau sorteado da escala, inclusive a tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
             },
             freelab: {
                 badge: 'Trilha 6 · Repouso Após Escala',
-                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (um grau da escala diferente da tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (qualquer grau sorteado da escala, inclusive a tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
             },
             mirror: {
                 badge: 'Trilha 7 · Espelho Vocal (3s)',
@@ -3664,9 +3664,8 @@
                         patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
                     }
 
-                    // Seleciona nota alvo da escala diferente da tônica
-                    const nonTonicPool = pool.filter((_, idx) => idx !== 0 && idx !== pool.length - 1);
-                    const candidates = nonTonicPool.length > 0 ? nonTonicPool : pool;
+                    // Seleciona a nota alvo da escala ativa (incluindo eventualmente a tônica)
+                    const candidates = pool;
                     const chosenTarget = candidates[Math.floor(Math.random() * candidates.length)];
                     lastScaleRestTargetNote = chosenTarget;
 
@@ -4082,9 +4081,8 @@
                 patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
             }
 
-            // Seleciona uma nota alvo da escala diferente da tônica
-            const nonTonicPool = pool.filter((_, idx) => idx !== 0 && idx !== pool.length - 1);
-            const candidates = nonTonicPool.length > 0 ? nonTonicPool : pool;
+            // Seleciona a nota alvo da escala ativa (incluindo eventualmente a tônica)
+            const candidates = pool;
             let targetNote = forcedTargetNote;
             if (!targetNote) {
                 const filtered = candidates.filter(n => !currentNote || n.freq !== currentNote.freq);
