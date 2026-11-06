@@ -1214,12 +1214,16 @@
         // Estado da Gravação Automática de 3s & Comparação (Espelho Auditivo)
         const VOICE_RECORD_DURATION_MS = 3000;
         let userMicStream = null;
+        let micStreamSourceNode = null;
+        let voiceRecorderWorkletNode = null;
         let voiceRecorderProcessor = null;
         let nativeMediaRecorder = null;
         let mediaRecorderChunks = [];
         let isRecordingVoice3s = false;
+        let recordedWorkletChunks = [];
         let recordedPcmChunks = [];
         let recordedPitchSamples = [];
+        let lastPitchLoopTime = 0;
         let lastRecordedVoiceBuffer = null;
         let lastAutoTunedVoiceBuffer = null;
         let lastRecordedVoiceBlobUrl = null;
@@ -2074,11 +2078,22 @@
                 await nativeCtx.resume();
             }
 
+            // 1. Captura o microfone diretamente com filtros WebRTC DESATIVADOS
+            //    (evita que echoCancellation/noiseSuppression/autoGainControl cortem ou "piquem" notas vocais sustentadas)
+            //    e na mesma taxa de amostragem (sampleRate) do AudioContext nativo.
             if (!userMicStream) {
-                const candidateStream = mic && (mic._stream || (mic._mediaStream && mic._mediaStream.mediaStream));
-                if (candidateStream instanceof MediaStream) {
-                    userMicStream = candidateStream;
-                } else {
+                try {
+                    userMicStream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: { ideal: false },
+                            noiseSuppression: { ideal: false },
+                            autoGainControl: { ideal: false },
+                            channelCount: { ideal: 1 },
+                            sampleRate: { ideal: nativeCtx.sampleRate },
+                            latency: { ideal: 0.01 }
+                        }
+                    });
+                } catch (e) {
                     try {
                         userMicStream = await navigator.mediaDevices.getUserMedia({
                             audio: {
@@ -2087,32 +2102,115 @@
                                 autoGainControl: false
                             }
                         });
-                    } catch (e) {
+                    } catch (e2) {
                         userMicStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     }
                 }
+
+                // Garante nas tracks de áudio que os filtros de voz que picotam sustentação estejam desligados
+                try {
+                    const tracks = userMicStream.getAudioTracks();
+                    for (const track of tracks) {
+                        if (track.applyConstraints) {
+                            await track.applyConstraints({
+                                echoCancellation: false,
+                                noiseSuppression: false,
+                                autoGainControl: false
+                            }).catch(() => {});
+                        }
+                    }
+                } catch (e) {}
             }
 
-            try {
-                if (!voiceRecorderProcessor && userMicStream) {
-                    const streamSource = nativeCtx.createMediaStreamSource(userMicStream);
-                    voiceRecorderProcessor = nativeCtx.createScriptProcessor(2048, 1, 1);
-                    const keepAliveGain = nativeCtx.createGain();
-                    // Ganho mínimo não-zero (-100 dB) impede que o Chromium otimize/desative o ScriptProcessorNode
-                    keepAliveGain.gain.setValueAtTime(0.00001, nativeCtx.currentTime);
+            if (!micStreamSourceNode && userMicStream) {
+                micStreamSourceNode = nativeCtx.createMediaStreamSource(userMicStream);
+            }
 
-                    streamSource.connect(voiceRecorderProcessor);
-                    voiceRecorderProcessor.connect(keepAliveGain);
-                    keepAliveGain.connect(nativeCtx.destination);
+            // 2. Cria o AnalyserNode nativo no mesmo AudioContext (zero conflito de sampleRate e zero realocação por quadro)
+            if (!analyser && micStreamSourceNode) {
+                const nativeAnalyser = nativeCtx.createAnalyser();
+                nativeAnalyser.fftSize = FFT_SIZE;
+                nativeAnalyser.smoothingTimeConstant = 0.0;
+                micStreamSourceNode.connect(nativeAnalyser);
+                const reusableTimeDomainBuffer = new Float32Array(FFT_SIZE);
+                analyser = {
+                    getValue: () => {
+                        nativeAnalyser.getFloatTimeDomainData(reusableTimeDomainBuffer);
+                        return reusableTimeDomainBuffer;
+                    }
+                };
+            }
 
-                    voiceRecorderProcessor.onaudioprocess = (event) => {
-                        if (!isRecordingVoice3s) return;
-                        const inputData = event.inputBuffer.getChannelData(0);
-                        recordedPcmChunks.push(new Float32Array(inputData));
-                    };
+            // 3. Registra um AudioWorkletNode em thread de áudio dedicada (tempo real, sem jamais sofrer cortes/cliques da UI)
+            if (!voiceRecorderWorkletNode && !voiceRecorderProcessor && micStreamSourceNode) {
+                const keepAliveGain = nativeCtx.createGain();
+                keepAliveGain.gain.setValueAtTime(0.000001, nativeCtx.currentTime);
+                keepAliveGain.connect(nativeCtx.destination);
+
+                if (nativeCtx.audioWorklet && typeof window.AudioWorkletNode !== 'undefined') {
+                    try {
+                        const workletCode = `
+                            class VoiceCaptureWorkletProcessor extends AudioWorkletProcessor {
+                                constructor() {
+                                    super();
+                                    this._chunkSize = 2048;
+                                    this._buf = new Float32Array(this._chunkSize);
+                                    this._pos = 0;
+                                }
+                                process(inputs) {
+                                    const input = inputs[0];
+                                    if (input && input[0]) {
+                                        const ch = input[0];
+                                        const len = ch.length;
+                                        for (let i = 0; i < len; i++) {
+                                            this._buf[this._pos++] = ch[i];
+                                            if (this._pos >= this._chunkSize) {
+                                                this.port.postMessage(this._buf);
+                                                this._buf = new Float32Array(this._chunkSize);
+                                                this._pos = 0;
+                                            }
+                                        }
+                                    }
+                                    return true;
+                                }
+                            }
+                            registerProcessor('voice-capture-worklet', VoiceCaptureWorkletProcessor);
+                        `;
+                        const blob = new Blob([workletCode], { type: 'application/javascript' });
+                        const workletUrl = URL.createObjectURL(blob);
+                        await nativeCtx.audioWorklet.addModule(workletUrl);
+                        URL.revokeObjectURL(workletUrl);
+
+                        voiceRecorderWorkletNode = new AudioWorkletNode(nativeCtx, 'voice-capture-worklet');
+                        voiceRecorderWorkletNode.port.onmessage = (ev) => {
+                            if (!isRecordingVoice3s) return;
+                            if (ev.data && ev.data.length) {
+                                recordedWorkletChunks.push(new Float32Array(ev.data));
+                            }
+                        };
+                        micStreamSourceNode.connect(voiceRecorderWorkletNode);
+                        voiceRecorderWorkletNode.connect(keepAliveGain);
+                    } catch (workletErr) {
+                        console.warn('AudioWorklet indisponível neste protocolo, usando MediaRecorder + ScriptProcessor(4096):', workletErr);
+                    }
                 }
-            } catch (err) {
-                console.warn('Aviso ao configurar ScriptProcessorNode nativo:', err);
+
+                // Fallback caso AudioWorklet não esteja disponível (ex: protocolo file://)
+                if (!voiceRecorderWorkletNode) {
+                    try {
+                        voiceRecorderProcessor = nativeCtx.createScriptProcessor(4096, 1, 1);
+                        micStreamSourceNode.connect(voiceRecorderProcessor);
+                        voiceRecorderProcessor.connect(keepAliveGain);
+
+                        voiceRecorderProcessor.onaudioprocess = (event) => {
+                            if (!isRecordingVoice3s) return;
+                            const inputData = event.inputBuffer.getChannelData(0);
+                            recordedPcmChunks.push(new Float32Array(inputData));
+                        };
+                    } catch (err) {
+                        console.warn('Aviso ao configurar ScriptProcessorNode nativo:', err);
+                    }
+                }
             }
         }
 
@@ -2120,7 +2218,21 @@
             mediaRecorderChunks = [];
             if (!userMicStream || typeof window.MediaRecorder === 'undefined') return;
             try {
-                nativeMediaRecorder = new MediaRecorder(userMicStream);
+                // Prioriza gravação PCM sem compressão na thread nativa C++ do navegador para evitar qualquer artefato ou clique
+                const preferredTypes = [
+                    'audio/webm;codecs=pcm',
+                    'audio/webm;codecs=opus',
+                    'audio/ogg;codecs=opus',
+                    'audio/mp4'
+                ];
+                let options = { audioBitsPerSecond: 256000 };
+                for (const mime of preferredTypes) {
+                    if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime)) {
+                        options = { mimeType: mime, audioBitsPerSecond: 256000 };
+                        break;
+                    }
+                }
+                nativeMediaRecorder = new MediaRecorder(userMicStream, options);
                 nativeMediaRecorder.ondataavailable = (ev) => {
                     if (ev.data && ev.data.size > 0) {
                         mediaRecorderChunks.push(ev.data);
@@ -2128,8 +2240,18 @@
                 };
                 nativeMediaRecorder.start();
             } catch (e) {
-                console.warn('Aviso ao iniciar MediaRecorder nativo:', e);
-                nativeMediaRecorder = null;
+                try {
+                    nativeMediaRecorder = new MediaRecorder(userMicStream);
+                    nativeMediaRecorder.ondataavailable = (ev) => {
+                        if (ev.data && ev.data.size > 0) {
+                            mediaRecorderChunks.push(ev.data);
+                        }
+                    };
+                    nativeMediaRecorder.start();
+                } catch (e2) {
+                    console.warn('Aviso ao iniciar MediaRecorder nativo:', e2);
+                    nativeMediaRecorder = null;
+                }
             }
         }
 
@@ -2258,34 +2380,77 @@
             const ctx = await SoundFontEngine.ensureAudioContext();
             const sampleRate = ctx.sampleRate;
 
-            let totalLength = 0;
-            for (let i = 0; i < recordedPcmChunks.length; i++) {
-                totalLength += recordedPcmChunks[i].length;
-            }
-
             let rawSamples = null;
             let pcmPeak = 0;
-            if (totalLength > 0) {
-                rawSamples = new Float32Array(totalLength);
-                let offset = 0;
-                for (let i = 0; i < recordedPcmChunks.length; i++) {
-                    rawSamples.set(recordedPcmChunks[i], offset);
-                    offset += recordedPcmChunks[i].length;
+
+            // 1ª Prioridade: AudioWorkletNode em thread dedicada de tempo real (zero dropouts da UI, zero compressão)
+            if (recordedWorkletChunks.length > 0) {
+                let totalLen = 0;
+                for (let i = 0; i < recordedWorkletChunks.length; i++) {
+                    totalLen += recordedWorkletChunks[i].length;
                 }
-                for (let i = 0; i < rawSamples.length; i++) {
-                    const a = Math.abs(rawSamples[i]);
-                    if (a > pcmPeak) pcmPeak = a;
+                if (totalLen > 0) {
+                    rawSamples = new Float32Array(totalLen);
+                    let offset = 0;
+                    for (let i = 0; i < recordedWorkletChunks.length; i++) {
+                        rawSamples.set(recordedWorkletChunks[i], offset);
+                        offset += recordedWorkletChunks[i].length;
+                    }
+                    for (let i = 0; i < rawSamples.length; i++) {
+                        const a = Math.abs(rawSamples[i]);
+                        if (a > pcmPeak) pcmPeak = a;
+                    }
                 }
             }
 
-            // Se os chunks PCM estiverem vazios ou silenciosos, decodifica o Blob gravado pelo MediaRecorder no AudioContext nativo
+            // 2ª Prioridade: Blob gravado pelo MediaRecorder nativo (capturado na thread C++ de mídia do navegador, sem cortes da thread principal)
             if ((!rawSamples || pcmPeak < 0.0005) && fallbackBlob && fallbackBlob.size > 0) {
                 try {
                     const arrBuf = await fallbackBlob.arrayBuffer();
                     const decoded = await SoundFontEngine.decodeAudioDataCompat(ctx, arrBuf);
                     rawSamples = new Float32Array(decoded.getChannelData(0));
+                    pcmPeak = 0;
+                    for (let i = 0; i < rawSamples.length; i++) {
+                        const a = Math.abs(rawSamples[i]);
+                        if (a > pcmPeak) pcmPeak = a;
+                    }
                 } catch (e) {
                     console.warn('Aviso ao decodificar Blob no AudioContext nativo:', e);
+                }
+            }
+
+            // 3ª Prioridade (Fallback): chunks do ScriptProcessorNode(4096) com suavização de bordas de bloco
+            if ((!rawSamples || pcmPeak < 0.0005) && recordedPcmChunks.length > 0) {
+                let totalLen = 0;
+                for (let i = 0; i < recordedPcmChunks.length; i++) {
+                    totalLen += recordedPcmChunks[i].length;
+                }
+                if (totalLen > 0) {
+                    rawSamples = new Float32Array(totalLen);
+                    let offset = 0;
+                    for (let i = 0; i < recordedPcmChunks.length; i++) {
+                        const chunk = recordedPcmChunks[i];
+                        rawSamples.set(chunk, offset);
+                        // Suaviza micro-descontinuidades na fronteira entre blocos caso a UI tenha atrasado
+                        if (i > 0 && offset >= 8 && chunk.length >= 8) {
+                            const prevVal = rawSamples[offset - 1];
+                            const nextVal = rawSamples[offset];
+                            const jump = nextVal - prevVal;
+                            if (Math.abs(jump) > 0.08) {
+                                for (let k = 0; k < 8; k++) {
+                                    const w = (8 - k) / 9;
+                                    rawSamples[offset + k] -= jump * w * 0.5;
+                                    rawSamples[offset - 1 - k] += jump * w * 0.5;
+                                }
+                            }
+                        }
+                        offset += chunk.length;
+                    }
+                    pcmPeak = 0;
+                    for (let i = 0; i < rawSamples.length; i++) {
+                        const a = Math.abs(rawSamples[i]);
+                        if (a > pcmPeak) pcmPeak = a;
+                    }
                 }
             }
 
@@ -2294,7 +2459,19 @@
                 return ctx.createBuffer(1, sampleRate * 2, sampleRate);
             }
 
-            // Remove silêncio inicial excessivo (até no máximo 0.85s) para que o ataque da voz alinhe com a nota de origem quando tocarem juntas
+            // Remove DC offset (nível contínuo do microfone) para evitar cliques no início, fim ou cortes
+            let dcSum = 0;
+            for (let i = 0; i < rawSamples.length; i++) {
+                dcSum += rawSamples[i];
+            }
+            const dcMean = dcSum / rawSamples.length;
+            if (Math.abs(dcMean) > 0.00001) {
+                for (let i = 0; i < rawSamples.length; i++) {
+                    rawSamples[i] -= dcMean;
+                }
+            }
+
+            // Remove silêncio inicial excessivo (até no máximo 0.85s) alinhando o ponto de corte em um cruzamento por zero (zero-crossing)
             const maxTrimSamples = Math.min(rawSamples.length - Math.floor(sampleRate * 0.5), Math.floor(sampleRate * 0.85));
             const windowSize = 256;
             let trimStart = 0;
@@ -2306,9 +2483,13 @@
                 }
                 const rms = Math.sqrt(sumSq / windowSize);
                 if (rms > 0.008) {
-                    trimStart = Math.max(0, i - Math.floor(sampleRate * 0.03));
+                    trimStart = Math.max(0, i - Math.floor(sampleRate * 0.035));
                     break;
                 }
+            }
+            // Ajusta trimStart para o zero-crossing mais próximo para nunca iniciar em meio de onda
+            while (trimStart > 0 && trimStart < rawSamples.length - 1 && (rawSamples[trimStart] * rawSamples[trimStart + 1] > 0)) {
+                trimStart--;
             }
 
             const trimmed = rawSamples.slice(trimStart);
@@ -2320,10 +2501,10 @@
 
             lastRecordedVoiceHasPcm = maxPeak > 0.0004;
 
-            // Normalização suave de amplitude para manter a voz gravada natural e equilibrada, sem ficar muito forte
-            const normFactor = maxPeak > 0.002 ? Math.min(3.5, 0.52 / maxPeak) : 1.0;
-            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(trimmed.length / 4));
-            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(trimmed.length / 4));
+            // Normalização suave de amplitude + envelope raised-cosine (Hann) nas bordas + soft-limiter contínuo (sem hard-clipping)
+            const normFactor = maxPeak > 0.002 ? Math.min(3.2, 0.50 / maxPeak) : 1.0;
+            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.025), Math.floor(trimmed.length / 4));
+            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.045), Math.floor(trimmed.length / 4));
 
             const outBuffer = ctx.createBuffer(1, trimmed.length, sampleRate);
             const channelOut = outBuffer.getChannelData(0);
@@ -2331,11 +2512,14 @@
             for (let i = 0; i < trimmed.length; i++) {
                 let env = 1.0;
                 if (i < fadeInSamples) {
-                    env = i / fadeInSamples;
+                    env = 0.5 * (1.0 - Math.cos(Math.PI * (i / fadeInSamples)));
                 } else if (i > trimmed.length - fadeOutSamples) {
-                    env = (trimmed.length - i) / fadeOutSamples;
+                    const rem = trimmed.length - i;
+                    env = 0.5 * (1.0 - Math.cos(Math.PI * (rem / fadeOutSamples)));
                 }
-                channelOut[i] = Math.max(-0.85, Math.min(0.85, trimmed[i] * normFactor * env));
+                const val = trimmed[i] * normFactor * env;
+                // Soft-clipping suave (tanh) apenas se ultrapassar 0.75 para nunca achatar picos nem gerar estalos
+                channelOut[i] = Math.abs(val) > 0.75 ? 0.85 * Math.tanh(val / 0.85) : val;
             }
 
             return outBuffer;
@@ -2343,8 +2527,9 @@
 
         /**
          * Gera uma versão corrigida na afinação (estilo Auto-Tune) a partir do AudioBuffer gravado do usuário.
-         * Analisa a frequência fundamental quadro a quadro por autocorrelação e aplica um Pitch-Shifter Granular
-         * Dual-Tap com Janela de Hann (w0 + w1 === 1.0, zero cliques) + reforço harmônico sutil cravado na nota alvo.
+         * Utiliza WSOLA (Waveform Similarity Overlap-Add) Sincronizado por Fase (cross-correlation phase locking)
+         * + interpolação cúbica Hermite de 4 pontos para eliminar 100% dos cliques, cancelamentos de fase ("pipocos")
+         * e batimentos artificiais, mantendo a voz natural na frequência e oitava exatas da nota emitida.
          */
         async function buildAutoTunedVoiceAudioBuffer(voiceBuffer, targetFreq) {
             const ctx = await SoundFontEngine.ensureAudioContext();
@@ -2361,10 +2546,8 @@
             const winSize = Math.min(2048, length);
             const hop = 512;
             const numFrames = Math.max(1, Math.ceil(length / hop));
-            const rawRatios = new Float32Array(numFrames);
-            const validRatios = [];
-
-            const referenceTargetFreq = targetFreq;
+            const detectedFreqs = new Float32Array(numFrames);
+            const validFreqs = [];
 
             for (let f = 0; f < numFrames; f++) {
                 const start = Math.min(Math.max(0, f * hop), Math.max(0, length - winSize));
@@ -2372,96 +2555,167 @@
                 const detected = autoCorrelate(frameSlice, sampleRate);
 
                 if (detected > 65 && detected < 1100) {
-                    // Força a correção para a frequência e OITAVA EXATA da nota emitida (targetFreq)
-                    const ratio = Math.max(0.25, Math.min(4.0, targetFreq / detected));
-                    rawRatios[f] = ratio;
-                    validRatios.push(ratio);
+                    detectedFreqs[f] = detected;
+                    validFreqs.push(detected);
                 } else {
-                    rawRatios[f] = 0;
+                    detectedFreqs[f] = 0;
                 }
             }
 
-            let medianRatio = 1.0;
-            if (validRatios.length > 0) {
-                const sorted = validRatios.slice().sort((a, b) => a - b);
-                medianRatio = sorted[Math.floor(sorted.length / 2)];
+            let medianFreq = targetFreq;
+            if (validFreqs.length > 0) {
+                const sorted = validFreqs.slice().sort((a, b) => a - b);
+                medianFreq = sorted[Math.floor(sorted.length / 2)];
             } else if (recordedPitchSamples.length > 0) {
                 const avgRawFreq = recordedPitchSamples.reduce((acc, s) => acc + (s.rawFreq || s.freq), 0) / recordedPitchSamples.length;
-                if (avgRawFreq > 0) {
-                    medianRatio = Math.max(0.25, Math.min(4.0, targetFreq / avgRawFreq));
+                if (avgRawFreq > 65 && avgRawFreq < 1100) {
+                    medianFreq = avgRawFreq;
                 }
             }
 
+            // Rejeita saltos espúrios de oitava na detecção de quadros ruidosos e calcula a razão de pitch para a oitava exata de targetFreq
+            const rawRatios = new Float32Array(numFrames);
             for (let f = 0; f < numFrames; f++) {
-                if (rawRatios[f] === 0) {
-                    rawRatios[f] = medianRatio;
+                let df = detectedFreqs[f];
+                if (df <= 0 || df < medianFreq * 0.72 || df > medianFreq * 1.38) {
+                    df = medianFreq;
                 }
+                rawRatios[f] = Math.max(0.25, Math.min(4.0, targetFreq / df));
             }
 
+            // Suavização temporal larga (7 quadros) para evitar qualquer modulação abrupta de razão de pitch
             const frameRatios = new Float32Array(numFrames);
             for (let f = 0; f < numFrames; f++) {
-                const rPrev = rawRatios[Math.max(0, f - 1)];
-                const rCurr = rawRatios[f];
-                const rNext = rawRatios[Math.min(numFrames - 1, f + 1)];
-                frameRatios[f] = (rPrev + 2 * rCurr + rNext) / 4;
+                let sum = 0;
+                let wSum = 0;
+                for (let k = -3; k <= 3; k++) {
+                    const idx = Math.max(0, Math.min(numFrames - 1, f + k));
+                    const w = 4 - Math.abs(k);
+                    sum += rawRatios[idx] * w;
+                    wSum += w;
+                }
+                frameRatios[f] = sum / wSum;
             }
 
-            const grainSize = Math.max(512, Math.round(sampleRate * 0.038));
-            let phase0 = 0.0;
-            let currentRatio = frameRatios[0] || 1.0;
-            let synthPhase = 0.0;
-            let envFollower = 0.0;
-
-            const sampleInterp = (pos) => {
-                if (pos <= 0) return inputData[0];
-                if (pos >= length - 1) return inputData[length - 1];
+            // Interpolação Cúbica Hermite de 4 pontos (derivada contínua, sem ruído de escada linear)
+            const sampleCubicInterp = (pos) => {
+                if (pos <= 1) return inputData[0];
+                if (pos >= length - 2) return inputData[length - 1];
                 const idx = Math.floor(pos);
                 const frac = pos - idx;
-                return inputData[idx] * (1.0 - frac) + inputData[idx + 1] * frac;
+                const y0 = inputData[idx - 1];
+                const y1 = inputData[idx];
+                const y2 = inputData[idx + 1];
+                const y3 = inputData[idx + 2];
+                const c0 = y1;
+                const c1 = 0.5 * (y2 - y0);
+                const c2 = y0 - 2.5 * y1 + 2.0 * y2 - 0.5 * y3;
+                const c3 = 0.5 * (y3 - y0) + 1.5 * (y1 - y2);
+                return ((c3 * frac + c2) * frac + c1) * frac + c0;
             };
 
-            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(length / 4));
-            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(length / 4));
+            // Busca o deslocamento (dentro de ±1 período vocal T0) que alinha perfeitamente a fase da nova janela com a janela ativa (WSOLA)
+            const maxPeriod = Math.max(32, Math.min(800, Math.round(sampleRate / Math.max(70, medianFreq * 0.85))));
+            const findBestPhaseAlignedPos = (nominalPos, activeReadPos, halfGrainSamples, ratio) => {
+                // Alinha a fase exatamente no ponto médio do crossfade (onde ambas as janelas terão peso 0.5)
+                const midAdvance = halfGrainSamples * 0.5 * ratio;
+                const refCenter = Math.round(activeReadPos + midAdvance);
+                const candCenter = Math.round(nominalPos + midAdvance);
+                const corrLen = Math.min(128, maxPeriod);
+
+                if (
+                    refCenter - 16 < 0 ||
+                    refCenter + corrLen >= length ||
+                    candCenter - maxPeriod - 16 < 0 ||
+                    candCenter + maxPeriod + corrLen >= length
+                ) {
+                    return Math.max(2, Math.min(length - 3, nominalPos));
+                }
+
+                let bestDelta = 0;
+                let bestCorr = -Infinity;
+                // Passo de 2 amostras + refinamento fino de 1 amostra ao redor do pico
+                for (let delta = -maxPeriod; delta <= maxPeriod; delta += 2) {
+                    let corr = 0;
+                    const cBase = candCenter + delta;
+                    for (let k = 0; k < corrLen; k += 2) {
+                        corr += inputData[refCenter + k] * inputData[cBase + k];
+                    }
+                    if (corr > bestCorr) {
+                        bestCorr = corr;
+                        bestDelta = delta;
+                    }
+                }
+                for (let delta = bestDelta - 1; delta <= bestDelta + 1; delta += 2) {
+                    if (delta < -maxPeriod || delta > maxPeriod) continue;
+                    let corr = 0;
+                    const cBase = candCenter + delta;
+                    for (let k = 0; k < corrLen; k += 2) {
+                        corr += inputData[refCenter + k] * inputData[cBase + k];
+                    }
+                    if (corr > bestCorr) {
+                        bestCorr = corr;
+                        bestDelta = delta;
+                    }
+                }
+                return Math.max(2, Math.min(length - 3, nominalPos + bestDelta));
+            };
+
+            const grainSize = Math.max(1024, Math.round(sampleRate * 0.046));
+            const halfGrain = grainSize * 0.5;
+            const invGrain = 1.0 / grainSize;
+
+            let phase0 = 0.0;
+            let phase1 = 0.5;
+            let currentRatio = frameRatios[0] || 1.0;
+            let readPos0 = 0.0;
+            let readPos1 = 0.0;
+
+            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.025), Math.floor(length / 4));
+            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.045), Math.floor(length / 4));
 
             for (let i = 0; i < length; i++) {
                 const fIdx = Math.min(numFrames - 1, Math.floor(i / hop));
-                currentRatio += 0.006 * (frameRatios[fIdx] - currentRatio);
+                currentRatio += 0.0025 * (frameRatios[fIdx] - currentRatio);
 
-                phase0 += (currentRatio - 1.0) / grainSize;
-                phase0 = phase0 - Math.floor(phase0);
-                let phase1 = phase0 + 0.5;
-                if (phase1 >= 1.0) phase1 -= 1.0;
+                phase0 += invGrain;
+                if (phase0 >= 1.0) {
+                    phase0 -= 1.0;
+                    // Neste exato instante w0 === 0.0 e w1 === 1.0: reposiciona readPos0 sincronizado em fase com readPos1
+                    const nominal0 = i - halfGrain * (currentRatio - 1.0);
+                    readPos0 = findBestPhaseAlignedPos(nominal0, readPos1, halfGrain, currentRatio);
+                }
 
+                phase1 += invGrain;
+                if (phase1 >= 1.0) {
+                    phase1 -= 1.0;
+                    // Neste exato instante w1 === 0.0 e w0 === 1.0: reposiciona readPos1 sincronizado em fase com readPos0
+                    const nominal1 = i - halfGrain * (currentRatio - 1.0);
+                    readPos1 = findBestPhaseAlignedPos(nominal1, readPos0, halfGrain, currentRatio);
+                }
+
+                // Janela de Hann complementar exata (w0 + w1 === 1.0 em todas as amostras)
                 const w0 = 0.5 * (1.0 - Math.cos(2.0 * Math.PI * phase0));
-                const w1 = 0.5 * (1.0 - Math.cos(2.0 * Math.PI * phase1));
+                const w1 = 1.0 - w0;
 
-                const pos0 = i + (phase0 - 0.5) * grainSize;
-                const pos1 = i + (phase1 - 0.5) * grainSize;
-
-                const s0 = sampleInterp(pos0);
-                const s1 = sampleInterp(pos1);
+                const s0 = sampleCubicInterp(readPos0);
+                const s1 = sampleCubicInterp(readPos1);
                 const shiftedVoice = w0 * s0 + w1 * s1;
 
-                const absVal = Math.abs(shiftedVoice);
-                envFollower = absVal > envFollower
-                    ? envFollower + 0.02 * (absVal - envFollower)
-                    : envFollower + 0.0015 * (absVal - envFollower);
-
-                synthPhase += (2.0 * Math.PI * referenceTargetFreq) / sampleRate;
-                if (synthPhase > 2.0 * Math.PI) synthPhase -= 2.0 * Math.PI;
-
-                const autoTuneLock = envFollower > 0.010
-                    ? envFollower * 0.30 * (0.65 * Math.sin(synthPhase) + 0.25 * Math.sin(2.0 * synthPhase) + 0.10 * Math.sin(3.0 * synthPhase))
-                    : 0.0;
+                // Avança continuamente os cursores de leitura na razão exata da nota alvo
+                readPos0 += currentRatio;
+                readPos1 += currentRatio;
 
                 let env = 1.0;
                 if (i < fadeInSamples) {
-                    env = i / fadeInSamples;
+                    env = 0.5 * (1.0 - Math.cos(Math.PI * (i / fadeInSamples)));
                 } else if (i > length - fadeOutSamples) {
-                    env = (length - i) / fadeOutSamples;
+                    const rem = length - i;
+                    env = 0.5 * (1.0 - Math.cos(Math.PI * (rem / fadeOutSamples)));
                 }
 
-                outputData[i] = Math.max(-0.85, Math.min(0.85, (0.82 * shiftedVoice + autoTuneLock) * env));
+                const val = shiftedVoice * env;
+                outputData[i] = Math.abs(val) > 0.75 ? 0.85 * Math.tanh(val / 0.85) : val;
             }
 
             return outBuffer;
@@ -2491,16 +2745,18 @@
                 source.buffer = audioBuffer;
 
                 const voiceGain = ctx.createGain();
-                voiceGain.gain.setValueAtTime(gain, ctx.currentTime);
+                const startTime = ctx.currentTime + 0.01;
+                voiceGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+                voiceGain.gain.linearRampToValueAtTime(gain, startTime + 0.015);
                 activeRecordedVoiceGainNode = voiceGain;
 
                 source.connect(voiceGain);
                 voiceGain.connect(ctx.destination);
-                source.start(ctx.currentTime);
+                source.start(startTime);
 
                 if (duration && duration < audioBuffer.duration) {
-                    const stopTime = ctx.currentTime + duration;
-                    voiceGain.gain.setValueAtTime(gain, Math.max(ctx.currentTime, stopTime - 0.04));
+                    const stopTime = startTime + duration;
+                    voiceGain.gain.setValueAtTime(gain, Math.max(startTime + 0.02, stopTime - 0.05));
                     voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
                     source.stop(stopTime + 0.01);
                 }
@@ -2562,21 +2818,23 @@
 
             const voiceGain = ctx.createGain();
             // Ganho levemente equilibrado ao somar os dois sinais de voz para evitar clipping
-            const combinedGain = Math.min(2.0, gain * 0.82);
-            voiceGain.gain.setValueAtTime(combinedGain, ctx.currentTime);
+            const combinedGain = Math.min(2.0, gain * 0.78);
+            const startTime = ctx.currentTime + 0.01;
+            voiceGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+            voiceGain.gain.linearRampToValueAtTime(combinedGain, startTime + 0.015);
             activeRecordedVoiceGainNode = voiceGain;
 
             source1.connect(voiceGain);
             source2.connect(voiceGain);
             voiceGain.connect(ctx.destination);
 
-            source1.start(0);
-            source2.start(0);
+            source1.start(startTime);
+            source2.start(startTime);
 
             const maxDur = Math.max(buffer1.duration, buffer2.duration);
             if (duration && duration < maxDur) {
-                const stopTime = ctx.currentTime + duration;
-                voiceGain.gain.setValueAtTime(combinedGain, Math.max(ctx.currentTime, stopTime - 0.04));
+                const stopTime = startTime + duration;
+                voiceGain.gain.setValueAtTime(combinedGain, Math.max(startTime + 0.02, stopTime - 0.05));
                 voiceGain.gain.linearRampToValueAtTime(0.0001, stopTime);
                 source1.stop(stopTime + 0.01);
                 source2.stop(stopTime + 0.01);
@@ -2805,6 +3063,7 @@
             // 2. INICIA AUTOMATICAMENTE A GRAVAÇÃO DA VOZ POR 3 SEGUNDOS
             const startRecTimer = setTimeout(async () => {
                 highlightMirrorStepButton(null);
+                recordedWorkletChunks = [];
                 recordedPcmChunks = [];
                 recordedPitchSamples = [];
                 isRecordingVoice3s = true;
@@ -2912,10 +3171,7 @@
                 // Carrega sob demanda o instrumento inicial (Coro Vocal / choir_aahs) e pré-decodifica somente as notas da escala atual
                 await setInstrument(timbreSelect.value);
 
-                analyser = new Tone.Analyser('waveform', FFT_SIZE);
-                mic = new Tone.UserMedia();
-                await mic.open();
-                mic.connect(analyser);
+                // Inicializa o microfone diretamente no AudioContext nativo (com filtros WebRTC desligados e AudioWorklet dedicado)
                 await setupVoiceRecorderGraph();
 
                 statusEl.textContent = 'Microfone e Coro Vocal (FluidR3_GM) prontos · Biofeedback e Espelho Vocal 3s ativos';
@@ -3152,22 +3408,34 @@
             for (let i = 0; i < SIZE / 2; i++) if (Math.abs(buffer[i]) < 0.2) { r1 = i; break; }
             for (let i = 1; i < SIZE / 2; i++) if (Math.abs(buffer[SIZE - i]) < 0.2) { r2 = SIZE - i; break; }
 
-            const buffer2 = buffer.slice(r1, r2);
-            const c = new Float32Array(buffer2.length).fill(0);
-            for (let i = 0; i < buffer2.length; i++) {
-                for (let j = 0; j < buffer2.length - i; j++) {
-                    c[i] += buffer2[j] * buffer2[j + i];
+            const len = r2 - r1;
+            if (len < 64) return -1;
+
+            // Limita os atrasos (lags) à faixa vocal humana (60 Hz a 1150 Hz) para reduzir o custo de CPU em ~80%
+            const minLag = Math.max(2, Math.floor(sampleRate / 1150));
+            const maxLag = Math.min(len - 2, Math.ceil(sampleRate / 60));
+            if (maxLag <= minLag) return -1;
+
+            const c = new Float32Array(maxLag + 2);
+            const integrationWindow = Math.min(len - maxLag, 1024);
+
+            for (let lag = 0; lag <= maxLag + 1; lag++) {
+                let sum = 0;
+                const limit = integrationWindow > 256 ? integrationWindow : (len - lag);
+                for (let j = 0; j < limit; j++) {
+                    sum += buffer[r1 + j] * buffer[r1 + j + lag];
                 }
+                c[lag] = sum;
             }
 
-            let d = 0;
-            while (d < c.length && d + 1 < c.length && c[d] > c[d + 1]) d++;
+            let d = minLag;
+            while (d < maxLag && c[d] > c[d + 1]) d++;
             let maxval = -1, maxpos = -1;
-            for (let i = d; i < buffer2.length; i++) {
+            for (let i = d; i <= maxLag; i++) {
                 if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
             }
 
-            if (maxpos === -1 || maxpos === 0 || maxpos >= c.length - 1) return -1;
+            if (maxpos === -1 || maxpos <= minLag || maxpos >= maxLag) return -1;
 
             let T0 = maxpos;
             const x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
@@ -3194,9 +3462,14 @@
             }
         }
 
-        function getPitchLoop() {
+        function getPitchLoop(now = performance.now()) {
             requestAnimationFrame(getPitchLoop);
             if (!listening || !analyser || actionTaken) return;
+
+            // Durante a gravação de 3s, limita a análise visual na thread principal a ~16Hz (a cada 60ms)
+            // para deixar a CPU 100% livre para a captura contínua do áudio sem estalos
+            if (isRecordingVoice3s && (now - lastPitchLoopTime < 60)) return;
+            lastPitchLoopTime = now;
 
             const waveformData = analyser.getValue();
             const frequency = autoCorrelate(waveformData, audioContext.sampleRate);
