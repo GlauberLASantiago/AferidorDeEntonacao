@@ -271,7 +271,7 @@
                         <button data-path="scalerest"
                             class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">6. Repouso Após Escala</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Escala rápida (semicolcheias) repousando em nota longa para você entoar.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Executa a escala rápida e toca a nota alvo longa (não a tônica) para você entoar.</p>
                         </button>
                         <button data-path="mirror"
                             class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-gold/30">
@@ -1640,11 +1640,11 @@
             },
             scalerest: {
                 badge: 'Trilha 6 · Repouso Após Escala',
-                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala rapidamente (como semicolcheias) e repousa em uma <strong>nota longa alvo</strong>. As trajetórias variam aleatoriamente entre <em>Ascendente (Tônica → Oitava)</em>, <em>Descendente (Oitava → Tônica)</em>, <em>Dupla (Ida e Volta: Tônica → Oitava → Tônica)</em> e <em>Dupla (Volta e Ida: Oitava → Tônica → Oitava)</em> para treinar a precisão vocal imediata após agilidade melódica!'
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (um grau da escala diferente da tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
             },
             freelab: {
                 badge: 'Trilha 6 · Repouso Após Escala',
-                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala rapidamente (como semicolcheias) e repousa em uma <strong>nota longa alvo</strong>. As trajetórias variam aleatoriamente entre <em>Ascendente (Tônica → Oitava)</em>, <em>Descendente (Oitava → Tônica)</em>, <em>Dupla (Ida e Volta: Tônica → Oitava → Tônica)</em> e <em>Dupla (Volta e Ida: Oitava → Tônica → Oitava)</em> para treinar a precisão vocal imediata após agilidade melódica!'
+                banner: '<strong class="text-brand-gold">Trilha 6 (Repouso Após Escala):</strong> O aplicativo executa a escala completa rapidamente (em semicolcheias) e, em seguida, toca uma <strong>nota alvo longa</strong> (um grau da escala diferente da tônica) para você entoar. As trajetórias variam aleatoriamente entre <em>Ascendente</em>, <em>Descendente</em> e <em>Duplas</em> para treinar a percepção tonal imediata e o ataque vocal após agilidade melódica!'
             },
             mirror: {
                 badge: 'Trilha 7 · Espelho Vocal (3s)',
@@ -1703,6 +1703,7 @@
         const MAX_CONSECUTIVE_REPEATS = 3;
         let audiationTimer = null;
         let lastScaleRestPattern = null;
+        let lastScaleRestTargetNote = null;
 
         // Contadores de sustentação em tempo real
         let sustainFrames = 0;
@@ -3647,50 +3648,68 @@
                     lastScaleRestPattern = chosenPattern;
                     const asc = pool.slice();
                     const desc = pool.slice().reverse();
-                    let fullSeq = [];
+                    let scaleNotes = [];
                     let patternLabel = '';
                     if (chosenPattern === 'asc') {
-                        fullSeq = asc;
+                        scaleNotes = asc;
                         patternLabel = 'Escala Ascendente (Tônica → Oitava)';
                     } else if (chosenPattern === 'desc') {
-                        fullSeq = desc;
+                        scaleNotes = desc;
                         patternLabel = 'Escala Descendente (Oitava → Tônica)';
                     } else if (chosenPattern === 'asc_desc') {
-                        fullSeq = asc.concat(desc.slice(1));
+                        scaleNotes = asc.concat(desc.slice(1));
                         patternLabel = 'Escala Dupla (Tônica → Oitava → Tônica)';
                     } else {
-                        fullSeq = desc.concat(asc.slice(1));
+                        scaleNotes = desc.concat(asc.slice(1));
                         patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
                     }
-                    const rapidNotes = fullSeq.slice(0, -1);
-                    noteToPlay = fullSeq[fullSeq.length - 1];
-                    currentNote = noteToPlay;
-                    currentBaseNote = fullSeq[0];
-                    lastComparisonNote = noteToPlay;
 
-                    targetNoteDisplayEl.textContent = noteToPlay.name;
-                    targetFreqSubEl.textContent = `Alvo (Repouso): ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
+                    // Seleciona nota alvo da escala diferente da tônica
+                    const nonTonicPool = pool.filter((_, idx) => idx !== 0 && idx !== pool.length - 1);
+                    const candidates = nonTonicPool.length > 0 ? nonTonicPool : pool;
+                    const chosenTarget = candidates[Math.floor(Math.random() * candidates.length)];
+                    lastScaleRestTargetNote = chosenTarget;
+
+                    noteToPlay = chosenTarget;
+                    currentNote = chosenTarget;
+                    currentBaseNote = scaleNotes[0];
+                    lastComparisonNote = chosenTarget;
+
+                    targetNoteDisplayEl.textContent = chosenTarget.name;
+                    targetFreqSubEl.textContent = `Alvo (Repouso): ${chosenTarget.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(chosenTarget.freq)}) · ${patternLabel}`;
                     intervalBadgeEl.classList.remove('hidden');
-                    intervalBadgeEl.textContent = patternLabel;
+                    intervalBadgeEl.textContent = `${patternLabel} → Alvo: ${chosenTarget.name}`;
 
-                    instructionEl.textContent = `1. Ouvindo ${patternLabel}... Repouso em ${noteToPlay.name.toUpperCase()}!`;
-                    feedbackEl.textContent = 'A gravação iniciará logo após a nota longa de repouso.';
-                    mirrorStatusBadgeEl.textContent = '🔊 Executando escala e repouso...';
+                    instructionEl.textContent = `1. Ouvindo ${patternLabel}... Em seguida, nota alvo: ${chosenTarget.name.toUpperCase()}!`;
+                    feedbackEl.textContent = `A escala executará completa em semicolcheias. Em seguida, soará a nota longa alvo (${chosenTarget.name.toUpperCase()}).`;
+                    mirrorStatusBadgeEl.textContent = '🔊 Executando escala e nota alvo...';
                     mirrorProgressBarEl.style.width = '0%';
 
-                    await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, fullSeq.map(n => n.freq));
+                    await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, scaleNotes.concat([chosenTarget]).map(n => n.freq));
 
                     const sixteenthDuration = 0.115;
                     const sixteenthStep = 0.110;
-                    const restDuration = 1.35;
+                    const scaleDuration = scaleNotes.length * sixteenthStep;
+                    const pauseAfterScale = 0.28;
+                    const targetDelay = scaleDuration + pauseAfterScale;
+                    const targetDuration = 1.40;
 
-                    rapidNotes.forEach((n, idx) => {
-                        SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.82 });
+                    // Executa a escala completa em semicolcheias
+                    scaleNotes.forEach((n, idx) => {
+                        SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.80 });
                     });
-                    const restDelay = rapidNotes.length * sixteenthStep;
-                    SoundFontEngine.playNote(noteToPlay.freq, { duration: restDuration, delay: restDelay, velocity: 0.95 });
 
-                    preRecordingDelayMs = Math.round((restDelay + restDuration + 0.35) * 1000);
+                    // Avisa quando a nota alvo longa for executada
+                    const targetTimer = setTimeout(() => {
+                        instructionEl.textContent = `1. Nota Alvo Longa: ${chosenTarget.name.toUpperCase()}...`;
+                        feedbackEl.textContent = 'Prepare o fôlego: a gravação de 3 segundos começará logo após esta nota!';
+                    }, Math.round(targetDelay * 1000));
+                    comparisonTimers.push(targetTimer);
+
+                    // Executa a nota alvo longa
+                    SoundFontEngine.playNote(chosenTarget.freq, { duration: targetDuration, delay: targetDelay, velocity: 0.95 });
+
+                    preRecordingDelayMs = Math.round((targetDelay + targetDuration + 0.30) * 1000);
                 }
             } else {
                 instructionEl.textContent = `1. Ouça a nota de origem (${noteToPlay.name})... A gravação iniciará automaticamente!`;
@@ -3929,7 +3948,7 @@
             updateSustainProgress(0);
 
             if (currentPath === 'scalerest' || currentPath === 'freelab') {
-                playScaleRestAndSetupListener(lastScaleRestPattern);
+                playScaleRestAndSetupListener(lastScaleRestPattern, lastScaleRestTargetNote);
             } else if (currentPath === 'audiation') {
                 playAudiationAndSetupListener(currentNote);
             } else if (currentPath === 'intervals' && currentBaseNote) {
@@ -4024,7 +4043,7 @@
             }, 2600);
         };
 
-        const playScaleRestAndSetupListener = async (patternType = null) => {
+        const playScaleRestAndSetupListener = async (patternType = null, forcedTargetNote = null) => {
             const pool = getActiveNotesPool();
             if (!pool || pool.length < 2) return;
 
@@ -4046,57 +4065,78 @@
 
             const asc = pool.slice();
             const desc = pool.slice().reverse();
-            let fullSeq = [];
+            let scaleNotes = [];
             let patternLabel = '';
 
             if (chosenPattern === 'asc') {
-                fullSeq = asc;
+                scaleNotes = asc;
                 patternLabel = 'Escala Ascendente (Tônica → Oitava)';
             } else if (chosenPattern === 'desc') {
-                fullSeq = desc;
+                scaleNotes = desc;
                 patternLabel = 'Escala Descendente (Oitava → Tônica)';
             } else if (chosenPattern === 'asc_desc') {
-                fullSeq = asc.concat(desc.slice(1));
+                scaleNotes = asc.concat(desc.slice(1));
                 patternLabel = 'Escala Dupla (Tônica → Oitava → Tônica)';
             } else {
-                fullSeq = desc.concat(asc.slice(1));
+                scaleNotes = desc.concat(asc.slice(1));
                 patternLabel = 'Escala Dupla (Oitava → Tônica → Oitava)';
             }
 
-            const rapidNotes = fullSeq.slice(0, -1);
-            const targetNote = fullSeq[fullSeq.length - 1];
+            // Seleciona uma nota alvo da escala diferente da tônica
+            const nonTonicPool = pool.filter((_, idx) => idx !== 0 && idx !== pool.length - 1);
+            const candidates = nonTonicPool.length > 0 ? nonTonicPool : pool;
+            let targetNote = forcedTargetNote;
+            if (!targetNote) {
+                const filtered = candidates.filter(n => !currentNote || n.freq !== currentNote.freq);
+                const poolToPick = filtered.length > 0 ? filtered : candidates;
+                targetNote = poolToPick[Math.floor(Math.random() * poolToPick.length)];
+            }
+            lastScaleRestTargetNote = targetNote;
             currentNote = targetNote;
-            currentBaseNote = fullSeq[0];
+            currentBaseNote = scaleNotes[0];
             lastComparisonNote = targetNote;
 
             targetNoteDisplayEl.textContent = targetNote.name;
-            targetFreqSubEl.textContent = `Alvo (Repouso): ${targetNote.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(targetNote.freq)})`;
+            targetFreqSubEl.textContent = `Alvo (Repouso): ${targetNote.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(targetNote.freq)}) · ${patternLabel}`;
             intervalBadgeEl.classList.remove('hidden');
-            intervalBadgeEl.textContent = patternLabel;
+            intervalBadgeEl.textContent = `${patternLabel} → Alvo: ${targetNote.name}`;
 
-            instructionEl.textContent = `Ouça ${patternLabel}... Repouso em ${targetNote.name.toUpperCase()}!`;
-            feedbackEl.textContent = 'Escala em semicolcheias executando... Prepare o fôlego para o repouso.';
+            instructionEl.textContent = `1. Ouvindo ${patternLabel}... Em seguida, nota alvo: ${targetNote.name.toUpperCase()}!`;
+            feedbackEl.textContent = `A escala executará completa em semicolcheias. Em seguida, soará a nota longa alvo (${targetNote.name.toUpperCase()}).`;
 
-            await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, fullSeq.map(n => n.freq));
+            await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, scaleNotes.concat([targetNote]).map(n => n.freq));
 
-            const sixteenthDuration = 0.12;
-            const sixteenthStep = 0.115;
-            const restDuration = 1.4;
+            const sixteenthDuration = 0.115;
+            const sixteenthStep = 0.110;
+            const scaleDuration = scaleNotes.length * sixteenthStep;
+            const pauseAfterScale = 0.28;
+            const targetDelay = scaleDuration + pauseAfterScale;
+            const targetDuration = 1.45;
 
-            rapidNotes.forEach((n, idx) => {
-                SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.82 });
+            // Executa a escala completa em semicolcheias
+            scaleNotes.forEach((n, idx) => {
+                SoundFontEngine.playNote(n.freq, { duration: sixteenthDuration, delay: idx * sixteenthStep, velocity: 0.80 });
             });
 
-            const restDelay = rapidNotes.length * sixteenthStep;
-            SoundFontEngine.playNote(targetNote.freq, { duration: restDuration, delay: restDelay, velocity: 0.95 });
+            // Avisa quando a nota alvo longa for executada
+            const targetTimer = setTimeout(() => {
+                instructionEl.textContent = `2. Ouça a nota alvo (${targetNote.name.toUpperCase()})...`;
+                feedbackEl.textContent = `Nota longa alvo: ${targetNote.name.toUpperCase()}. Prepare o fôlego para cantar!`;
+            }, Math.round(targetDelay * 1000));
+            comparisonTimers.push(targetTimer);
 
-            const waitMs = Math.round((restDelay + restDuration + 0.3) * 1000);
-            setTimeout(() => {
-                instructionEl.textContent = `AGORA CANTE E SUSTENTE O REPOUSO (${targetNote.name.toUpperCase()})`;
-                feedbackEl.textContent = 'Entoe a nota longa de repouso com firmeza e precisão.';
+            // Executa a nota alvo longa
+            SoundFontEngine.playNote(targetNote.freq, { duration: targetDuration, delay: targetDelay, velocity: 0.95 });
+
+            // Abre o microfone logo após o término da nota alvo longa
+            const waitMs = Math.round((targetDelay + targetDuration + 0.30) * 1000);
+            const listenTimer = setTimeout(() => {
+                instructionEl.textContent = `AGORA CANTE E SUSTENTE A NOTA ALVO (${targetNote.name.toUpperCase()})`;
+                feedbackEl.textContent = 'Entoe a nota longa com firmeza e precisão.';
                 listening = true;
                 actionTaken = false;
             }, waitMs);
+            comparisonTimers.push(listenTimer);
         };
 
         function resetDisplayColors() {
