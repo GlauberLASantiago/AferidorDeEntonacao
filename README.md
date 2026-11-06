@@ -30,7 +30,9 @@ O **Aferidor de Entonação** é uma aplicação web interativa desenvolvida par
 - **Controle de Oitava das Notas de Referência:**
   - **Oitava Grave (Padrão):** `Sol2–Sol3` (`98,0–196,0 Hz`) para Vozes Graves | `Dó3–Dó4` (`130,8–261,6 Hz`) para Vozes Agudas.
   - **Oitava Acima (`+8va`):** `Sol3–Sol4` (`196,0–392,0 Hz`) para Vozes Graves | `Dó4–Dó5` (`261,6–523,3 Hz`) para Vozes Agudas.
-- **Repertórios de Escala:** *Pentatônica (5 notas)*, *Diatônica (notas naturais)* e *Cromática (todos os semitons)*.
+- **Tônica (Nota Base) e Catálogo de Escalas (22 Tipos):**
+  - **Tônica:** Seleção livre das 12 notas cromáticas (`Dó (C)` a `Si (B)`), atualizando automaticamente o Diapasão Interativo, os exercícios e o Pedal Tônico.
+  - **Tipos de Escala:** *Maior Natural (Jônio)*, *Menor Natural (Eólio)*, *Menor Harmônica*, *Menor Melódica*, *Pentatônica Maior*, *Pentatônica Menor*, *Blues (Hexatônica)*, *Modos Gregos (Dórico, Frígio, Lídio, Mixolídio / Nordestina, Lócrio)*, *Cromática (12 semitons)*, *Tons Inteiros (Hexafônica)*, *Acústica (Lídio Dominante)*, *Frígio Dominante (Cigana Espanhola)*, *Menor Cigana (Húngara)*, *Diminuta (Semitom–Tom e Tom–Semitom)*, *Bebop Maior*, *Bebop Dominante* e *Hirajoshi (Pentatônica Japonesa)*.
 - **Níveis de Rigor (Tolerância):** *Iniciante (`±65 cents`)*, *Intermediário (`±38 cents`)* e *Avançado / Coral (`±20 cents`)*.
 
 ### 4. Gamificação Simples Sem Backend (`localStorage`)
