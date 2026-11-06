@@ -3,277 +3,1539 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aferidor de Entonação</title>
+    <title>Aferidor de Entonação — Estúdio Pedagógico Vocal</title>
     <!-- Tailwind CSS para estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            coral: '#E76F51',
+                            sandy: '#F4A261',
+                            gold: '#E9C46A',
+                            teal: '#2A9D8F',
+                            charcoal: '#264653',
+                            light: '#F8F9FA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Tone.js para geração de áudio e análise de frequência -->
     <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            min-height: 100vh;
+        :root {
+            --color-coral: #E76F51;
+            --color-sandy: #F4A261;
+            --color-gold: #E9C46A;
+            --color-teal: #2A9D8F;
+            --color-charcoal: #264653;
+            --color-light: #F8F9FA;
         }
 
-        /* Glassmorphism card */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--color-charcoal);
+            background-image:
+                linear-gradient(135deg, rgba(38, 70, 83, 0.86) 0%, rgba(22, 43, 52, 0.90) 100%),
+                url('https://raw.githubusercontent.com/GlauberLASantiago/gl-cores-fontes-e-fundos/main/musica/z_svg_49_equalizador_estudio_frequencia_neon.svg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100dvh;
+            color: var(--color-light);
+        }
+
+        .font-mono-tech {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Liquid Glassmorphism card com base #264653 */
         .glass-card {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(38, 70, 83, 0.76);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(248, 249, 250, 0.16);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(248, 249, 250, 0.12);
         }
 
         /* Glassmorphism inner panels */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(27, 52, 62, 0.62);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(248, 249, 250, 0.11);
+            box-shadow: inset 0 1px 0 rgba(248, 249, 250, 0.06);
         }
 
-        /* Glassmorphism buttons */
-        .glass-btn-cyan {
-            background: rgba(6, 182, 212, 0.35);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(6, 182, 212, 0.6);
-            transition: all 0.3s ease;
+        /* Botões na paleta solicitada */
+        .glass-btn-teal {
+            background: rgba(42, 157, 143, 0.35);
+            border: 1px solid #2A9D8F;
+            color: #F8F9FA;
+            transition: transform 0.15s ease, background-color 0.25s ease, box-shadow 0.25s ease;
         }
-        .glass-btn-cyan:hover {
-            background: rgba(6, 182, 212, 0.55);
-            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        .glass-btn-teal:hover:not(:disabled) {
+            background: rgba(42, 157, 143, 0.58);
+            box-shadow: 0 0 22px rgba(42, 157, 143, 0.45);
         }
-
-        .glass-btn-emerald {
-            background: rgba(16, 185, 129, 0.35);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(16, 185, 129, 0.6);
-            transition: all 0.3s ease;
-        }
-        .glass-btn-emerald:hover {
-            background: rgba(16, 185, 129, 0.55);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        .glass-btn-teal:active:not(:disabled) {
+            transform: scale(0.98);
         }
 
-        /* Classe para transição suave de cor */
+        .glass-btn-sandy {
+            background: rgba(244, 162, 97, 0.28);
+            border: 1px solid #F4A261;
+            color: #F8F9FA;
+            transition: transform 0.15s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .glass-btn-sandy:hover:not(:disabled) {
+            background: rgba(244, 162, 97, 0.48);
+            box-shadow: 0 0 22px rgba(244, 162, 97, 0.4);
+        }
+        .glass-btn-sandy:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .glass-btn-neutral {
+            background: rgba(248, 249, 250, 0.07);
+            border: 1px solid rgba(248, 249, 250, 0.16);
+            color: #F8F9FA;
+            transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .glass-btn-neutral:hover:not(:disabled) {
+            background: rgba(248, 249, 250, 0.14);
+            border-color: #E9C46A;
+        }
+        .glass-btn-neutral:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .tab-active {
+            background: rgba(42, 157, 143, 0.32);
+            border-color: #E9C46A;
+            color: #E9C46A;
+        }
+
+        .path-card-active {
+            background: rgba(42, 157, 143, 0.26);
+            border-color: #E9C46A;
+            box-shadow: 0 0 20px rgba(42, 157, 143, 0.25);
+        }
+
         .color-transition {
-            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+            transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
         }
 
-        /* Decorative blobs for background depth */
-        .blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.25;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Score bar fill animation */
         .score-bar-fill {
-            transition: width 0.6s ease;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .needle-transition {
+            transition: left 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+        }
+
+        .badge-unlocked {
+            background: rgba(42, 157, 143, 0.24);
+            border-color: #2A9D8F;
+            color: #F8F9FA;
+        }
+        .badge-locked {
+            background: rgba(248, 249, 250, 0.04);
+            border-color: rgba(248, 249, 250, 0.09);
+            color: rgba(248, 249, 250, 0.4);
         }
     </style>
 </head>
-<body class="text-white flex flex-col items-center justify-center min-h-screen p-4">
+<body class="flex flex-col items-center justify-between min-h-[100dvh] p-4 md:p-6">
 
-    <!-- Background decorative blobs -->
-    <div class="blob w-72 h-72 bg-cyan-500 top-10 left-10"></div>
-    <div class="blob w-96 h-96 bg-purple-600 bottom-20 right-10"></div>
-    <div class="blob w-64 h-64 bg-pink-500 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="relative z-10 w-full max-w-6xl mx-auto">
 
-    <div class="relative z-10 w-full max-w-md mx-auto">
-
-        <!-- Main Card -->
-        <div class="glass-card rounded-3xl p-6 md:p-8 text-center">
-
-            <h1 class="text-3xl font-bold mb-1 text-cyan-300 drop-shadow">🎵 Aferidor de Entonação</h1>
-            <p class="text-white/60 mb-2 text-sm">Meça a precisão da sua voz.</p>
-
-            <p class="text-white/50 text-xs mb-5 px-4 leading-relaxed">
-                Pode ser utilizado para o treino de entonação para voz ou instrumentos.
-                <strong class="text-white/70">Dica:</strong> comece a cantar a nota ainda enquanto ouve o som para uma melhor entonação.
-            </p>
-
-            <!-- Placar -->
-            <div id="scoreArea" class="glass-panel rounded-2xl p-3 mb-5">
-                <p class="text-white/50 text-xs uppercase tracking-widest mb-2">Placar</p>
-                <div class="flex justify-around items-center mb-2">
-                    <div class="text-center">
-                        <p class="text-2xl font-bold text-green-400" id="scoreCorrect">0</p>
-                        <p class="text-white/40 text-xs">Acertos</p>
+        <!-- Top Header & Navigation Tabs -->
+        <header class="glass-card rounded-3xl p-5 md:p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-brand-teal/25 border border-brand-teal text-brand-gold">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                            </svg>
+                        </span>
+                        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-brand-light">Aferidor de Entonação</h1>
+                        <span class="text-xs font-mono-tech uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Estúdio Pedagógico</span>
                     </div>
-                    <div class="text-center">
-                        <p class="text-3xl font-bold text-cyan-300" id="scorePercent">—</p>
-                        <p class="text-white/40 text-xs">% de acerto</p>
+                    <p class="text-brand-light/75 text-sm mt-1">
+                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo.
+                    </p>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex flex-wrap gap-2" aria-label="Seções do Aplicativo">
+                    <button data-tab="tab-studio" class="nav-tab tab-active glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/>
+                        </svg>
+                        Estúdio de Prática
+                    </button>
+                    <button data-tab="tab-tips" class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>
+                        </svg>
+                        Como Afinar a Voz &amp; Aquecimento
+                    </button>
+                    <button data-tab="tab-science" class="nav-tab glass-btn-neutral px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
+                        </svg>
+                        Ciência &amp; Pedagogia
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: ESTÚDIO DE PRÁTICA                                 -->
+        <!-- ========================================================= -->
+        <section id="tab-studio" class="tab-content grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- COLUNA ESQUERDA: 6 CAMINHOS PEDAGÓGICOS + CONFIGURAÇÕES + GAMIFICAÇÃO (5 cols) -->
+            <div class="lg:col-span-5 space-y-5">
+
+                <!-- 1. Caminhos Pedagógicos (6 Trilhas) -->
+                <div class="glass-card rounded-3xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-brand-gold">1. Escolha o Caminho Pedagógico</h2>
+                        <span id="activePathBadge" class="text-xs text-brand-light/70 font-mono-tech">Trilha 1</span>
                     </div>
-                    <div class="text-center">
-                        <p class="text-2xl font-bold text-white/70" id="scoreTotal">0</p>
-                        <p class="text-white/40 text-xs">Rodadas</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="pathSelector">
+                        <button data-path="unison" class="path-btn path-card-active glass-panel p-3 rounded-2xl text-left transition-all">
+                            <p class="font-semibold text-sm text-brand-light">1. Uníssono Guiado</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça uma nota isolada e reproduza sua altura com precisão.</p>
+                        </button>
+                        <button data-path="stepwise" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">2. Escada Vocal (Graus)</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Suba e desça graus conjuntos (Dó-Ré-Mi...) passo a passo.</p>
+                        </button>
+                        <button data-path="intervals" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">3. Saltos &amp; Intervalos</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a tônica + intervalo melódico e cante a 2ª nota alvo.</p>
+                        </button>
+                        <button data-path="audiation" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">4. Memória &amp; Audiation</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Ouça a nota, retenha 3s em silêncio mental e ataque afinado.</p>
+                        </button>
+                        <button data-path="triads" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">5. Arpejos &amp; Tríades</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Entoe arpejos maiores e menores (1º, 3º e 5º graus).</p>
+                        </button>
+                        <button data-path="freelab" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
+                            <p class="font-semibold text-sm text-brand-light">6. Laboratório Livre</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Afinador contínuo, curva vocal e teclado sem erros.</p>
+                        </button>
+                    </div>
+
+                    <!-- Configurações Pedagógicas -->
+                    <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-3 text-left">
+                        <div>
+                            <label for="scaleSelect" class="block text-xs text-brand-light/75 mb-1">Repertório / Harmonia</label>
+                            <select id="scaleSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                                <option value="pentatonic">Pentatônica (Dó-Ré-Mi-Sol-Lá)</option>
+                                <option value="diatonic" selected>Diatônica (Dó Maior - 7 notas)</option>
+                                <option value="chromatic">Cromática (12 semitons)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="octaveSelect" class="block text-xs text-brand-light/75 mb-1">Região Vocal (Referência)</label>
+                            <select id="octaveSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                                <option value="3" selected>Grave / Média (Oitava 3: C3–B3)</option>
+                                <option value="4">Média / Aguda (Oitava 4: C4–B4)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="toleranceSelect" class="block text-xs text-brand-light/75 mb-1">Rigor da Afinação</label>
+                            <select id="toleranceSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                                <option value="65" selected>Iniciante (±65 cents)</option>
+                                <option value="38">Intermediário (±38 cents)</option>
+                                <option value="20">Avançado / Coral (±20 cents)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="timbreSelect" class="block text-xs text-brand-light/75 mb-1">Timbre de Referência</label>
+                            <select id="timbreSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
+                                <option value="warm" selected>Voz Suave (Triangular Rico)</option>
+                                <option value="harmonic">Piano Harmônico (FM)</option>
+                                <option value="sine">Senoidal Pura (Diapasão)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Opções adicionais de sustentação e oitava -->
+                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs text-brand-light/85">
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="sustainModeToggle" checked class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                            <span>Exigir nota sustentada (0.45s)</span>
+                        </label>
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="strictOctaveToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                            <span>Exigir oitava exata</span>
+                        </label>
                     </div>
                 </div>
-                <div class="w-full bg-white/10 rounded-full h-2" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="scoreBarContainer">
-                    <div id="scoreBar" class="score-bar-fill bg-gradient-to-r from-cyan-400 to-emerald-400 h-2 rounded-full" style="width: 0%"></div>
+
+                <!-- 2. Gamificação & Progresso (Salvo no Navegador) -->
+                <div class="glass-card rounded-3xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-brand-gold font-bold">Jornada Vocal (Sem Backend)</p>
+                            <h3 id="levelTitle" class="text-lg font-bold text-brand-light">Nível 1 · Ouvinte Curioso</h3>
+                        </div>
+                        <div class="text-right">
+                            <span id="xpDisplay" class="font-mono-tech text-sm font-bold text-brand-gold">0 XP</span>
+                            <p id="nextLevelHint" class="text-[11px] text-brand-light/70">Próximo: 100 XP</p>
+                        </div>
+                    </div>
+
+                    <!-- Barra de XP -->
+                    <div class="w-full bg-[#264653]/90 rounded-full h-2.5 mb-4 overflow-hidden border border-white/10">
+                        <div id="xpBar" class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] via-[#E9C46A] to-[#F4A261] h-full rounded-full" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Estatísticas de Gamificação -->
+                    <div class="grid grid-cols-4 gap-2 text-center mb-4">
+                        <div class="glass-panel rounded-xl p-2">
+                            <p class="text-lg font-bold text-brand-teal font-mono-tech" id="scoreCorrect">0</p>
+                            <p class="text-[11px] text-brand-light/70">Acertos</p>
+                        </div>
+                        <div class="glass-panel rounded-xl p-2">
+                            <p class="text-lg font-bold text-brand-gold font-mono-tech" id="scorePercent">—</p>
+                            <p class="text-[11px] text-brand-light/70">Precisão</p>
+                        </div>
+                        <div class="glass-panel rounded-xl p-2">
+                            <p class="text-lg font-bold text-brand-sandy font-mono-tech" id="streakCurrent">0</p>
+                            <p class="text-[11px] text-brand-light/70">Sequência</p>
+                        </div>
+                        <div class="glass-panel rounded-xl p-2">
+                            <p class="text-lg font-bold text-brand-light font-mono-tech" id="streakBest">0</p>
+                            <p class="text-[11px] text-brand-light/70">Recorde</p>
+                        </div>
+                    </div>
+
+                    <!-- Barra de taxa de acerto da sessão -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-[11px] text-brand-light/75 mb-1">
+                            <span>Aproveitamento Total (<span id="scoreTotal">0</span> rodadas)</span>
+                            <button id="resetProgressBtn" class="text-brand-light/75 hover:text-brand-coral underline transition-colors">Zerar dados</button>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-1.5" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="scoreBarContainer">
+                            <div id="scoreBar" class="score-bar-fill bg-gradient-to-r from-[#2A9D8F] to-[#E9C46A] h-1.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Missões de Estudo Guiado -->
+                    <div class="mb-4 pt-3 border-t border-white/10">
+                        <p class="text-xs uppercase tracking-wider text-brand-gold mb-2 font-semibold">Missões Pedagógicas (+40 XP)</p>
+                        <div id="missionsList" class="space-y-2 text-left">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Conquistas / Badges -->
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-brand-light/75 mb-2 font-semibold">Conquistas Desbloqueáveis</p>
+                        <div id="badgesGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Área de Controle e Status -->
-            <div id="controlArea" class="space-y-3">
-                <button id="startButton" class="glass-btn-cyan w-full text-white font-bold py-3 px-4 rounded-xl text-lg">
-                    INICIAR
-                </button>
-                <button id="nextNoteButton" class="glass-btn-emerald w-full text-white font-bold py-3 px-4 rounded-xl text-lg hidden">
-                    Próxima Nota
-                </button>
-                <p id="status" class="text-white/50 h-6 text-sm"></p>
+            <!-- COLUNA DIREITA: MONITOR PRINCIPAL DE ENTONAÇÃO, CURVA TEMPORAL & DIAGNÓSTICO (7 cols) -->
+            <div class="lg:col-span-7 space-y-5">
+
+                <div class="glass-card rounded-3xl p-6 md:p-7">
+
+                    <!-- Dica Pedagógica Contextual do Caminho Atual -->
+                    <div class="glass-panel rounded-2xl p-3.5 mb-5 flex items-start gap-3 text-left border-l-4 border-l-brand-gold">
+                        <div class="text-brand-gold mt-0.5 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                            </svg>
+                        </div>
+                        <div class="text-xs text-brand-light/90 leading-relaxed" id="pedagogicalBanner">
+                            <strong class="text-brand-gold">Dica de Audiation e Imitação:</strong> Comece a mentalizar ou emitir suavemente a nota ainda enquanto ouve a referência para alinhar os batimentos acústicos. Em caso de erro, a mesma nota será repetida até 3 vezes consecutivas antes de mudar.
+                        </div>
+                    </div>
+
+                    <!-- Controles Principais -->
+                    <div id="controlArea" class="space-y-3">
+                        <div class="flex flex-wrap gap-2.5">
+                            <button id="startButton" class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base tracking-wide">
+                                INICIAR MICROFONE E ÁUDIO
+                            </button>
+                            <button id="nextNoteButton" class="glass-btn-teal flex-1 font-bold py-3.5 px-5 rounded-2xl text-base hidden">
+                                Sortear / Próxima Nota
+                            </button>
+                            <button id="replayNoteButton" class="glass-btn-sandy font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ouvir a nota alvo novamente">
+                                Ouvir Novamente
+                            </button>
+                            <button id="droneToggleButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ligar/Desligar Pedal Tônico em Dó">
+                                Pedal Dó: OFF
+                            </button>
+                        </div>
+                        <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando ativação de áudio pelo usuário...</p>
+                    </div>
+
+                    <!-- Painel Central da Nota Alvo -->
+                    <div id="displayArea" class="glass-panel mt-4 p-6 rounded-3xl color-transition text-center relative overflow-hidden">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-light/70 mb-1">
+                            <span id="attemptCounterBadge">Tentativas: 0/3 repetições</span>
+                            <span id="intervalBadge" class="hidden uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-gold/50 text-brand-gold"></span>
+                        </div>
+
+                        <p id="instruction" class="text-base md:text-lg text-brand-light font-medium mt-1">Pressione INICIAR para ativar o microfone</p>
+
+                        <div class="my-4 flex flex-col items-center justify-center">
+                            <p id="targetNoteDisplay" class="text-6xl md:text-7xl font-bold tracking-tight text-brand-light drop-shadow-lg leading-none py-2">-</p>
+                            <p id="targetFreqSub" class="text-xs font-mono-tech text-brand-gold mt-1">Referência: — Hz</p>
+                        </div>
+
+                        <!-- Barra de Estabilidade Vocal (Sustain Progress) -->
+                        <div class="max-w-xs mx-auto my-3">
+                            <div class="flex justify-between text-[11px] text-brand-light/75 mb-1">
+                                <span>Estabilidade de Sustentação Vocal</span>
+                                <span id="sustainPctLabel" class="font-mono-tech text-brand-gold">0%</span>
+                            </div>
+                            <div class="w-full bg-[#264653]/90 rounded-full h-2 overflow-hidden border border-white/15">
+                                <div id="sustainBar" class="bg-[#2A9D8F] h-full transition-all duration-75" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <p id="feedback" class="text-base md:text-lg font-semibold min-h-[1.75rem] text-brand-light mt-2">&nbsp;</p>
+                    </div>
+
+                    <!-- Medidor Visual de Biofeedback em Tempo Real (Cents Gauge + Curva Melódica) -->
+                    <div class="glass-panel mt-4 p-4 rounded-2xl">
+                        <div class="flex items-center justify-between text-xs text-brand-light/80 mb-2">
+                            <span>♭ Mais Grave (Abaixo)</span>
+                            <span class="text-brand-teal font-semibold">Centro Afinado (0 cents)</span>
+                            <span>♯ Mais Agudo (Acima)</span>
+                        </div>
+
+                        <!-- Régua de Cents (-100 a +100) -->
+                        <div class="relative w-full h-8 bg-[#193039] rounded-xl border border-white/15 overflow-hidden flex items-center">
+                            <!-- Zona Central (Tolerância em #2A9D8F) -->
+                            <div id="toleranceZone" class="absolute h-full bg-[#2A9D8F]/25 border-x border-[#2A9D8F]/70 left-1/2 -translate-x-1/2" style="width: 35%;"></div>
+                            <!-- Linha central exata -->
+                            <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[#E9C46A] -translate-x-1/2"></div>
+                            <!-- Indicador / Agulha Dinâmica -->
+                            <div id="pitchNeedle" class="needle-transition absolute top-1 bottom-1 w-3 rounded-full bg-brand-light/50 shadow-lg -translate-x-1/2" style="left: 50%;"></div>
+                        </div>
+
+                        <!-- Gráfico de Contorno Vocal no Tempo (SINGAD / Sing & See Style) -->
+                        <div class="mt-3">
+                            <div class="flex items-center justify-between text-[11px] text-brand-light/75 mb-1">
+                                <span>Traçado de Contorno Vocal no Tempo (Ataque e Sustentação)</span>
+                                <span class="font-mono-tech text-brand-gold">Linha central = Alvo</span>
+                            </div>
+                            <canvas id="pitchContourCanvas" width="560" height="84" class="w-full h-20 bg-[#193039]/95 rounded-xl border border-white/15"></canvas>
+                        </div>
+
+                        <!-- Leitura Técnica Instantânea do Usuário -->
+                        <div id="userResultArea" class="mt-3 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
+                            <div>
+                                <p class="text-[11px] text-brand-light/70 uppercase">Sua Nota Detectada</p>
+                                <p id="userDetectedNote" class="text-lg font-bold font-mono-tech text-brand-light">-</p>
+                            </div>
+                            <div>
+                                <p id="userResultLabel" class="text-[11px] text-brand-light/70 uppercase">Diagnóstico</p>
+                                <p id="userResultDisplay" class="text-base font-semibold text-brand-gold">-</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-brand-light/70 uppercase">Desvio (Cents)</p>
+                                <p id="userCentsDisplay" class="text-lg font-bold font-mono-tech text-brand-light">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Painel de Diagnóstico Vocal Inteligente da Sessão -->
+                    <div class="glass-panel mt-4 p-4 rounded-2xl text-left">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-bold uppercase tracking-wider text-brand-gold">Diagnóstico Pedagógico da Sua Voz</p>
+                            <span id="diagSamplesCount" class="text-[11px] font-mono-tech text-brand-light/70">0 medições</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2">
+                            <div class="bg-[#264653]/80 rounded-xl p-2.5 border border-white/10">
+                                <p class="text-[10px] uppercase text-brand-light/70">Tendência Direcional</p>
+                                <p id="diagTendency" class="text-sm font-semibold text-brand-light mt-0.5">Aguardando prática...</p>
+                            </div>
+                            <div class="bg-[#264653]/80 rounded-xl p-2.5 border border-white/10">
+                                <p class="text-[10px] uppercase text-brand-light/70">Desvio Médio Absoluto</p>
+                                <p id="diagAvgError" class="text-sm font-semibold font-mono-tech text-brand-teal mt-0.5">— cents</p>
+                            </div>
+                        </div>
+                        <p id="diagRecommendation" class="text-xs text-brand-light/85 leading-relaxed">
+                            Realize pelo menos 3 tentativas para receber uma análise personalizada sobre seu ataque vocal, tendência de altura e recomendação técnica.
+                        </p>
+                    </div>
+
+                    <!-- Teclado de Referência Auditiva Rápida -->
+                    <div class="glass-panel mt-4 p-4 rounded-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo (Toque para ouvir e comparar)</p>
+                            <span class="text-[11px] text-brand-light/70">Clique em uma nota para defini-la como alvo</span>
+                        </div>
+                        <div id="referenceKeyboard" class="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+                            <!-- Botões das 12 notas gerados via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: GUIA DE AFINAÇÃO VOCAL & AQUECIMENTO INTERATIVO    -->
+        <!-- ========================================================= -->
+        <section id="tab-tips" class="tab-content hidden space-y-6">
+
+            <!-- Seção Interativa de Aquecimento Vocal Fisiológico -->
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Preparação Fisiológica</span>
+                        <h2 class="text-2xl font-bold text-brand-light mt-2">Aquecimento Vocal Guiado (Toque para Ouvir e Acompanhar)</h2>
+                        <p class="text-brand-light/85 text-sm mt-1">
+                            Antes de medir sua afinação, calibre a elasticidade das pregas vocais e o fluxo de ar com estes 3 exercícios clássicos de técnica vocal:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+                    <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-mono-tech text-brand-gold">Exercício 1 · TVSO / Glissando</span>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Sirene Vocal Suave (Dó → Sol → Dó)</h3>
+                            <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
+                                Deslize continuamente com um <em>"vuuu"</em> ou vibração de lábios (<em>"brrr"</em>) sem degraus. Ativa a transição suave entre os músculos tireoaritenóideo (TA) e cricotireoideo (CT).
+                            </p>
+                        </div>
+                        <button data-warmup="siren" class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                            Ouvir Exemplo de Sirene Vocal
+                        </button>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-mono-tech text-brand-sandy">Exercício 2 · Ressonância Frontal</span>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Humming de 3 Graus (Dó–Ré–Mi–Ré–Dó)</h3>
+                            <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
+                                Cante de boca fechada (<em>"hummm"</em>) sentindo cócegas nos lábios e maçãs do rosto. Ajuda a posicionar a voz na "máscara" e evita que a nota fique calante (grave).
+                            </p>
+                        </div>
+                        <button data-warmup="humming" class="warmup-btn glass-btn-sandy w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                            Ouvir Grau Conjunto (1-2-3-2-1)
+                        </button>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-mono-tech text-brand-gold">Exercício 3 · Salto Harmônico</span>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Tríade Maior (Dó–Mi–Sol–Mi–Dó)</h3>
+                            <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
+                                Cante com <em>"muuu"</em> ou <em>"nooo"</em> mantendo o espaço interno da boca estável. Ao subir para o Sol (5ª), pense na nota apontando "de cima para baixo" sem apertar a garganta.
+                            </p>
+                        </div>
+                        <button data-warmup="triad" class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
+                            Ouvir Arpejo (1-3-5-3-1)
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Área de Exibição Principal -->
-            <div id="displayArea" class="glass-panel mt-5 p-6 rounded-2xl color-transition">
-                <p id="instruction" class="text-lg text-white/80 h-7">Pressione INICIAR para começar</p>
-                <p id="targetNoteDisplay" class="text-6xl font-bold my-4 h-20 text-white drop-shadow-lg">-</p>
-                <p id="feedback" class="text-xl font-semibold h-10 text-white/90">&nbsp;</p>
+            <!-- 6 Pilares de Como Afinar a Voz -->
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="max-w-3xl">
+                    <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-teal text-brand-gold">Guia Técnico Vocal</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">Como Afinar a Voz: 6 Pilares Práticos de Fisiologia e Percepção</h2>
+                    <p class="text-brand-light/85 text-sm md:text-base mt-2 leading-relaxed">
+                        A afinação resulta da coordenação entre <strong>escuta atenta</strong>, <strong>imagem mental sonora (audiation)</strong> e <strong>estabilidade do fluxo de ar</strong> nas pregas vocais.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-gold">
+                        <p class="text-xs font-mono-tech text-brand-gold uppercase">Passo 01 · Pré-Fonação</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">1. Escute Internamente (Audiation)</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Nunca ataque uma nota "no escuro". Ouça a referência, faça uma pausa mental de meio segundo e <strong>imagine a nota soando na sua própria voz</strong> antes de emitir o som. As pregas vocais se ajustam silenciosamente durante a imaginação sonora.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-teal">
+                        <p class="text-xs font-mono-tech text-brand-teal uppercase">Passo 02 · Sincronia Acústica</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">2. Ataque Simultâneo Suave</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Comece a cantarolar com lábios fechados (<em>"hummm"</em>) ou com a consoante <em>"vuuu"</em> <strong>enquanto o som de referência ainda está tocando</strong>. Quando duas ondas chegam à mesma frequência, você sente a vibração estabilizar sem batimentos.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-sandy">
+                        <p class="text-xs font-mono-tech text-brand-sandy uppercase">Passo 03 · Estabilidade Subglótica</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">3. Apoio Respiratório Constante</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            A frequência das pregas vocais depende diretamente da pressão de ar. Se você solta ar demais no início, a nota sobe demais (♯); se o ar acaba no final, a nota despenca (♭). Mantenha uma coluna de ar contínua e calma, como quem sopra uma vela sem apagá-la.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-coral">
+                        <p class="text-xs font-mono-tech text-brand-coral uppercase">Passo 04 · Correção de Grave (♭)</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">4. Quando a Nota Fica Baixa (Calante)</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Se o medidor aponta <strong>Grave / Abaixo</strong>, evite esticar o pescoço. Em vez disso: (a) ilumine a vogal com um leve sorriso interno nas maçãs do rosto, (b) aumente sutilmente a energia do fluxo de ar abdominal e (c) pense na nota apontando para a testa.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-gold">
+                        <p class="text-xs font-mono-tech text-brand-gold uppercase">Passo 05 · Correção de Agudo (♯)</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">5. Quando a Nota Passa do Ponto</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Cantar acima da nota geralmente ocorre por excesso de tensão na mandíbula, língua retraída ou pressão excessiva de ar. Solte os ombros, pense numa leve sensação de bocejo na faringe e ataque a nota "de cima para baixo", suavizando o volume.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-5 border-t-2 border-t-brand-teal">
+                        <p class="text-xs font-mono-tech text-brand-teal uppercase">Passo 06 · Prática Estruturada</p>
+                        <h3 class="text-lg font-bold text-brand-light mt-1">6. Comece na Sua Região Confortável</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Treine primeiro na escala <strong>Pentatônica ou Diatônica</strong> dentro da oitava mais confortável para a sua voz (Oitava 3 para vozes mais graves; Oitava 4 para vozes mais agudas). Use o <strong>Pedal Tônico (Drone)</strong> para ancorar seu ouvido relativo.
+                        </p>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <!-- Área de Resultado do Usuário -->
-            <div id="userResultArea" class="glass-panel mt-4 p-4 rounded-2xl">
-                <p id="userResultLabel" class="text-xs text-white/40 uppercase tracking-widest">&nbsp;</p>
-                <p id="userResultDisplay" class="text-xl font-semibold h-8 text-white">-</p>
+        <!-- ========================================================= -->
+        <!-- TAB 3: CIÊNCIA & PEDAGOGIA DA AFINAÇÃO                    -->
+        <!-- ========================================================= -->
+        <section id="tab-science" class="tab-content hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="max-w-3xl">
+                    <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Fundamentação Científica</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-light mt-3">O que a Pesquisa em Cognição e Educação Musical Explica Sobre Cantar Afinado?</h2>
+                    <p class="text-brand-light/85 text-sm md:text-base mt-2 leading-relaxed">
+                        Décadas de estudos em neurociência cognitiva da música, acústica vocal e educação musical demonstram que a afinação vocal não é um "dom genético binário", mas uma <strong>habilidade sensório-motora treinável</strong>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                    <!-- Pesquisa 1 -->
+                    <article class="glass-panel rounded-2xl p-5">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-gold mb-1">
+                            <span>INTEGRAÇÃO SENSÓRIO-MOTORA</span>
+                            <span>Pfordresher &amp; Brown (2007); Hutchins &amp; Peretz (2012)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-light">1. Por que pessoas com bom ouvido podem desafinar ao cantar?</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            A <em>amusia congênita</em> (incapacidade perceptual severa de distinguir alturas) afeta menos de 1,5% a 4% da população. Pesquisas de Pfordresher &amp; Brown (2007) e Hutchins &amp; Peretz (2012) revelam que a grande maioria dos cantores imprecisos discrimina notas perfeitamente ao ouvir, mas apresenta falha na <strong>tradução sensório-motora</strong> (<em>inverse internal model</em>): o cérebro sabe qual é o som alvo, mas ainda não calibrou a tensão exata dos músculos da laringe para produzi-lo.
+                        </p>
+                    </article>
+
+                    <!-- Pesquisa 2 -->
+                    <article class="glass-panel rounded-2xl p-5">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-teal mb-1">
+                            <span>TEORIA DE APRENDIZAGEM MUSICAL</span>
+                            <span>Edwin Gordon (1997); Deutsch (1970)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-light">2. O Papel da Audiation e da Memória Tonal</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Edwin Gordon cunhou o termo <strong>Audiation</strong> para descrever a capacidade de ouvir e compreender musicalmente um som na mente mesmo quando ele não está fisicamente presente. Quando um cantor realiza a <em>audiation</em> de uma nota antes do ataque vocal (treinada na <strong>Trilha 4</strong> deste app), a musculatura laríngea realiza microajustes pré-fonatórios na frequência fundamental ($f_0$) antes mesmo da passagem do ar.
+                        </p>
+                    </article>
+
+                    <!-- Pesquisa 3 -->
+                    <article class="glass-panel rounded-2xl p-5">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-sandy mb-1">
+                            <span>BIOFEEDBACK VISUAL EM TEMPO REAL</span>
+                            <span>Welch, Howard &amp; Rush (1989); Wilson et al. (2008)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-light">3. Por que o Feedback Visual Contínuo Acelera a Afinação?</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Quando um iniciante erra uma nota, dizer apenas "errou" não informa a direção da correção motora. Estudos pioneiros com os sistemas <em>SINGAD</em> (Welch et al., 1989) e <em>Sing &amp; See</em> (Wilson et al., 2008; Paney &amp; Kay, 2015) demonstram ganhos acelerados quando o estudante visualiza o <strong>erro direcional e a curva de contorno no tempo</strong>, corrigindo o ataque e a sustentação simultaneamente.
+                        </p>
+                    </article>
+
+                    <!-- Pesquisa 4 -->
+                    <article class="glass-panel rounded-2xl p-5">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-gold mb-1">
+                            <span>CONTINUUM DESENVOLVIMENTAL &amp; TIMBRE</span>
+                            <span>Graham Welch (1986, 2006); Watts et al. (2003)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-light">4. Da Tessitura Confortável ao Contexto Tonal e Harmônico</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Segundo Graham Welch (2006), aprender a afinar segue estágios progressivos: primeiro o controle de notas dentro da região de fala confortável, depois graus conjuntos, intervalos e arpejos dentro de uma escala (pentatônica/diatônica) e, por fim, saltos cromáticos. Além disso, timbres ricos em harmônicos e o uso de nota pedal (<em>drone</em>) fornecem pistas espectrais que facilitam a equiparação de altura.
+                        </p>
+                    </article>
+
+                    <!-- Pesquisa 5 -->
+                    <article class="glass-panel rounded-2xl p-5 md:col-span-2">
+                        <div class="flex items-center justify-between text-xs font-mono-tech text-brand-teal mb-1">
+                            <span>BIOMECÂNICA LARÍNGEA E ACÚSTICA VOCAL</span>
+                            <span>Sundberg (1987); Titze (1994)</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-light">5. Fisiologia da Frequência Fundamental: Equilíbrio entre CT, TA e Pressão Subglótica</h3>
+                        <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
+                            Segundo Ingo Titze (1994) e Johan Sundberg (1987), a frequência fundamental ($f_0$) da voz é governada principalmente pelo alongamento longitudinal das pregas vocais — controlado pelo músculo <strong>cricotireoideo (CT)</strong> — em coordenação com a massa em vibração do músculo <strong>tireoaritenóideo (TA)</strong> e a pressão subglótica pulmonar. Cantores iniciantes frequentemente tentam subir a afinação aumentando apenas a força do sopro ou elevando a laringe com músculos extrínsecos do pescoço, o que gera fadiga e instabilidade em *cents*.
+                        </p>
+                    </article>
+                </div>
             </div>
+        </section>
 
-        </div>
-
-        <!-- Rodapé -->
-        <footer class="mt-6 text-center text-white/40 text-xs space-y-1 pb-4">
-            <p>Elaborado pelo professor <strong class="text-white/60">Glauber Santiago</strong> — DAC/UFSCar</p>
-            <p class="space-x-3">
+        <!-- Rodapé Solicitado -->
+        <footer class="mt-8 glass-card rounded-2xl p-4 text-center text-brand-light/85 text-xs space-y-1.5">
+            <p>Desenvolvido pelo professor <strong class="text-brand-gold">Glauber Santiago</strong> — DAC/UFSCar</p>
+            <p class="flex flex-wrap items-center justify-center gap-1.5">
+                <a href="https://aprenda-musica-comigo.web.app/" target="_blank" rel="noopener noreferrer"
+                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">aprenda-musica-comigo.web.app</a>
+                <span>•</span>
                 <a href="https://servidores.ufscar.br/glauber/" target="_blank" rel="noopener noreferrer"
-                   class="text-cyan-400/70 hover:text-cyan-300 transition-colors">servidores.ufscar.br/glauber/</a>
-                <span>·</span>
-                <a href="https://sites.google.com/view/glauberia" target="_blank" rel="noopener noreferrer"
-                   class="text-cyan-400/70 hover:text-cyan-300 transition-colors">sites.google.com/view/glauberia</a>
+                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">servidores.ufscar.br/glauber/</a>
+                <span>•</span>
+                <a href="https://glauberia.web.app/" target="_blank" rel="noopener noreferrer"
+                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">https://glauberia.web.app/</a>
+            </p>
+            <p class="text-brand-light/75">
+                Apoio: Grupo de Estudos e Pesquisas sobre Inovação em Educação, Tecnologias e Linguagens (Grupo Horizonte-UFSCar) —
+                <a href="https://grupohorizonte.ufscar.br/" target="_blank" rel="noopener noreferrer"
+                   class="text-brand-gold hover:text-brand-sandy underline transition-colors">grupohorizonte.ufscar.br</a>
             </p>
         </footer>
 
     </div>
 
     <script>
-        // Referências aos elementos da interface
+        // =========================================================================
+        // 1. REFERÊNCIAS AOS ELEMENTOS DA INTERFACE
+        // =========================================================================
         const startButton = document.getElementById('startButton');
         const nextNoteButton = document.getElementById('nextNoteButton');
+        const replayNoteButton = document.getElementById('replayNoteButton');
+        const droneToggleButton = document.getElementById('droneToggleButton');
         const statusEl = document.getElementById('status');
         const instructionEl = document.getElementById('instruction');
         const targetNoteDisplayEl = document.getElementById('targetNoteDisplay');
+        const targetFreqSubEl = document.getElementById('targetFreqSub');
+        const attemptCounterBadgeEl = document.getElementById('attemptCounterBadge');
+        const intervalBadgeEl = document.getElementById('intervalBadge');
         const feedbackEl = document.getElementById('feedback');
         const userResultLabel = document.getElementById('userResultLabel');
         const userResultDisplay = document.getElementById('userResultDisplay');
+        const userDetectedNoteEl = document.getElementById('userDetectedNote');
+        const userCentsDisplayEl = document.getElementById('userCentsDisplay');
         const displayArea = document.getElementById('displayArea');
+        const pitchNeedleEl = document.getElementById('pitchNeedle');
+        const toleranceZoneEl = document.getElementById('toleranceZone');
+        const sustainBarEl = document.getElementById('sustainBar');
+        const sustainPctLabelEl = document.getElementById('sustainPctLabel');
+        const pedagogicalBannerEl = document.getElementById('pedagogicalBanner');
+        const activePathBadgeEl = document.getElementById('activePathBadge');
+        const referenceKeyboardEl = document.getElementById('referenceKeyboard');
+        const contourCanvas = document.getElementById('pitchContourCanvas');
+        const contourCtx = contourCanvas.getContext('2d');
+
+        // Elementos de Diagnóstico
+        const diagSamplesCountEl = document.getElementById('diagSamplesCount');
+        const diagTendencyEl = document.getElementById('diagTendency');
+        const diagAvgErrorEl = document.getElementById('diagAvgError');
+        const diagRecommendationEl = document.getElementById('diagRecommendation');
+
+        // Elementos de Placar e Gamificação
         const scoreCorrectEl = document.getElementById('scoreCorrect');
         const scoreTotalEl = document.getElementById('scoreTotal');
         const scorePercentEl = document.getElementById('scorePercent');
         const scoreBarEl = document.getElementById('scoreBar');
         const scoreBarContainerEl = document.getElementById('scoreBarContainer');
+        const streakCurrentEl = document.getElementById('streakCurrent');
+        const streakBestEl = document.getElementById('streakBest');
+        const xpDisplayEl = document.getElementById('xpDisplay');
+        const xpBarEl = document.getElementById('xpBar');
+        const levelTitleEl = document.getElementById('levelTitle');
+        const nextLevelHintEl = document.getElementById('nextLevelHint');
+        const missionsListEl = document.getElementById('missionsList');
+        const badgesGridEl = document.getElementById('badgesGrid');
+        const resetProgressBtn = document.getElementById('resetProgressBtn');
 
-        // Configurações do áudio e da lógica
-        let audioContext;
-        let synth;
-        let analyser;
-        let mic;
-        let currentNote = null;
-        let listening = false;
-        let actionTaken = false;
-        let errorCount = 0;
-        let scoreCorrect = 0;
-        let scoreTotal = 0;
-        const FFT_SIZE = 2048;
+        // Seletores de Configuração
+        const scaleSelect = document.getElementById('scaleSelect');
+        const octaveSelect = document.getElementById('octaveSelect');
+        const toleranceSelect = document.getElementById('toleranceSelect');
+        const timbreSelect = document.getElementById('timbreSelect');
+        const sustainModeToggle = document.getElementById('sustainModeToggle');
+        const strictOctaveToggle = document.getElementById('strictOctaveToggle');
 
-        const notes = [
-            { name: 'dó', freq: 130.81 }, { name: 'dó#', freq: 138.59 },
-            { name: 'ré', freq: 146.83 }, { name: 'ré#', freq: 155.56 },
-            { name: 'mi', freq: 164.81 }, { name: 'fá', freq: 174.61 },
-            { name: 'fá#', freq: 185.00 },{ name: 'sol', freq: 196.00 },
-            { name: 'láb', freq: 207.65 },{ name: 'lá', freq: 220.00 },
-            { name: 'sib', freq: 233.08 },{ name: 'si', freq: 246.94 },
+        // =========================================================================
+        // 2. DADOS MUSICAIS, CAMINHOS PEDAGÓGICOS, MISSÕES E CONQUISTAS
+        // =========================================================================
+        const baseNotesC3 = [
+            { name: 'dó',   semitone: 0,  freq3: 130.81, diatonic: true,  pentatonic: true  },
+            { name: 'dó#',  semitone: 1,  freq3: 138.59, diatonic: false, pentatonic: false },
+            { name: 'ré',   semitone: 2,  freq3: 146.83, diatonic: true,  pentatonic: true  },
+            { name: 'ré#',  semitone: 3,  freq3: 155.56, diatonic: false, pentatonic: false },
+            { name: 'mi',   semitone: 4,  freq3: 164.81, diatonic: true,  pentatonic: true  },
+            { name: 'fá',   semitone: 5,  freq3: 174.61, diatonic: true,  pentatonic: false },
+            { name: 'fá#',  semitone: 6,  freq3: 185.00, diatonic: false, pentatonic: false },
+            { name: 'sol',  semitone: 7,  freq3: 196.00, diatonic: true,  pentatonic: true  },
+            { name: 'láb',  semitone: 8,  freq3: 207.65, diatonic: false, pentatonic: false },
+            { name: 'lá',   semitone: 9,  freq3: 220.00, diatonic: true,  pentatonic: true  },
+            { name: 'sib',  semitone: 10, freq3: 233.08, diatonic: false, pentatonic: false },
+            { name: 'si',   semitone: 11, freq3: 246.94, diatonic: true,  pentatonic: false },
         ];
 
-        function updateScore(correct) {
-            scoreTotal++;
-            if (correct) scoreCorrect++;
-            const pct = scoreTotal > 0 ? Math.round((scoreCorrect / scoreTotal) * 100) : 0;
-            scoreCorrectEl.textContent = scoreCorrect;
-            scoreTotalEl.textContent = scoreTotal;
-            scorePercentEl.textContent = pct + '%';
-            scoreBarEl.style.width = pct + '%';
-            scoreBarContainerEl.setAttribute('aria-valuenow', pct);
+        const melodicIntervals = [
+            { semitones: 2, label: '2ª Maior (+2 st)' },
+            { semitones: 3, label: '3ª Menor (+3 st)' },
+            { semitones: 4, label: '3ª Maior (+4 st)' },
+            { semitones: 5, label: '4ª Justa (+5 st)' },
+            { semitones: 7, label: '5ª Justa (+7 st)' },
+        ];
+
+        const triadPatternSemitones = [
+            { semitone: 0, degree: '1º Grau (Tônica - Dó)' },
+            { semitone: 4, degree: '3º Grau Maior (Mediante - Mi)' },
+            { semitone: 7, degree: '5º Grau (Dominante - Sol)' },
+            { semitone: 4, degree: '3º Grau Maior (Mediante - Mi)' },
+            { semitone: 0, degree: '1º Grau (Tônica - Dó)' },
+            { semitone: 3, degree: '3º Grau Menor (Mib / Ré#)' },
+            { semitone: 7, degree: '5º Grau (Dominante - Sol)' },
+            { semitone: 0, degree: '1º Grau (Tônica - Dó)' }
+        ];
+
+        const pathDescriptions = {
+            unison: {
+                badge: 'Trilha 1 · Uníssono',
+                banner: '<strong class="text-brand-gold">Trilha 1 (Uníssono Guiado):</strong> Ouça a nota sorteada e reproduza sua altura. Se errar, a mesma nota será repetida até 3 vezes consecutivas antes de passar para outra.'
+            },
+            stepwise: {
+                badge: 'Trilha 2 · Graus Conjuntos',
+                banner: '<strong class="text-brand-gold">Trilha 2 (Escada Vocal):</strong> As notas caminham em graus conjuntos (subindo e descendo na escala). Excelente para calibrar pequenos ajustes musculares da laringe.'
+            },
+            intervals: {
+                badge: 'Trilha 3 · Intervalos',
+                banner: '<strong class="text-brand-gold">Trilha 3 (Saltos Melódicos):</strong> O app tocará duas notas (Nota Base → Nota Alvo). Ouça a relação intervalar entre elas e cante a <strong>segunda nota</strong>.'
+            },
+            audiation: {
+                badge: 'Trilha 4 · Audiation (Gordon)',
+                banner: '<strong class="text-brand-gold">Trilha 4 (Memória Tonal &amp; Audiation):</strong> Ouça a nota alvo e sustente-a mentalmente durante <strong>3 segundos de silêncio</strong> antes de cantar. Fortalece a imagem auditiva interna!'
+            },
+            triads: {
+                badge: 'Trilha 5 · Arpejos & Tríades',
+                banner: '<strong class="text-brand-gold">Trilha 5 (Tríades e Sentido Harmônico):</strong> Percorra os graus de acordes maiores e menores (1º, 3º e 5º graus) para consolidar a afinação harmônica e coral.'
+            },
+            freelab: {
+                badge: 'Trilha 6 · Laboratório Livre',
+                banner: '<strong class="text-brand-gold">Trilha 6 (Laboratório Livre):</strong> Cante qualquer nota livremente ou clique no Diapasão Interativo abaixo para observar sua curva vocal sem contagem de erros.'
+            }
+        };
+
+        const levelsConfig = [
+            { minXp: 0,   title: 'Nível 1 · Ouvinte Curioso' },
+            { minXp: 100, title: 'Nível 2 · Explorador Sonoro' },
+            { minXp: 250, title: 'Nível 3 · Voz Estável' },
+            { minXp: 500, title: 'Nível 4 · Afinador Coral' },
+            { minXp: 900, title: 'Nível 5 · Mestre da Entonação' }
+        ];
+
+        const missionsCatalog = [
+            { id: 'm_sustain3', title: 'Sustentar 3 notas afinadas', target: 3, key: 'scoreCorrect' },
+            { id: 'm_fine2',    title: '2 acertos com erro ≤ 20 cents', target: 2, key: 'fineHits' },
+            { id: 'm_adv2',     title: '2 acertos em Intervalos, Tríades ou Audiation', target: 2, key: 'advancedPathHits' }
+        ];
+
+        const badgesCatalog = [
+            { id: 'first_hit',   title: '1º Uníssono',    desc: 'Acertou a primeira nota' },
+            { id: 'bullseye',    title: 'Na Mosca!',      desc: 'Erro menor que 12 cents' },
+            { id: 'streak_5',    title: 'Série de 5',     desc: '5 acertos seguidos' },
+            { id: 'step_climber',title: 'Escada Vocal',   desc: 'Completou 5 graus seguidos' },
+            { id: 'interval_pro',title: 'Ouvido Relativo',desc: 'Acertou 3 intervalos ou tríades' },
+            { id: 'choir_master',title: 'Precisão Coral', desc: 'Acertou no rigor ±20 cents' }
+        ];
+
+        // =========================================================================
+        // 3. ESTADO DO APLICATIVO, HISTÓRICO DE CURVA E GAMIFICAÇÃO
+        // =========================================================================
+        let audioContext;
+        let synth;
+        let droneSynth;
+        let analyser;
+        let mic;
+        let droneActive = false;
+
+        let currentPath = 'unison';
+        let currentNote = null;
+        let currentBaseNote = null;
+        let stepwiseIndex = 0;
+        let stepwiseDirection = 1;
+        let triadStepIndex = 0;
+        let listening = false;
+        let actionTaken = false;
+
+        // Controle de repetições consecutivas da mesma nota em caso de erro (máximo 3 repetições)
+        let errorCount = 0;
+        const MAX_CONSECUTIVE_REPEATS = 3;
+        let audiationTimer = null;
+
+        // Contadores de sustentação em tempo real
+        let sustainFrames = 0;
+        let offPitchFrames = 0;
+        const REQUIRED_SUSTAIN_FRAMES = 26; // ~430ms a 60fps
+        const MAX_OFFPITCH_FRAMES = 55;     // ~900ms fora da nota
+        const FFT_SIZE = 2048;
+
+        // Histórico para o Gráfico de Contorno Vocal (últimos 140 frames)
+        const MAX_CONTOUR_POINTS = 140;
+        let contourHistory = [];
+
+        // Estado de Gamificação e Diagnóstico
+        let gameState = {
+            xp: 0,
+            scoreCorrect: 0,
+            scoreTotal: 0,
+            streakCurrent: 0,
+            streakBest: 0,
+            fineHits: 0,
+            advancedPathHits: 0,
+            intervalsHit: 0,
+            stepwiseHit: 0,
+            completedMissions: {},
+            unlockedBadges: {},
+            centsSamples: []
+        };
+
+        function updateAttemptBadge() {
+            attemptCounterBadgeEl.textContent = `Repetições após erro: ${errorCount}/${MAX_CONSECUTIVE_REPEATS}`;
         }
 
+        function loadGameState() {
+            try {
+                const saved = localStorage.getItem('aferidor_entonacao_v3');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    gameState = { ...gameState, ...parsed };
+                    if (!Array.isArray(gameState.centsSamples)) gameState.centsSamples = [];
+                    if (!gameState.completedMissions) gameState.completedMissions = {};
+                }
+            } catch (e) {
+                console.warn('Não foi possível carregar dados locais:', e);
+            }
+            renderGamificationUI();
+            renderDiagnosticsUI();
+        }
+
+        function saveGameState() {
+            try {
+                localStorage.setItem('aferidor_entonacao_v3', JSON.stringify(gameState));
+            } catch (e) {
+                console.warn('Não foi possível salvar dados locais:', e);
+            }
+        }
+
+        function unlockBadge(badgeId) {
+            if (!gameState.unlockedBadges[badgeId]) {
+                gameState.unlockedBadges[badgeId] = true;
+                gameState.xp += 25;
+            }
+        }
+
+        function checkMissionsProgress() {
+            missionsCatalog.forEach(m => {
+                const val = gameState[m.key] || 0;
+                if (val >= m.target && !gameState.completedMissions[m.id]) {
+                    gameState.completedMissions[m.id] = true;
+                    gameState.xp += 40;
+                }
+            });
+        }
+
+        function renderGamificationUI() {
+            const pct = gameState.scoreTotal > 0
+                ? Math.round((gameState.scoreCorrect / gameState.scoreTotal) * 100)
+                : 0;
+
+            scoreCorrectEl.textContent = gameState.scoreCorrect;
+            scoreTotalEl.textContent = gameState.scoreTotal;
+            scorePercentEl.textContent = gameState.scoreTotal > 0 ? pct + '%' : '—';
+            scoreBarEl.style.width = pct + '%';
+            scoreBarContainerEl.setAttribute('aria-valuenow', pct);
+
+            streakCurrentEl.textContent = gameState.streakCurrent;
+            streakBestEl.textContent = gameState.streakBest;
+            xpDisplayEl.textContent = `${gameState.xp} XP`;
+
+            // Cálculo de nível
+            let currentLvl = levelsConfig[0];
+            let nextLvl = levelsConfig[1];
+            for (let i = 0; i < levelsConfig.length; i++) {
+                if (gameState.xp >= levelsConfig[i].minXp) {
+                    currentLvl = levelsConfig[i];
+                    nextLvl = levelsConfig[i + 1] || null;
+                }
+            }
+            levelTitleEl.textContent = currentLvl.title;
+            if (nextLvl) {
+                const span = nextLvl.minXp - currentLvl.minXp;
+                const prog = Math.min(100, Math.round(((gameState.xp - currentLvl.minXp) / span) * 100));
+                xpBarEl.style.width = prog + '%';
+                nextLevelHintEl.textContent = `Próximo nível: ${nextLvl.minXp} XP`;
+            } else {
+                xpBarEl.style.width = '100%';
+                nextLevelHintEl.textContent = 'Nível Máximo Alcançado!';
+            }
+
+            // Renderizar Missões
+            missionsListEl.innerHTML = missionsCatalog.map(m => {
+                const currentVal = Math.min(m.target, gameState[m.key] || 0);
+                const done = !!gameState.completedMissions[m.id];
+                const pctM = Math.round((currentVal / m.target) * 100);
+                return `
+                    <div class="glass-panel rounded-xl p-2.5 border ${done ? 'border-[#2A9D8F] bg-[#2A9D8F]/20' : 'border-white/10'}">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="${done ? 'text-brand-gold font-semibold' : 'text-brand-light'}">${m.title}</span>
+                            <span class="font-mono-tech text-[11px] ${done ? 'text-brand-gold' : 'text-brand-light/70'}">${done ? 'CONCLUÍDA ✓' : `${currentVal}/${m.target}`}</span>
+                        </div>
+                        <div class="w-full bg-[#264653] rounded-full h-1.5 mt-1.5 overflow-hidden">
+                            <div class="bg-[#2A9D8F] h-full transition-all" style="width: ${pctM}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Renderizar Badges
+            badgesGridEl.innerHTML = badgesCatalog.map(b => {
+                const unlocked = !!gameState.unlockedBadges[b.id];
+                return `
+                    <div class="rounded-xl p-2 border transition-all ${unlocked ? 'badge-unlocked' : 'badge-locked'}">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold">${b.title}</span>
+                            <span class="text-[10px] font-mono-tech text-brand-gold">${unlocked ? 'ATIVO' : 'BLOQ'}</span>
+                        </div>
+                        <p class="text-[10px] opacity-85 mt-0.5 leading-tight">${b.desc}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDiagnosticsUI() {
+            const samples = gameState.centsSamples || [];
+            diagSamplesCountEl.textContent = `${samples.length} medições`;
+
+            if (samples.length < 3) {
+                diagTendencyEl.textContent = 'Coletando amostras...';
+                diagAvgErrorEl.textContent = '— cents';
+                diagRecommendationEl.textContent = 'Realize pelo menos 3 rodadas para gerar seu perfil de tendência vocal (grave/agudo) e recomendação fisiológica.';
+                return;
+            }
+
+            const recent = samples.slice(-25);
+            const sumSigned = recent.reduce((acc, v) => acc + v, 0);
+            const sumAbs = recent.reduce((acc, v) => acc + Math.abs(v), 0);
+            const avgSigned = Math.round(sumSigned / recent.length);
+            const avgAbs = Math.round(sumAbs / recent.length);
+
+            diagAvgErrorEl.textContent = `±${avgAbs} cents`;
+
+            if (avgSigned < -14) {
+                diagTendencyEl.textContent = `Tendência Grave / Calante (${avgSigned} c)`;
+                diagTendencyEl.className = 'text-sm font-semibold text-brand-sandy mt-0.5';
+                diagRecommendationEl.innerHTML = '<strong class="text-brand-gold">Recomendação Pedagógica:</strong> Sua emissão tende a estabilizar um pouco abaixo do centro da nota. Experimente fazer o <em>Exercício 2 (Humming)</em> na aba de Dicas, ilumine a vogal nas maçãs do rosto e mantenha o suporte abdominal ativo até o fim da nota.';
+            } else if (avgSigned > 14) {
+                diagTendencyEl.textContent = `Tendência Aguda / Sustenida (+${avgSigned} c)`;
+                diagTendencyEl.className = 'text-sm font-semibold text-brand-sandy mt-0.5';
+                diagRecommendationEl.innerHTML = '<strong class="text-brand-gold">Recomendação Pedagógica:</strong> Sua emissão tende a passar levemente acima da frequência alvo. Reduza a força de ataque do sopro, solte a mandíbula e imagine atacar a nota "de cima para baixo" com espaço na faringe.';
+            } else {
+                diagTendencyEl.textContent = `Centro Equilibrado (${avgSigned >= 0 ? '+' : ''}${avgSigned} c)`;
+                diagTendencyEl.className = 'text-sm font-semibold text-brand-teal mt-0.5';
+                diagRecommendationEl.innerHTML = '<strong class="text-brand-gold">Recomendação Pedagógica:</strong> Excelente equilíbrio direcional entre grave e agudo! Para refinar ainda mais seu controle sensório-motor, experimente reduzir a tolerância para <em>±20 cents (Coral)</em> ou praticar a <em>Trilha 4 (Audiation com 3s de silêncio)</em>.';
+            }
+        }
+
+        function updateScore(correct, centsAccuracy = 50) {
+            gameState.scoreTotal++;
+            gameState.centsSamples.push(centsAccuracy);
+            if (gameState.centsSamples.length > 60) gameState.centsSamples.shift();
+
+            if (correct) {
+                gameState.scoreCorrect++;
+                gameState.streakCurrent++;
+                if (gameState.streakCurrent > gameState.streakBest) {
+                    gameState.streakBest = gameState.streakCurrent;
+                }
+
+                let gainedXp = 15 + Math.min(15, gameState.streakCurrent * 2);
+                if (Math.abs(centsAccuracy) <= 20) {
+                    gameState.fineHits = (gameState.fineHits || 0) + 1;
+                }
+                if (Math.abs(centsAccuracy) <= 12) {
+                    gainedXp += 10;
+                    unlockBadge('bullseye');
+                }
+                gameState.xp += gainedXp;
+
+                unlockBadge('first_hit');
+                if (gameState.streakCurrent >= 5) unlockBadge('streak_5');
+                if (Number(toleranceSelect.value) <= 20) unlockBadge('choir_master');
+
+                if (currentPath === 'stepwise') {
+                    gameState.stepwiseHit++;
+                    if (gameState.stepwiseHit >= 5) unlockBadge('step_climber');
+                }
+                if (currentPath === 'intervals' || currentPath === 'triads' || currentPath === 'audiation') {
+                    gameState.advancedPathHits = (gameState.advancedPathHits || 0) + 1;
+                    gameState.intervalsHit++;
+                    if (gameState.intervalsHit >= 3) unlockBadge('interval_pro');
+                }
+                checkMissionsProgress();
+            } else {
+                gameState.streakCurrent = 0;
+            }
+
+            saveGameState();
+            renderGamificationUI();
+            renderDiagnosticsUI();
+        }
+
+        // =========================================================================
+        // 4. GRÁFICO DE CONTORNO DE ALTURA EM TEMPO REAL (CANVAS)
+        // =========================================================================
+        function drawPitchContour() {
+            const w = contourCanvas.width;
+            const h = contourCanvas.height;
+            contourCtx.clearRect(0, 0, w, h);
+
+            const tol = Number(toleranceSelect.value);
+            const tolHeight = (tol / 100) * (h / 2);
+
+            // Faixa de tolerância (#2A9D8F) ao centro
+            contourCtx.fillStyle = 'rgba(42, 157, 143, 0.18)';
+            contourCtx.fillRect(0, (h / 2) - tolHeight, w, tolHeight * 2);
+
+            // Linha central (0 cents) em #E9C46A
+            contourCtx.strokeStyle = 'rgba(233, 196, 106, 0.7)';
+            contourCtx.lineWidth = 1;
+            contourCtx.setLineDash([4, 4]);
+            contourCtx.beginPath();
+            contourCtx.moveTo(0, h / 2);
+            contourCtx.lineTo(w, h / 2);
+            contourCtx.stroke();
+            contourCtx.setLineDash([]);
+
+            if (contourHistory.length < 2) return;
+
+            contourCtx.lineWidth = 2.5;
+            contourCtx.strokeStyle = '#F4A261';
+            contourCtx.beginPath();
+
+            let started = false;
+            for (let i = 0; i < contourHistory.length; i++) {
+                const pt = contourHistory[i];
+                if (pt === null) {
+                    started = false;
+                    continue;
+                }
+                const x = (i / (MAX_CONTOUR_POINTS - 1)) * w;
+                const clampedCents = Math.max(-100, Math.min(100, pt));
+                const y = (h / 2) - (clampedCents / 100) * (h / 2 - 6);
+
+                if (!started) {
+                    contourCtx.moveTo(x, y);
+                    started = true;
+                } else {
+                    contourCtx.lineTo(x, y);
+                }
+            }
+            contourCtx.stroke();
+        }
+
+        function pushContourPoint(centsOrNull) {
+            contourHistory.push(centsOrNull);
+            if (contourHistory.length > MAX_CONTOUR_POINTS) {
+                contourHistory.shift();
+            }
+            drawPitchContour();
+        }
+
+        // =========================================================================
+        // 5. UTILITÁRIOS DE ESCALA, TIMBRE E TECLADO DE REFERÊNCIA
+        // =========================================================================
+        function getActiveNotesPool() {
+            const scaleMode = scaleSelect.value;
+            const octaveMult = Number(octaveSelect.value) === 4 ? 2 : 1;
+
+            return baseNotesC3
+                .filter(n => {
+                    if (scaleMode === 'pentatonic') return n.pentatonic;
+                    if (scaleMode === 'diatonic') return n.diatonic;
+                    return true;
+                })
+                .map(n => ({
+                    name: n.name,
+                    semitone: n.semitone,
+                    freq: +(n.freq3 * octaveMult).toFixed(2)
+                }));
+        }
+
+        function getAllChromaticNotesInCurrentOctave() {
+            const octaveMult = Number(octaveSelect.value) === 4 ? 2 : 1;
+            return baseNotesC3.map(n => ({
+                name: n.name,
+                semitone: n.semitone,
+                freq: +(n.freq3 * octaveMult).toFixed(2)
+            }));
+        }
+
+        function findClosestNoteInfo(freq) {
+            const midiFloat = 69 + 12 * Math.log2(freq / 440);
+            const midiRounded = Math.round(midiFloat);
+            const noteIndex = ((midiRounded % 12) + 12) % 12;
+            const octave = Math.floor(midiRounded / 12) - 1;
+            const noteObj = baseNotesC3[noteIndex];
+            const closestFreq = 440 * Math.pow(2, (midiRounded - 69) / 12);
+            const centsFromClosest = Math.round(1200 * Math.log2(freq / closestFreq));
+            return {
+                name: `${noteObj ? noteObj.name : '?'}${octave}`,
+                cents: centsFromClosest,
+                freq: closestFreq
+            };
+        }
+
+        function configureSynthTimbre() {
+            if (!synth) return;
+            const mode = timbreSelect.value;
+            if (mode === 'warm') {
+                synth.oscillator.type = 'triangle';
+                synth.envelope.attack = 0.06;
+                synth.envelope.decay = 0.2;
+                synth.envelope.sustain = 0.7;
+                synth.envelope.release = 0.5;
+            } else if (mode === 'harmonic') {
+                synth.oscillator.type = 'fmsine';
+                synth.envelope.attack = 0.02;
+                synth.envelope.decay = 0.3;
+                synth.envelope.sustain = 0.5;
+                synth.envelope.release = 0.6;
+            } else {
+                synth.oscillator.type = 'sine';
+                synth.envelope.attack = 0.05;
+                synth.envelope.decay = 0.1;
+                synth.envelope.sustain = 0.8;
+                synth.envelope.release = 0.4;
+            }
+        }
+
+        function renderReferenceKeyboard() {
+            const allNotes = getAllChromaticNotesInCurrentOctave();
+            referenceKeyboardEl.innerHTML = allNotes.map(n => {
+                const isSharp = n.name.includes('#') || n.name.includes('b');
+                return `
+                    <button data-note="${n.name}" data-freq="${n.freq}"
+                        class="ref-key-btn rounded-xl py-2 px-1 text-center transition-all border ${
+                            isSharp
+                                ? 'bg-[#264653]/95 border-white/15 text-brand-gold hover:bg-[#264653]'
+                                : 'bg-white/10 border-white/25 text-brand-light font-semibold hover:bg-brand-teal/35'
+                        }">
+                        <span class="block text-xs">${n.name}</span>
+                        <span class="block text-[9px] font-mono-tech text-brand-light/70">${Math.round(n.freq)}</span>
+                    </button>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.ref-key-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const name = btn.getAttribute('data-note');
+                    const freq = parseFloat(btn.getAttribute('data-freq'));
+                    currentNote = { name, freq };
+                    errorCount = 0;
+                    updateAttemptBadge();
+                    targetNoteDisplayEl.textContent = name;
+                    targetFreqSubEl.textContent = `Referência: ${freq.toFixed(1)} Hz`;
+
+                    if (!synth) {
+                        await Tone.start();
+                        synth = new Tone.Synth().toDestination();
+                    }
+                    configureSynthTimbre();
+                    listening = false;
+                    synth.triggerAttackRelease(freq, '1s');
+                    setTimeout(() => {
+                        if (analyser) {
+                            listening = true;
+                            actionTaken = false;
+                        }
+                    }, 1200);
+                });
+            });
+        }
+
+        function updateToleranceVisualZone() {
+            const tol = Number(toleranceSelect.value);
+            const widthPct = Math.min(80, Math.max(15, tol));
+            toleranceZoneEl.style.width = `${widthPct}%`;
+            drawPitchContour();
+        }
+
+        // =========================================================================
+        // 6. ÁUDIO, SÍNTESE E SORTEIO DE RODADAS POR CAMINHO PEDAGÓGICO
+        // =========================================================================
         const startApp = async () => {
             try {
-                statusEl.textContent = 'Iniciando áudio...';
+                statusEl.textContent = 'Inicializando motor de áudio...';
                 await Tone.start();
                 audioContext = Tone.context.rawContext;
                 synth = new Tone.Synth().toDestination();
+                configureSynthTimbre();
+
+                droneSynth = new Tone.Synth({
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 1.0, decay: 0.5, sustain: 1.0, release: 1.5 }
+                }).toDestination();
+                droneSynth.volume.value = -20;
+
                 analyser = new Tone.Analyser('waveform', FFT_SIZE);
                 mic = new Tone.UserMedia();
                 await mic.open();
                 mic.connect(analyser);
-                statusEl.textContent = 'Microfone pronto!';
+
+                statusEl.textContent = 'Microfone ativo · Biofeedback em tempo real pronto';
                 startButton.classList.add('hidden');
                 nextNoteButton.classList.remove('hidden');
-                instructionEl.textContent = 'Pressione "Próxima Nota"';
+                replayNoteButton.classList.remove('hidden');
+                droneToggleButton.classList.remove('hidden');
+
+                if (currentPath === 'freelab') {
+                    instructionEl.textContent = 'Modo Livre: Cante qualquer nota ou toque no Diapasão abaixo';
+                    listening = true;
+                } else {
+                    instructionEl.textContent = 'Pressione "Sortear / Próxima Nota" para iniciar a rodada';
+                }
                 getPitchLoop();
             } catch (error) {
                 console.error("Falha ao iniciar o aplicativo:", error);
-                statusEl.textContent = "Erro ao acessar o microfone.";
+                statusEl.textContent = "Erro ao acessar o microfone. Verifique as permissões do navegador.";
             }
         };
 
         const startNewRound = () => {
+            if (!synth) return;
+            if (audiationTimer) clearInterval(audiationTimer);
+            const pool = getActiveNotesPool();
+            errorCount = 0;
+            updateAttemptBadge();
+            sustainFrames = 0;
+            offPitchFrames = 0;
+            contourHistory = [];
+            drawPitchContour();
+            updateSustainProgress(0);
+
+            if (currentPath === 'freelab') {
+                listening = true;
+                actionTaken = false;
+                intervalBadgeEl.classList.add('hidden');
+                instructionEl.textContent = 'Laboratório Livre: Cante qualquer nota para observar sua curva vocal';
+                return;
+            }
+
+            if (currentPath === 'stepwise') {
+                intervalBadgeEl.classList.remove('hidden');
+                intervalBadgeEl.textContent = `Grau ${stepwiseIndex + 1} de ${pool.length}`;
+                currentNote = pool[stepwiseIndex];
+                currentBaseNote = null;
+
+                stepwiseIndex += stepwiseDirection;
+                if (stepwiseIndex >= pool.length) {
+                    stepwiseIndex = Math.max(0, pool.length - 2);
+                    stepwiseDirection = -1;
+                } else if (stepwiseIndex < 0) {
+                    stepwiseIndex = Math.min(1, pool.length - 1);
+                    stepwiseDirection = 1;
+                }
+                playAndSetupListener(currentNote);
+                return;
+            }
+
+            if (currentPath === 'triads') {
+                const allChrom = getAllChromaticNotesInCurrentOctave();
+                const stepSpec = triadPatternSemitones[triadStepIndex % triadPatternSemitones.length];
+                triadStepIndex++;
+                currentNote = allChrom[stepSpec.semitone];
+                currentBaseNote = null;
+                intervalBadgeEl.classList.remove('hidden');
+                intervalBadgeEl.textContent = stepSpec.degree;
+                playAndSetupListener(currentNote);
+                return;
+            }
+
+            if (currentPath === 'intervals') {
+                const allChrom = getAllChromaticNotesInCurrentOctave();
+                const baseIdx = Math.floor(Math.random() * 5);
+                const baseNote = allChrom[baseIdx];
+                const chosenInterval = melodicIntervals[Math.floor(Math.random() * melodicIntervals.length)];
+                const targetNote = allChrom[baseIdx + chosenInterval.semitones];
+
+                currentBaseNote = baseNote;
+                currentNote = targetNote;
+                intervalBadgeEl.classList.remove('hidden');
+                intervalBadgeEl.textContent = `${baseNote.name} → ${targetNote.name} (${chosenInterval.label})`;
+                playIntervalAndSetupListener(baseNote, targetNote);
+                return;
+            }
+
+            // Sorteio de nota para Uníssono ou Audiation
             let newNote;
             do {
-                newNote = notes[Math.floor(Math.random() * notes.length)];
-            } while (newNote && currentNote && newNote.name === currentNote.name);
+                newNote = pool[Math.floor(Math.random() * pool.length)];
+            } while (pool.length > 1 && newNote && currentNote && newNote.name === currentNote.name);
             currentNote = newNote;
-            errorCount = 0;
+            currentBaseNote = null;
+
+            if (currentPath === 'audiation') {
+                intervalBadgeEl.classList.remove('hidden');
+                intervalBadgeEl.textContent = 'Retenção Mental (3s de Audiation)';
+                playAudiationAndSetupListener(currentNote);
+                return;
+            }
+
+            intervalBadgeEl.classList.add('hidden');
             playAndSetupListener(currentNote);
         };
 
         const repeatRound = () => {
-            playAndSetupListener(currentNote);
+            if (!currentNote) return;
+            if (audiationTimer) clearInterval(audiationTimer);
+            sustainFrames = 0;
+            offPitchFrames = 0;
+            contourHistory = [];
+            drawPitchContour();
+            updateSustainProgress(0);
+
+            if (currentPath === 'audiation') {
+                playAudiationAndSetupListener(currentNote);
+            } else if (currentPath === 'intervals' && currentBaseNote) {
+                playIntervalAndSetupListener(currentBaseNote, currentNote);
+            } else {
+                playAndSetupListener(currentNote);
+            }
         };
 
         const playAndSetupListener = (noteToPlay) => {
+            if (!synth || !noteToPlay) return;
+            configureSynthTimbre();
             listening = false;
             actionTaken = true;
             feedbackEl.innerHTML = '&nbsp;';
-            userResultLabel.innerHTML = '&nbsp;';
+            userResultLabel.textContent = 'Diagnóstico';
             userResultDisplay.textContent = '-';
-            displayArea.className = 'glass-panel mt-5 p-6 rounded-2xl color-transition';
-            instructionEl.textContent = 'Ouça com atenção...';
-            targetNoteDisplayEl.textContent = noteToPlay.name;
-            synth.triggerAttackRelease(noteToPlay.freq, '1s');
+            userDetectedNoteEl.textContent = '-';
+            userCentsDisplayEl.textContent = '—';
+            resetDisplayColors();
 
-            // MUDANÇA: Aumento do tempo de espera para evitar que o som do app seja captado.
-            // O valor foi aumentado de 1500ms para 2000ms.
+            instructionEl.textContent = 'Ouça com atenção e mentalize a altura...';
+            targetNoteDisplayEl.textContent = noteToPlay.name;
+            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz`;
+
+            synth.triggerAttackRelease(noteToPlay.freq, '1.1s');
+
             setTimeout(() => {
-                instructionEl.textContent = 'AGORA CANTE A NOTA';
+                instructionEl.textContent = 'AGORA CANTE E SUSTENTE A NOTA';
                 listening = true;
                 actionTaken = false;
-            }, 2000);
+            }, 1850);
         };
 
+        const playAudiationAndSetupListener = (noteToPlay) => {
+            if (!synth || !noteToPlay) return;
+            configureSynthTimbre();
+            listening = false;
+            actionTaken = true;
+            feedbackEl.innerHTML = '&nbsp;';
+            resetDisplayColors();
+
+            instructionEl.textContent = '1. Ouça a referência sonora...';
+            targetNoteDisplayEl.textContent = noteToPlay.name;
+            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz`;
+
+            synth.triggerAttackRelease(noteToPlay.freq, '1.0s');
+
+            let remaining = 3;
+            setTimeout(() => {
+                instructionEl.textContent = `2. AUDIATION: Ouça a nota em silêncio na mente (${remaining}s)...`;
+                audiationTimer = setInterval(() => {
+                    remaining--;
+                    if (remaining > 0) {
+                        instructionEl.textContent = `2. AUDIATION: Ouça a nota em silêncio na mente (${remaining}s)...`;
+                    } else {
+                        clearInterval(audiationTimer);
+                        instructionEl.textContent = '3. AGORA ATAQUE E SUSTENTE A NOTA!';
+                        listening = true;
+                        actionTaken = false;
+                    }
+                }, 1000);
+            }, 1400);
+        };
+
+        const playIntervalAndSetupListener = (baseNote, targetNote) => {
+            if (!synth) return;
+            configureSynthTimbre();
+            listening = false;
+            actionTaken = true;
+            feedbackEl.innerHTML = '&nbsp;';
+            resetDisplayColors();
+
+            instructionEl.textContent = `Ouça a base (${baseNote.name}) e depois a nota alvo (${targetNote.name})...`;
+            targetNoteDisplayEl.textContent = targetNote.name;
+            targetFreqSubEl.textContent = `Alvo: ${targetNote.freq.toFixed(1)} Hz (Base: ${baseNote.name})`;
+
+            const now = Tone.now();
+            synth.triggerAttackRelease(baseNote.freq, '0.8s', now);
+            synth.triggerAttackRelease(targetNote.freq, '1.0s', now + 0.95);
+
+            setTimeout(() => {
+                instructionEl.textContent = `CANTE A 2ª NOTA (${targetNote.name.toUpperCase()})`;
+                listening = true;
+                actionTaken = false;
+            }, 2600);
+        };
+
+        function resetDisplayColors() {
+            displayArea.style.background = '';
+            displayArea.style.borderColor = '';
+            displayArea.style.boxShadow = '';
+        }
+
+        function updateSustainProgress(pct) {
+            const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+            sustainBarEl.style.width = `${clamped}%`;
+            sustainPctLabelEl.textContent = `${clamped}%`;
+        }
+
+        // =========================================================================
+        // 7. DETECÇÃO DE FREQUÊNCIA (AUTOCORRELAÇÃO) E REPETIÇÃO ATÉ 3 VEZES
+        // =========================================================================
         function autoCorrelate(buffer, sampleRate) {
             const SIZE = buffer.length;
             let rms = 0;
             for (let i = 0; i < SIZE; i++) rms += buffer[i] * buffer[i];
             rms = Math.sqrt(rms / SIZE);
-            if (rms < 0.01) return -1;
+            if (rms < 0.012) return -1;
 
             let r1 = 0, r2 = SIZE - 1;
             for (let i = 0; i < SIZE / 2; i++) if (Math.abs(buffer[i]) < 0.2) { r1 = i; break; }
@@ -281,12 +1543,18 @@
 
             const buffer2 = buffer.slice(r1, r2);
             const c = new Float32Array(buffer2.length).fill(0);
-            for (let i = 0; i < buffer2.length; i++) for (let j = 0; j < buffer2.length - i; j++) c[i] += buffer2[j] * buffer2[j + i];
+            for (let i = 0; i < buffer2.length; i++) {
+                for (let j = 0; j < buffer2.length - i; j++) {
+                    c[i] += buffer2[j] * buffer2[j + i];
+                }
+            }
 
             let d = 0;
             while (d < c.length && d + 1 < c.length && c[d] > c[d + 1]) d++;
             let maxval = -1, maxpos = -1;
-            for (let i = d; i < buffer2.length; i++) if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+            for (let i = d; i < buffer2.length; i++) {
+                if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+            }
 
             if (maxpos === -1 || maxpos === 0 || maxpos >= c.length - 1) return -1;
 
@@ -295,7 +1563,24 @@
             const a = (x1 + x3 - 2 * x2) / 2, b = (x3 - x1) / 2;
             if (a) T0 -= b / (2 * a);
 
-            return T0 > 0 ? sampleRate / T0 : -1;
+            const detected = T0 > 0 ? sampleRate / T0 : -1;
+            if (detected < 65 || detected > 1100) return -1;
+            return detected;
+        }
+
+        function updateNeedlePosition(cents) {
+            const clamped = Math.max(-100, Math.min(100, cents));
+            const leftPct = 50 + (clamped / 100) * 45;
+            pitchNeedleEl.style.left = `${leftPct}%`;
+
+            const tol = Number(toleranceSelect.value);
+            if (Math.abs(cents) <= tol) {
+                pitchNeedleEl.className = 'needle-transition absolute top-1 bottom-1 w-3.5 rounded-full bg-[#2A9D8F] shadow-[0_0_12px_#2A9D8F] -translate-x-1/2';
+            } else if (Math.abs(cents) <= 130) {
+                pitchNeedleEl.className = 'needle-transition absolute top-1 bottom-1 w-3 rounded-full bg-[#F4A261] shadow-[0_0_10px_#F4A261] -translate-x-1/2';
+            } else {
+                pitchNeedleEl.className = 'needle-transition absolute top-1 bottom-1 w-3 rounded-full bg-[#E76F51] shadow-[0_0_10px_#E76F51] -translate-x-1/2';
+            }
         }
 
         function getPitchLoop() {
@@ -306,89 +1591,272 @@
             const frequency = autoCorrelate(waveformData, audioContext.sampleRate);
 
             if (frequency !== -1) {
+                const closestInfo = findClosestNoteInfo(frequency);
+                userDetectedNoteEl.textContent = `${closestInfo.name}`;
+
+                if (currentPath === 'freelab' && !currentNote) {
+                    targetNoteDisplayEl.textContent = closestInfo.name;
+                    targetFreqSubEl.textContent = `Sua frequência: ${frequency.toFixed(1)} Hz`;
+                    const sign = closestInfo.cents > 0 ? '+' : '';
+                    userCentsDisplayEl.textContent = `${sign}${closestInfo.cents} c`;
+                    userResultDisplay.textContent = Math.abs(closestInfo.cents) <= 25 ? 'Centro Estável' : (closestInfo.cents < 0 ? 'Levemente Grave' : 'Levemente Agudo');
+                    updateNeedlePosition(closestInfo.cents);
+                    pushContourPoint(closestInfo.cents);
+                    return;
+                }
+
                 checkPitch(frequency);
             } else {
-                userResultDisplay.textContent = '-';
-                userResultLabel.innerHTML = '&nbsp;';
+                pushContourPoint(null);
+                sustainFrames = Math.max(0, sustainFrames - 1);
+                updateSustainProgress((sustainFrames / REQUIRED_SUSTAIN_FRAMES) * 100);
             }
         }
 
         function checkPitch(userFreq) {
             if (!currentNote || userFreq <= 0) return;
 
-            let normalizedUserFreq = userFreq;
-            while (normalizedUserFreq > currentNote.freq * 1.414) normalizedUserFreq /= 2;
-            while (normalizedUserFreq < currentNote.freq / 1.414) normalizedUserFreq *= 2;
-
-            const centsDiff = 1200 * Math.log2(normalizedUserFreq / currentNote.freq);
-            const absCentsDiff = Math.abs(centsDiff);
-
-            if (absCentsDiff <= 75) {
-                if (actionTaken) return;
-                actionTaken = true;
-                updateScore(true);
-                feedbackEl.textContent = 'A nota tocada foi entonada suficientemente bem';
-                userResultLabel.innerHTML = '&nbsp;';
-                userResultDisplay.textContent = '✓';
-                displayArea.className = 'glass-panel mt-5 p-6 rounded-2xl color-transition';
-                displayArea.style.background = 'rgba(34, 197, 94, 0.35)';
-                displayArea.style.borderColor = 'rgba(34, 197, 94, 0.5)';
-                displayArea.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.3)';
-                setTimeout(() => {
-                    displayArea.style.background = '';
-                    displayArea.style.borderColor = '';
-                    displayArea.style.boxShadow = '';
-                    startNewRound();
-                }, 2000);
-                return;
+            let comparedFreq = userFreq;
+            if (!strictOctaveToggle.checked) {
+                while (comparedFreq > currentNote.freq * 1.414) comparedFreq /= 2;
+                while (comparedFreq < currentNote.freq / 1.414) comparedFreq *= 2;
             }
 
-            userResultLabel.textContent = 'Resultado';
-            userResultDisplay.textContent = 'Ficou fora';
+            const centsDiff = 1200 * Math.log2(comparedFreq / currentNote.freq);
+            const absCentsDiff = Math.abs(centsDiff);
+            const roundedCents = Math.round(centsDiff);
+            const sign = roundedCents > 0 ? '+' : '';
 
-            if (absCentsDiff > 150) {
-                if (actionTaken) return;
-                actionTaken = true;
-                errorCount++;
-                if (errorCount >= 2) {
-                    updateScore(false);
-                    feedbackEl.textContent = 'Vamos tentar outra...';
-                    displayArea.className = 'glass-panel mt-5 p-6 rounded-2xl color-transition';
-                    displayArea.style.background = 'rgba(147, 51, 234, 0.35)';
-                    displayArea.style.borderColor = 'rgba(147, 51, 234, 0.5)';
-                    displayArea.style.boxShadow = '0 0 30px rgba(147, 51, 234, 0.3)';
+            userCentsDisplayEl.textContent = `${sign}${roundedCents} c`;
+            updateNeedlePosition(centsDiff);
+            pushContourPoint(centsDiff);
+
+            const tolerance = Number(toleranceSelect.value);
+            const requireSustain = sustainModeToggle.checked;
+
+            // 1. DENTRO DA ZONA DE AFINAÇÃO (#2A9D8F)
+            if (absCentsDiff <= tolerance) {
+                offPitchFrames = 0;
+                sustainFrames++;
+
+                const requiredFrames = requireSustain ? REQUIRED_SUSTAIN_FRAMES : 1;
+                const progress = (sustainFrames / requiredFrames) * 100;
+                updateSustainProgress(progress);
+
+                userResultDisplay.textContent = absCentsDiff <= 12 ? 'Na Mosca!' : 'Afinado';
+                feedbackEl.textContent = requireSustain && sustainFrames < requiredFrames
+                    ? 'Mantenha a nota firme...'
+                    : 'A nota foi entonada com precisão!';
+
+                displayArea.style.background = 'rgba(42, 157, 143, 0.34)';
+                displayArea.style.borderColor = '#2A9D8F';
+                displayArea.style.boxShadow = '0 0 30px rgba(42, 157, 143, 0.35)';
+
+                if (sustainFrames >= requiredFrames && currentPath !== 'freelab') {
+                    if (actionTaken) return;
+                    actionTaken = true;
+                    updateScore(true, roundedCents);
+                    userResultDisplay.textContent = '✓ Confirmado';
                     setTimeout(() => {
-                        displayArea.style.background = '';
-                        displayArea.style.borderColor = '';
-                        displayArea.style.boxShadow = '';
+                        resetDisplayColors();
                         startNewRound();
-                    }, 1500);
-                } else {
-                    feedbackEl.textContent = 'Tente de novo...';
-                    displayArea.className = 'glass-panel mt-5 p-6 rounded-2xl color-transition';
-                    displayArea.style.background = 'rgba(239, 68, 68, 0.35)';
-                    displayArea.style.borderColor = 'rgba(239, 68, 68, 0.5)';
-                    displayArea.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.3)';
-                    setTimeout(() => {
-                        displayArea.style.background = '';
-                        displayArea.style.borderColor = '';
-                        displayArea.style.boxShadow = '';
-                        repeatRound();
-                    }, 1500);
+                    }, 1800);
                 }
                 return;
             }
 
-            displayArea.style.background = 'rgba(234, 179, 8, 0.35)';
-            displayArea.style.borderColor = 'rgba(234, 179, 8, 0.5)';
-            displayArea.style.boxShadow = '0 0 30px rgba(234, 179, 8, 0.3)';
-            feedbackEl.textContent = 'Quase Lá';
+            // 2. ZONA INTERMEDIÁRIA ("QUASE LÁ": entre a tolerância e 150 cents - #E9C46A / #F4A261)
+            const directionHint = centsDiff < 0
+                ? 'Suba um pouco (está Grave ♭)'
+                : 'Relaxe/desça um pouco (está Agudo ♯)';
+
+            userResultDisplay.textContent = centsDiff < 0 ? 'Abaixo (Grave ♭)' : 'Acima (Agudo ♯)';
+
+            if (absCentsDiff <= 150) {
+                sustainFrames = Math.max(0, sustainFrames - 0.5);
+                updateSustainProgress((sustainFrames / REQUIRED_SUSTAIN_FRAMES) * 100);
+                displayArea.style.background = 'rgba(233, 196, 106, 0.25)';
+                displayArea.style.borderColor = '#E9C46A';
+                displayArea.style.boxShadow = '0 0 25px rgba(233, 196, 106, 0.25)';
+                feedbackEl.textContent = `Quase lá! ${directionHint}`;
+                return;
+            }
+
+            // 3. FORA DA NOTA (> 150 cents): Repetir no máximo 3 vezes consecutivas, depois partir para outra nota
+            if (currentPath === 'freelab') {
+                feedbackEl.textContent = directionHint;
+                return;
+            }
+
+            sustainFrames = 0;
+            updateSustainProgress(0);
+            offPitchFrames++;
+
+            const maxOff = requireSustain ? MAX_OFFPITCH_FRAMES : 1;
+            if (offPitchFrames >= maxOff) {
+                if (actionTaken) return;
+                actionTaken = true;
+                offPitchFrames = 0;
+                errorCount++;
+
+                if (errorCount <= MAX_CONSECUTIVE_REPEATS) {
+                    updateAttemptBadge();
+                    feedbackEl.textContent = `${directionHint} · Repetindo a mesma nota (${errorCount}/${MAX_CONSECUTIVE_REPEATS})...`;
+                    displayArea.style.background = 'rgba(244, 162, 97, 0.30)';
+                    displayArea.style.borderColor = '#F4A261';
+                    displayArea.style.boxShadow = '0 0 25px rgba(244, 162, 97, 0.25)';
+                    setTimeout(() => {
+                        resetDisplayColors();
+                        repeatRound();
+                    }, 1600);
+                } else {
+                    // Já repetiu 3 vezes consecutivas e errou novamente: contabiliza e parte para outra nota
+                    updateScore(false, roundedCents);
+                    feedbackEl.textContent = `Limite de ${MAX_CONSECUTIVE_REPEATS} repetições atingido. Partindo para outra nota...`;
+                    displayArea.style.background = 'rgba(231, 111, 81, 0.35)';
+                    displayArea.style.borderColor = '#E76F51';
+                    displayArea.style.boxShadow = '0 0 28px rgba(231, 111, 81, 0.3)';
+                    setTimeout(() => {
+                        resetDisplayColors();
+                        startNewRound();
+                    }, 1700);
+                }
+            } else {
+                feedbackEl.textContent = `Ajuste a altura: ${directionHint}`;
+            }
         }
+
+        // =========================================================================
+        // 8. EXERCÍCIOS DE AQUECIMENTO VOCAL SINTETIZADOS E EVENTOS
+        // =========================================================================
+        document.querySelectorAll('.warmup-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                await Tone.start();
+                if (!synth) {
+                    synth = new Tone.Synth().toDestination();
+                }
+                configureSynthTimbre();
+                const type = btn.getAttribute('data-warmup');
+                const mult = Number(octaveSelect.value) === 4 ? 2 : 1;
+                const now = Tone.now();
+
+                if (type === 'siren') {
+                    synth.triggerAttack(130.81 * mult, now);
+                    synth.frequency.rampTo(196.00 * mult, 1.2, now);
+                    synth.frequency.rampTo(130.81 * mult, 1.2, now + 1.2);
+                    synth.triggerRelease(now + 2.5);
+                } else if (type === 'humming') {
+                    const seq = [130.81, 146.83, 164.81, 146.83, 130.81];
+                    seq.forEach((f, idx) => {
+                        synth.triggerAttackRelease(f * mult, '0.45s', now + idx * 0.55);
+                    });
+                } else if (type === 'triad') {
+                    const seq = [130.81, 164.81, 196.00, 164.81, 130.81];
+                    seq.forEach((f, idx) => {
+                        synth.triggerAttackRelease(f * mult, '0.5s', now + idx * 0.6);
+                    });
+                }
+            });
+        });
 
         startButton.addEventListener('click', startApp);
         nextNoteButton.addEventListener('click', startNewRound);
+        replayNoteButton.addEventListener('click', repeatRound);
 
+        // Pedal Tônico (Drone em Dó)
+        droneToggleButton.addEventListener('click', () => {
+            if (!droneSynth) return;
+            droneActive = !droneActive;
+            if (droneActive) {
+                const cFreq = Number(octaveSelect.value) === 4 ? 261.63 : 130.81;
+                droneSynth.triggerAttack(cFreq);
+                droneToggleButton.textContent = 'Pedal Dó: ON';
+                droneToggleButton.classList.add('tab-active');
+            } else {
+                droneSynth.triggerRelease();
+                droneToggleButton.textContent = 'Pedal Dó: OFF';
+                droneToggleButton.classList.remove('tab-active');
+            }
+        });
+
+        // Troca de Caminhos Pedagógicos
+        document.querySelectorAll('.path-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.path-btn').forEach(b => b.classList.remove('path-card-active'));
+                btn.classList.add('path-card-active');
+                currentPath = btn.getAttribute('data-path');
+
+                const info = pathDescriptions[currentPath];
+                activePathBadgeEl.textContent = info.badge;
+                pedagogicalBannerEl.innerHTML = info.banner;
+                stepwiseIndex = 0;
+                stepwiseDirection = 1;
+                triadStepIndex = 0;
+
+                if (synth) {
+                    startNewRound();
+                }
+            });
+        });
+
+        // Troca de Abas Superiores
+        document.querySelectorAll('.nav-tab').forEach(tabBtn => {
+            tabBtn.addEventListener('click', () => {
+                const targetId = tabBtn.getAttribute('data-tab');
+                document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('tab-active'));
+                tabBtn.classList.add('tab-active');
+
+                document.querySelectorAll('.tab-content').forEach(sec => {
+                    if (sec.id === targetId) {
+                        sec.classList.remove('hidden');
+                    } else {
+                        sec.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Atualização de Configurações
+        octaveSelect.addEventListener('change', () => {
+            renderReferenceKeyboard();
+            if (droneActive && droneSynth) {
+                const cFreq = Number(octaveSelect.value) === 4 ? 261.63 : 130.81;
+                droneSynth.setNote(cFreq);
+            }
+        });
+
+        toleranceSelect.addEventListener('change', updateToleranceVisualZone);
+        scaleSelect.addEventListener('change', () => {
+            stepwiseIndex = 0;
+            stepwiseDirection = 1;
+        });
+
+        resetProgressBtn.addEventListener('click', () => {
+            gameState = {
+                xp: 0,
+                scoreCorrect: 0,
+                scoreTotal: 0,
+                streakCurrent: 0,
+                streakBest: 0,
+                fineHits: 0,
+                advancedPathHits: 0,
+                intervalsHit: 0,
+                stepwiseHit: 0,
+                completedMissions: {},
+                unlockedBadges: {},
+                centsSamples: []
+            };
+            saveGameState();
+            renderGamificationUI();
+            renderDiagnosticsUI();
+        });
+
+        // Inicialização da Interface
+        loadGameState();
+        renderReferenceKeyboard();
+        updateToleranceVisualZone();
+        updateAttemptBadge();
+        drawPitchContour();
     </script>
 </body>
 </html>
-
