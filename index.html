@@ -24,7 +24,7 @@
             }
         }
     </script>
-    <!-- Tone.js para geração de áudio e análise de frequência -->
+    <!-- Tone.js para geração de áudio (fallback/síntese) e análise de frequência -->
     <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +172,7 @@
                         <span class="text-xs font-mono-tech uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Estúdio Pedagógico</span>
                     </div>
                     <p class="text-brand-light/75 text-sm mt-1">
-                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo.
+                        Treinamento sensório-motor de afinação vocal e percepção auditiva com biofeedback visual contínuo e amostras General MIDI (FluidR3_GM).
                     </p>
                 </div>
 
@@ -222,7 +222,7 @@
                         </button>
                         <button data-path="stepwise" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">2. Escada Vocal (Graus)</p>
-                            <p class="text-xs text-brand-light/70 mt-0.5">Suba e desça graus conjuntos (Dó-Ré-Mi...) passo a passo.</p>
+                            <p class="text-xs text-brand-light/70 mt-0.5">Suba e desça graus conjuntos passo a passo.</p>
                         </button>
                         <button data-path="intervals" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50">
                             <p class="font-semibold text-sm text-brand-light">3. Saltos &amp; Intervalos</p>
@@ -247,17 +247,17 @@
                         <div>
                             <label for="scaleSelect" class="block text-xs text-brand-light/75 mb-1">Repertório / Harmonia</label>
                             <select id="scaleSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
-                                <option value="pentatonic">Pentatônica (Dó-Ré-Mi-Sol-Lá)</option>
-                                <option value="diatonic" selected>Diatônica (Dó Maior - 7 notas)</option>
-                                <option value="chromatic">Cromática (12 semitons)</option>
+                                <option value="pentatonic">Pentatônica (5 notas)</option>
+                                <option value="diatonic" selected>Diatônica (Notas naturais)</option>
+                                <option value="chromatic">Cromática (Todos os semitons)</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="octaveSelect" class="block text-xs text-brand-light/75 mb-1">Região Vocal (Referência)</label>
+                            <label for="octaveSelect" class="block text-xs text-brand-light/75 mb-1">Classificação / Região Vocal</label>
                             <select id="octaveSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
-                                <option value="3" selected>Grave / Média (Oitava 3: C3–B3)</option>
-                                <option value="4">Média / Aguda (Oitava 4: C4–B4)</option>
+                                <option value="graves">Vozes Graves (de Sol a Sol)</option>
+                                <option value="agudas" selected>Vozes Agudas (de Dó a Dó)</option>
                             </select>
                         </div>
 
@@ -271,25 +271,50 @@
                         </div>
 
                         <div>
-                            <label for="timbreSelect" class="block text-xs text-brand-light/75 mb-1">Timbre de Referência</label>
+                            <label for="timbreSelect" class="block text-xs text-brand-light/75 mb-1">Instrumento / Timbre (GM)</label>
                             <select id="timbreSelect" class="w-full glass-panel rounded-xl px-2.5 py-2 text-xs text-brand-light bg-[#264653] focus:outline-none focus:border-brand-gold">
-                                <option value="warm" selected>Voz Suave (Triangular Rico)</option>
-                                <option value="harmonic">Piano Harmônico (FM)</option>
-                                <option value="sine">Senoidal Pura (Diapasão)</option>
+                                <optgroup label="SoundFont General MIDI (FluidR3_GM)">
+                                    <option value="choir_aahs" selected>Coro Vocal (Choir Aahs)</option>
+                                    <option value="voice_oohs">Voz Suave (Voice Oohs)</option>
+                                    <option value="synth_choir">Coro Sintetizado (Synth Choir)</option>
+                                    <option value="acoustic_grand_piano">Piano de Cauda (Acoustic Grand)</option>
+                                    <option value="electric_grand_piano">Piano Elétrico (Electric Grand)</option>
+                                    <option value="flute">Flauta Transversal (Flute)</option>
+                                    <option value="clarinet">Clarinete (Clarinet)</option>
+                                    <option value="violin">Violino (Violin)</option>
+                                    <option value="string_ensemble_1">Conjunto de Cordas (Strings)</option>
+                                    <option value="french_horn">Trompa (French Horn)</option>
+                                    <option value="trumpet">Trompete (Trumpet)</option>
+                                    <option value="accordion">Acordeão (Accordion)</option>
+                                    <option value="harmonica">Gaita (Harmonica)</option>
+                                </optgroup>
+                                <optgroup label="Síntese Nativa (Fallback Local)">
+                                    <option value="synth:warm">Síntese: Voz Suave (Triangular)</option>
+                                    <option value="synth:harmonic">Síntese: Piano Harmônico (FM)</option>
+                                    <option value="synth:sine">Síntese: Senoidal Pura (Diapasão)</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Opções adicionais de sustentação e oitava -->
-                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10 text-xs text-brand-light/85">
-                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="sustainModeToggle" checked class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
-                            <span>Exigir nota sustentada (0.45s)</span>
-                        </label>
-                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="strictOctaveToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
-                            <span>Exigir oitava exata</span>
-                        </label>
+                    <!-- Controle de Volume do Instrumento + Opções de sustentação e oitava -->
+                    <div class="mt-3 pt-2.5 border-t border-white/10 space-y-2 text-xs text-brand-light/85">
+                        <div class="flex items-center justify-between gap-3">
+                            <label for="instrumentVolumeSlider" class="text-brand-light/75 shrink-0">Volume da Referência:</label>
+                            <input type="range" id="instrumentVolumeSlider" min="0.1" max="1.0" step="0.05" value="0.85"
+                                class="w-full accent-[#2A9D8F] cursor-pointer h-1.5 bg-[#264653] rounded-lg">
+                            <span id="instrumentVolumeLabel" class="font-mono-tech text-brand-gold w-10 text-right">85%</span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="sustainModeToggle" checked class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                                <span>Exigir nota sustentada (0.45s)</span>
+                            </label>
+                            <label class="inline-flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="strictOctaveToggle" class="rounded border-white/30 text-brand-teal focus:ring-brand-teal bg-[#264653]">
+                                <span>Exigir oitava exata</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -389,8 +414,8 @@
                             <button id="replayNoteButton" class="glass-btn-sandy font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ouvir a nota alvo novamente">
                                 Ouvir Novamente
                             </button>
-                            <button id="droneToggleButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ligar/Desligar Pedal Tônico em Dó">
-                                Pedal Dó: OFF
+                            <button id="droneToggleButton" class="glass-btn-neutral font-semibold py-3.5 px-4 rounded-2xl text-sm hidden" title="Ligar/Desligar Nota Pedal Tônica">
+                                Pedal Tônico: OFF
                             </button>
                         </div>
                         <p id="status" class="text-brand-light/70 h-5 text-xs font-mono-tech text-center">Aguardando ativação de áudio pelo usuário...</p>
@@ -399,7 +424,7 @@
                     <!-- Painel Central da Nota Alvo -->
                     <div id="displayArea" class="glass-panel mt-4 p-6 rounded-3xl color-transition text-center relative overflow-hidden">
                         <div class="flex items-center justify-between text-xs font-mono-tech text-brand-light/70 mb-1">
-                            <span id="attemptCounterBadge">Tentativas: 0/3 repetições</span>
+                            <span id="attemptCounterBadge">Repetições após erro: 0/3</span>
                             <span id="intervalBadge" class="hidden uppercase px-2.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-gold/50 text-brand-gold"></span>
                         </div>
 
@@ -492,11 +517,11 @@
                     <!-- Teclado de Referência Auditiva Rápida -->
                     <div class="glass-panel mt-4 p-4 rounded-2xl">
                         <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo (Toque para ouvir e comparar)</p>
-                            <span class="text-[11px] text-brand-light/70">Clique em uma nota para defini-la como alvo</span>
+                            <p id="keyboardTitle" class="text-xs font-semibold uppercase tracking-wider text-brand-gold">Diapasão Interativo — Vozes Agudas (de Dó a Dó)</p>
+                            <span class="text-[11px] text-brand-light/70">Clique em uma nota para ouvi-la e defini-la como alvo</span>
                         </div>
-                        <div id="referenceKeyboard" class="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
-                            <!-- Botões das 12 notas gerados via JS -->
+                        <div id="referenceKeyboard" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-13 gap-1.5" style="grid-template-columns: repeat(auto-fit, minmax(42px, 1fr));">
+                            <!-- Botões das 13 notas (Sol a Sol ou Dó a Dó) gerados via JS -->
                         </div>
                     </div>
 
@@ -516,7 +541,7 @@
                         <span class="text-xs font-mono-tech uppercase px-3 py-1 rounded-full bg-brand-teal/25 border border-brand-gold/50 text-brand-gold">Preparação Fisiológica</span>
                         <h2 class="text-2xl font-bold text-brand-light mt-2">Aquecimento Vocal Guiado (Toque para Ouvir e Acompanhar)</h2>
                         <p class="text-brand-light/85 text-sm mt-1">
-                            Antes de medir sua afinação, calibre a elasticidade das pregas vocais e o fluxo de ar com estes 3 exercícios clássicos de técnica vocal:
+                            Antes de medir sua afinação, calibre a elasticidade das pregas vocais e o fluxo de ar com estes 3 exercícios adaptados automaticamente para a sua região vocal selecionada (Sol a Sol ou Dó a Dó):
                         </p>
                     </div>
                 </div>
@@ -525,7 +550,7 @@
                     <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-mono-tech text-brand-gold">Exercício 1 · TVSO / Glissando</span>
-                            <h3 class="text-base font-bold text-brand-light mt-1">Sirene Vocal Suave (Dó → Sol → Dó)</h3>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Sirene Vocal Suave (1º → 5º → 1º)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
                                 Deslize continuamente com um <em>"vuuu"</em> ou vibração de lábios (<em>"brrr"</em>) sem degraus. Ativa a transição suave entre os músculos tireoaritenóideo (TA) e cricotireoideo (CT).
                             </p>
@@ -538,7 +563,7 @@
                     <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-mono-tech text-brand-sandy">Exercício 2 · Ressonância Frontal</span>
-                            <h3 class="text-base font-bold text-brand-light mt-1">Humming de 3 Graus (Dó–Ré–Mi–Ré–Dó)</h3>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Humming de 3 Graus (1–2–3–2–1)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
                                 Cante de boca fechada (<em>"hummm"</em>) sentindo cócegas nos lábios e maçãs do rosto. Ajuda a posicionar a voz na "máscara" e evita que a nota fique calante (grave).
                             </p>
@@ -551,9 +576,9 @@
                     <div class="glass-panel rounded-2xl p-4 flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-mono-tech text-brand-gold">Exercício 3 · Salto Harmônico</span>
-                            <h3 class="text-base font-bold text-brand-light mt-1">Tríade Maior (Dó–Mi–Sol–Mi–Dó)</h3>
+                            <h3 class="text-base font-bold text-brand-light mt-1">Tríade Maior (1–3–5–3–1)</h3>
                             <p class="text-xs text-brand-light/80 mt-1.5 leading-relaxed">
-                                Cante com <em>"muuu"</em> ou <em>"nooo"</em> mantendo o espaço interno da boca estável. Ao subir para o Sol (5ª), pense na nota apontando "de cima para baixo" sem apertar a garganta.
+                                Cante com <em>"muuu"</em> ou <em>"nooo"</em> mantendo o espaço interno da boca estável. Ao subir para o 5º grau, pense na nota apontando "de cima para baixo" sem apertar a garganta.
                             </p>
                         </div>
                         <button data-warmup="triad" class="warmup-btn glass-btn-teal w-full py-2.5 px-3 rounded-xl text-xs font-bold mt-4">
@@ -618,7 +643,7 @@
                         <p class="text-xs font-mono-tech text-brand-teal uppercase">Passo 06 · Prática Estruturada</p>
                         <h3 class="text-lg font-bold text-brand-light mt-1">6. Comece na Sua Região Confortável</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Treine primeiro na escala <strong>Pentatônica ou Diatônica</strong> dentro da oitava mais confortável para a sua voz (Oitava 3 para vozes mais graves; Oitava 4 para vozes mais agudas). Use o <strong>Pedal Tônico (Drone)</strong> para ancorar seu ouvido relativo.
+                            Escolha <strong>Vozes Graves (de Sol a Sol)</strong> ou <strong>Vozes Agudas (de Dó a Dó)</strong> conforme sua comodidade vocal, iniciando pelo repertório Pentatônico ou Diatônico com o timbre <em>Coro Vocal (Choir Aahs)</em>.
                         </p>
                     </div>
                 </div>
@@ -678,12 +703,12 @@
                     <!-- Pesquisa 4 -->
                     <article class="glass-panel rounded-2xl p-5">
                         <div class="flex items-center justify-between text-xs font-mono-tech text-brand-gold mb-1">
-                            <span>CONTINUUM DESENVOLVIMENTAL &amp; TIMBRE</span>
+                            <span>CONTINUUM DESENVOLVIMENTAL &amp; TIMBRE VOCAL</span>
                             <span>Graham Welch (1986, 2006); Watts et al. (2003)</span>
                         </div>
-                        <h3 class="text-lg font-bold text-brand-light">4. Da Tessitura Confortável ao Contexto Tonal e Harmônico</h3>
+                        <h3 class="text-lg font-bold text-brand-light">4. Efeito da Semelhança Timbrística Vocal (Choir Aahs) e Tessitura</h3>
                         <p class="text-sm text-brand-light/85 mt-2 leading-relaxed">
-                            Segundo Graham Welch (2006), aprender a afinar segue estágios progressivos: primeiro o controle de notas dentro da região de fala confortável, depois graus conjuntos, intervalos e arpejos dentro de uma escala (pentatônica/diatônica) e, por fim, saltos cromáticos. Além disso, timbres ricos em harmônicos e o uso de nota pedal (<em>drone</em>) fornecem pistas espectrais que facilitam a equiparação de altura.
+                            Segundo Graham Welch (2006) e estudos sobre efeito de timbre no <em>pitch matching</em> (Watts et al., 2003; Hutchins &amp; Peretz, 2012), modelos sonoros com formantes vocais (como o timbre <em>Coro Vocal — Choir Aahs</em>) e ajustados à tessitura do cantor (<strong>Vozes Graves de Sol a Sol</strong> vs. <strong>Vozes Agudas de Dó a Dó</strong>) reduzem a necessidade de tradução espectral e melhoram significativamente a precisão da entonação.
                         </p>
                     </article>
 
@@ -751,6 +776,7 @@
         const pedagogicalBannerEl = document.getElementById('pedagogicalBanner');
         const activePathBadgeEl = document.getElementById('activePathBadge');
         const referenceKeyboardEl = document.getElementById('referenceKeyboard');
+        const keyboardTitleEl = document.getElementById('keyboardTitle');
         const contourCanvas = document.getElementById('pitchContourCanvas');
         const contourCtx = contourCanvas.getContext('2d');
 
@@ -781,25 +807,51 @@
         const octaveSelect = document.getElementById('octaveSelect');
         const toleranceSelect = document.getElementById('toleranceSelect');
         const timbreSelect = document.getElementById('timbreSelect');
+        const instrumentVolumeSlider = document.getElementById('instrumentVolumeSlider');
+        const instrumentVolumeLabel = document.getElementById('instrumentVolumeLabel');
         const sustainModeToggle = document.getElementById('sustainModeToggle');
         const strictOctaveToggle = document.getElementById('strictOctaveToggle');
 
         // =========================================================================
-        // 2. DADOS MUSICAIS, CAMINHOS PEDAGÓGICOS, MISSÕES E CONQUISTAS
+        // 2. DADOS MUSICAIS: VOZES GRAVES (SOL A SOL) E VOZES AGUDAS (DÓ A DÓ)
         // =========================================================================
-        const baseNotesC3 = [
-            { name: 'dó',   semitone: 0,  freq3: 130.81, diatonic: true,  pentatonic: true  },
-            { name: 'dó#',  semitone: 1,  freq3: 138.59, diatonic: false, pentatonic: false },
-            { name: 'ré',   semitone: 2,  freq3: 146.83, diatonic: true,  pentatonic: true  },
-            { name: 'ré#',  semitone: 3,  freq3: 155.56, diatonic: false, pentatonic: false },
-            { name: 'mi',   semitone: 4,  freq3: 164.81, diatonic: true,  pentatonic: true  },
-            { name: 'fá',   semitone: 5,  freq3: 174.61, diatonic: true,  pentatonic: false },
-            { name: 'fá#',  semitone: 6,  freq3: 185.00, diatonic: false, pentatonic: false },
-            { name: 'sol',  semitone: 7,  freq3: 196.00, diatonic: true,  pentatonic: true  },
-            { name: 'láb',  semitone: 8,  freq3: 207.65, diatonic: false, pentatonic: false },
-            { name: 'lá',   semitone: 9,  freq3: 220.00, diatonic: true,  pentatonic: true  },
-            { name: 'sib',  semitone: 10, freq3: 233.08, diatonic: false, pentatonic: false },
-            { name: 'si',   semitone: 11, freq3: 246.94, diatonic: true,  pentatonic: false },
+        // Nomes cromáticos padrão para detecção de altura
+        const chromaticPitchNames = [
+            'dó', 'dó#', 'ré', 'ré#', 'mi', 'fá', 'fá#', 'sol', 'láb', 'lá', 'sib', 'si'
+        ];
+
+        // Região 1: Vozes Graves — de Sol a Sol (Sol2 98.00 Hz até Sol3 196.00 Hz)
+        const notesVozesGravesSolASol = [
+            { name: 'sol',  semitone: 0,  freq: 98.00,  noteKey: 'G2',  midi: 43, diatonic: true,  pentatonic: true  },
+            { name: 'láb',  semitone: 1,  freq: 103.83, noteKey: 'Ab2', midi: 44, diatonic: false, pentatonic: false },
+            { name: 'lá',   semitone: 2,  freq: 110.00, noteKey: 'A2',  midi: 45, diatonic: true,  pentatonic: true  },
+            { name: 'sib',  semitone: 3,  freq: 116.54, noteKey: 'Bb2', midi: 46, diatonic: false, pentatonic: false },
+            { name: 'si',   semitone: 4,  freq: 123.47, noteKey: 'B2',  midi: 47, diatonic: true,  pentatonic: true  },
+            { name: 'dó',   semitone: 5,  freq: 130.81, noteKey: 'C3',  midi: 48, diatonic: true,  pentatonic: false },
+            { name: 'dó#',  semitone: 6,  freq: 138.59, noteKey: 'Db3', midi: 49, diatonic: false, pentatonic: false },
+            { name: 'ré',   semitone: 7,  freq: 146.83, noteKey: 'D3',  midi: 50, diatonic: true,  pentatonic: true  },
+            { name: 'ré#',  semitone: 8,  freq: 155.56, noteKey: 'Eb3', midi: 51, diatonic: false, pentatonic: false },
+            { name: 'mi',   semitone: 9,  freq: 164.81, noteKey: 'E3',  midi: 52, diatonic: true,  pentatonic: true  },
+            { name: 'fá',   semitone: 10, freq: 174.61, noteKey: 'F3',  midi: 53, diatonic: true,  pentatonic: false },
+            { name: 'fá#',  semitone: 11, freq: 185.00, noteKey: 'Gb3', midi: 54, diatonic: false, pentatonic: false },
+            { name: 'sol',  semitone: 12, freq: 196.00, noteKey: 'G3',  midi: 55, diatonic: true,  pentatonic: true  }
+        ];
+
+        // Região 2: Vozes Agudas — de Dó a Dó (Dó3 130.81 Hz até Dó4 261.63 Hz)
+        const notesVozesAgudasDoADo = [
+            { name: 'dó',   semitone: 0,  freq: 130.81, noteKey: 'C3',  midi: 48, diatonic: true,  pentatonic: true  },
+            { name: 'dó#',  semitone: 1,  freq: 138.59, noteKey: 'Db3', midi: 49, diatonic: false, pentatonic: false },
+            { name: 'ré',   semitone: 2,  freq: 146.83, noteKey: 'D3',  midi: 50, diatonic: true,  pentatonic: true  },
+            { name: 'ré#',  semitone: 3,  freq: 155.56, noteKey: 'Eb3', midi: 51, diatonic: false, pentatonic: false },
+            { name: 'mi',   semitone: 4,  freq: 164.81, noteKey: 'E3',  midi: 52, diatonic: true,  pentatonic: true  },
+            { name: 'fá',   semitone: 5,  freq: 174.61, noteKey: 'F3',  midi: 53, diatonic: true,  pentatonic: false },
+            { name: 'fá#',  semitone: 6,  freq: 185.00, noteKey: 'Gb3', midi: 54, diatonic: false, pentatonic: false },
+            { name: 'sol',  semitone: 7,  freq: 196.00, noteKey: 'G3',  midi: 55, diatonic: true,  pentatonic: true  },
+            { name: 'láb',  semitone: 8,  freq: 207.65, noteKey: 'Ab3', midi: 56, diatonic: false, pentatonic: false },
+            { name: 'lá',   semitone: 9,  freq: 220.00, noteKey: 'A3',  midi: 57, diatonic: true,  pentatonic: true  },
+            { name: 'sib',  semitone: 10, freq: 233.08, noteKey: 'Bb3', midi: 58, diatonic: false, pentatonic: false },
+            { name: 'si',   semitone: 11, freq: 246.94, noteKey: 'B3',  midi: 59, diatonic: true,  pentatonic: false },
+            { name: 'dó',   semitone: 12, freq: 261.63, noteKey: 'C4',  midi: 60, diatonic: true,  pentatonic: true  }
         ];
 
         const melodicIntervals = [
@@ -811,14 +863,14 @@
         ];
 
         const triadPatternSemitones = [
-            { semitone: 0, degree: '1º Grau (Tônica - Dó)' },
-            { semitone: 4, degree: '3º Grau Maior (Mediante - Mi)' },
-            { semitone: 7, degree: '5º Grau (Dominante - Sol)' },
-            { semitone: 4, degree: '3º Grau Maior (Mediante - Mi)' },
-            { semitone: 0, degree: '1º Grau (Tônica - Dó)' },
-            { semitone: 3, degree: '3º Grau Menor (Mib / Ré#)' },
-            { semitone: 7, degree: '5º Grau (Dominante - Sol)' },
-            { semitone: 0, degree: '1º Grau (Tônica - Dó)' }
+            { semitone: 0, degree: '1º Grau (Tônica)' },
+            { semitone: 4, degree: '3º Grau Maior (Mediante)' },
+            { semitone: 7, degree: '5º Grau (Dominante)' },
+            { semitone: 4, degree: '3º Grau Maior (Mediante)' },
+            { semitone: 0, degree: '1º Grau (Tônica)' },
+            { semitone: 3, degree: '3º Grau Menor' },
+            { semitone: 7, degree: '5º Grau (Dominante)' },
+            { semitone: 0, degree: '1º Grau (Tônica)' }
         ];
 
         const pathDescriptions = {
@@ -828,7 +880,7 @@
             },
             stepwise: {
                 badge: 'Trilha 2 · Graus Conjuntos',
-                banner: '<strong class="text-brand-gold">Trilha 2 (Escada Vocal):</strong> As notas caminham em graus conjuntos (subindo e descendo na escala). Excelente para calibrar pequenos ajustes musculares da laringe.'
+                banner: '<strong class="text-brand-gold">Trilha 2 (Escada Vocal):</strong> As notas caminham em graus conjuntos (subindo e descendo de Sol a Sol ou de Dó a Dó). Excelente para calibrar pequenos ajustes musculares da laringe.'
             },
             intervals: {
                 badge: 'Trilha 3 · Intervalos',
@@ -905,6 +957,389 @@
         // Histórico para o Gráfico de Contorno Vocal (últimos 140 frames)
         const MAX_CONTOUR_POINTS = 140;
         let contourHistory = [];
+
+        // =========================================================================
+        // 3.1 CAMADA REUTILIZÁVEL DE ÁUDIO SOUNDFONT (FluidR3_GM) + FALLBACK
+        // =========================================================================
+        const SOUNDFONT_BASE_URL = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+        const GM_NOTE_NAMES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+        const SHARP_TO_FLAT_MAP = {
+            'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'Bb'
+        };
+
+        // Estruturas de cache sob demanda solicitadas
+        const instrumentCache = {};
+        const decodedSampleCache = {};
+        const instrumentLoadingPromises = {};
+
+        const SoundFontEngine = {
+            baseUrl: SOUNDFONT_BASE_URL,
+            currentInstrument: 'choir_aahs',
+            volume: 0.85,
+            masterGainNode: null,
+            activeVoices: new Map(),
+
+            /**
+             * Garante que o AudioContext nativo esteja disponível e ativo após interação do usuário.
+             */
+            async ensureAudioContext() {
+                if (!audioContext) {
+                    if (window.Tone && Tone.context && Tone.context.rawContext) {
+                        audioContext = Tone.context.rawContext;
+                    } else {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        audioContext = new AudioCtx();
+                    }
+                }
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+                if (!this.masterGainNode && audioContext) {
+                    this.masterGainNode = audioContext.createGain();
+                    this.masterGainNode.gain.setValueAtTime(this.volume, audioContext.currentTime);
+                    this.masterGainNode.connect(audioContext.destination);
+                }
+                return audioContext;
+            },
+
+            /**
+             * Converte frequência (Hz), objeto de nota, número MIDI (< 80) ou string de nota para chave FluidR3_GM (ex.: "G2", "A2", "C3").
+             */
+            toNoteKey(noteOrFreq, isMidi = false) {
+                if (typeof noteOrFreq === 'object' && noteOrFreq !== null) {
+                    if (typeof noteOrFreq.noteKey === 'string') {
+                        return noteOrFreq.noteKey;
+                    }
+                    if (typeof noteOrFreq.freq === 'number') {
+                        return this.toNoteKey(noteOrFreq.freq, false);
+                    }
+                }
+                if (typeof noteOrFreq === 'number') {
+                    // Frequências vocais em Hz (ex.: Sol2 = 98 Hz, Lá2 = 110 Hz) têm valores inteiros >= 80;
+                    // apenas trate como número MIDI se for explicitamente isMidi ou um inteiro na faixa MIDI vocal/instrumental (< 80).
+                    const midi = (isMidi || (noteOrFreq < 80 && Number.isInteger(noteOrFreq)))
+                        ? noteOrFreq
+                        : Math.round(69 + 12 * Math.log2(noteOrFreq / 440));
+                    const noteIdx = ((midi % 12) + 12) % 12;
+                    const octave = Math.floor(midi / 12) - 1;
+                    return `${GM_NOTE_NAMES_FLAT[noteIdx]}${octave}`;
+                }
+                if (typeof noteOrFreq === 'string') {
+                    const trimmed = noteOrFreq.trim();
+                    const match = trimmed.match(/^([A-Ga-g][#b]?)(-?\d+)$/);
+                    if (match) {
+                        let pitchClass = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+                        if (SHARP_TO_FLAT_MAP[pitchClass]) {
+                            pitchClass = SHARP_TO_FLAT_MAP[pitchClass];
+                        }
+                        return `${pitchClass}${match[2]}`;
+                    }
+                }
+                return 'C3';
+            },
+
+            /**
+             * Converte um Data URL base64 (data:audio/mp3;base64,...) em ArrayBuffer.
+             */
+            dataUrlToArrayBuffer(dataUrl) {
+                const commaIdx = dataUrl.indexOf(',');
+                const base64 = commaIdx !== -1 ? dataUrl.slice(commaIdx + 1) : dataUrl;
+                const binaryString = window.atob(base64);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes.buffer;
+            },
+
+            /**
+             * Decodifica ArrayBuffer via AudioContext.decodeAudioData com compatibilidade multi-navegador.
+             */
+            decodeAudioDataCompat(ctx, arrayBuffer) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        const promise = ctx.decodeAudioData(
+                            arrayBuffer,
+                            decoded => resolve(decoded),
+                            err => reject(err)
+                        );
+                        if (promise && typeof promise.then === 'function') {
+                            promise.then(resolve).catch(reject);
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                });
+            },
+
+            /**
+             * Carrega sob demanda o arquivo JS do instrumento General MIDI em FluidR3_GM.
+             * Evita downloads repetidos e armazena em instrumentCache.
+             */
+            async loadInstrument(instrumentName) {
+                if (!instrumentName || instrumentName.startsWith('synth:')) {
+                    return null;
+                }
+
+                if (instrumentCache[instrumentName]) {
+                    return instrumentCache[instrumentName];
+                }
+
+                if (window.MIDI && window.MIDI.Soundfont && window.MIDI.Soundfont[instrumentName]) {
+                    instrumentCache[instrumentName] = window.MIDI.Soundfont[instrumentName];
+                    if (!decodedSampleCache[instrumentName]) {
+                        decodedSampleCache[instrumentName] = {};
+                    }
+                    return instrumentCache[instrumentName];
+                }
+
+                if (instrumentLoadingPromises[instrumentName]) {
+                    return instrumentLoadingPromises[instrumentName];
+                }
+
+                const scriptUrl = `${this.baseUrl}${instrumentName}-mp3.js`;
+                statusEl.textContent = `Carregando SoundFont (${instrumentName})...`;
+
+                instrumentLoadingPromises[instrumentName] = new Promise((resolve, reject) => {
+                    window.MIDI = window.MIDI || {};
+                    window.MIDI.Soundfont = window.MIDI.Soundfont || {};
+
+                    const script = document.createElement('script');
+                    script.src = scriptUrl;
+                    script.async = true;
+
+                    script.onload = () => {
+                        const data = window.MIDI && window.MIDI.Soundfont && window.MIDI.Soundfont[instrumentName];
+                        delete instrumentLoadingPromises[instrumentName];
+                        if (data) {
+                            instrumentCache[instrumentName] = data;
+                            if (!decodedSampleCache[instrumentName]) {
+                                decodedSampleCache[instrumentName] = {};
+                            }
+                            statusEl.textContent = `Timbre GM carregado: ${instrumentName}`;
+                            resolve(data);
+                        } else {
+                            reject(new Error(`Dados de SoundFont ausentes para: ${instrumentName}`));
+                        }
+                    };
+
+                    script.onerror = () => {
+                        delete instrumentLoadingPromises[instrumentName];
+                        reject(new Error(`Falha de rede ao baixar: ${scriptUrl}`));
+                    };
+
+                    document.head.appendChild(script);
+                });
+
+                return instrumentLoadingPromises[instrumentName];
+            },
+
+            /**
+             * Garante que apenas a nota solicitada seja convertida e decodificada em AudioBuffer.
+             * Armazena em decodedSampleCache[instrumentName][noteKey].
+             */
+            async ensureNote(instrumentName, noteOrFreq) {
+                const noteKey = this.toNoteKey(noteOrFreq);
+                if (!decodedSampleCache[instrumentName]) {
+                    decodedSampleCache[instrumentName] = {};
+                }
+                if (decodedSampleCache[instrumentName][noteKey]) {
+                    return decodedSampleCache[instrumentName][noteKey];
+                }
+
+                const soundfontData = await this.loadInstrument(instrumentName);
+                if (!soundfontData || !soundfontData[noteKey]) {
+                    throw new Error(`Amostra ${noteKey} não encontrada no instrumento ${instrumentName}`);
+                }
+
+                const ctx = await this.ensureAudioContext();
+                const arrayBuffer = this.dataUrlToArrayBuffer(soundfontData[noteKey]);
+                const audioBuffer = await this.decodeAudioDataCompat(ctx, arrayBuffer);
+                decodedSampleCache[instrumentName][noteKey] = audioBuffer;
+                return audioBuffer;
+            },
+
+            /**
+             * Pré-decodifica sob demanda apenas o subconjunto de notas realmente utilizado pelo exercício atual.
+             */
+            async preloadNotes(instrumentName, notesList = []) {
+                if (!instrumentName || instrumentName.startsWith('synth:')) return;
+                try {
+                    await this.loadInstrument(instrumentName);
+                    await Promise.all(
+                        notesList.map(n => this.ensureNote(instrumentName, n).catch(() => null))
+                    );
+                } catch (err) {
+                    console.warn('Pré-carregamento parcial ou fallback ativo:', err);
+                }
+            },
+
+            /**
+             * Define o volume mestre de reprodução das amostras via GainNode.
+             */
+            setVolume(val) {
+                this.volume = Math.max(0, Math.min(1, Number(val)));
+                if (this.masterGainNode && audioContext) {
+                    this.masterGainNode.gain.setTargetAtTime(this.volume, audioContext.currentTime, 0.02);
+                }
+                if (synth) {
+                    const db = this.volume > 0.01 ? 20 * Math.log10(this.volume) : -60;
+                    synth.volume.value = db;
+                }
+            },
+
+            /**
+             * Reproduz uma nota (polifônica) com envelope de ataque e liberação via GainNode.
+             * Em caso de falha ou modo "synth:*", aciona automaticamente o fallback de síntese.
+             */
+            async playNote(noteOrFreq, options = {}) {
+                const {
+                    duration = 1.0,
+                    delay = 0,
+                    velocity = 0.9,
+                    instrument = this.currentInstrument,
+                    loop = false
+                } = options;
+
+                if (!instrument || instrument.startsWith('synth:')) {
+                    return this.playFallbackSynth(noteOrFreq, { duration, delay, loop, mode: instrument });
+                }
+
+                try {
+                    const ctx = await this.ensureAudioContext();
+                    const noteKey = this.toNoteKey(noteOrFreq);
+                    const audioBuffer = await this.ensureNote(instrument, noteKey);
+
+                    const source = ctx.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.loop = !!loop;
+
+                    const noteGain = ctx.createGain();
+                    const startTime = ctx.currentTime + Math.max(0, delay);
+                    const attackTime = 0.018;
+                    const releaseTime = 0.14;
+                    const peakGain = Math.max(0.05, Math.min(1.0, velocity));
+
+                    // Envelope suave de ataque para evitar cliques
+                    noteGain.gain.setValueAtTime(0.0001, startTime);
+                    noteGain.gain.linearRampToValueAtTime(peakGain, startTime + attackTime);
+
+                    source.connect(noteGain);
+                    noteGain.connect(this.masterGainNode);
+                    source.start(startTime);
+
+                    const voiceRecord = { source, noteGain, ctx, noteKey, stopped: false };
+                    if (!this.activeVoices.has(noteKey)) {
+                        this.activeVoices.set(noteKey, new Set());
+                    }
+                    this.activeVoices.get(noteKey).add(voiceRecord);
+
+                    source.onended = () => {
+                        const set = this.activeVoices.get(noteKey);
+                        if (set) set.delete(voiceRecord);
+                    };
+
+                    if (duration !== null && duration !== Infinity && !loop) {
+                        const durSec = typeof duration === 'string' ? parseFloat(duration) : Number(duration);
+                        const releaseStart = startTime + Math.max(attackTime + 0.02, durSec);
+                        noteGain.gain.setValueAtTime(peakGain, releaseStart);
+                        noteGain.gain.linearRampToValueAtTime(0.0001, releaseStart + releaseTime);
+                        source.stop(releaseStart + releaseTime + 0.02);
+                    }
+
+                    return voiceRecord;
+                } catch (err) {
+                    console.warn(`Fallback para síntese nativa acionado (${err.message})`);
+                    statusEl.textContent = 'Usando síntese nativa (fallback de rede/SoundFont)';
+                    return this.playFallbackSynth(noteOrFreq, { duration, delay, loop, mode: 'synth:warm' });
+                }
+            },
+
+            /**
+             * Interrompe suavemente todas as vozes ativas de uma determinada nota aplicando envelope de release.
+             */
+            stopNote(noteOrFreq, releaseTime = 0.12) {
+                const noteKey = this.toNoteKey(noteOrFreq);
+                const voices = this.activeVoices.get(noteKey);
+                if (!voices || voices.size === 0) return;
+
+                voices.forEach(voice => {
+                    if (voice.stopped) return;
+                    voice.stopped = true;
+                    try {
+                        const now = voice.ctx.currentTime;
+                        voice.noteGain.gain.cancelScheduledValues(now);
+                        voice.noteGain.gain.setValueAtTime(Math.max(0.0001, voice.noteGain.gain.value), now);
+                        voice.noteGain.gain.linearRampToValueAtTime(0.0001, now + releaseTime);
+                        voice.source.stop(now + releaseTime + 0.02);
+                    } catch (e) {
+                        // Ignora caso a fonte já tenha encerrado
+                    }
+                });
+                voices.clear();
+            },
+
+            /**
+             * Interrompe todas as notas SoundFont em execução.
+             */
+            stopAllNotes(releaseTime = 0.1) {
+                for (const noteKey of this.activeVoices.keys()) {
+                    this.stopNote(noteKey, releaseTime);
+                }
+            },
+
+            /**
+             * Fallback preservando a síntese original via Tone.Synth (Triangular, FM e Senoidal).
+             */
+            async playFallbackSynth(noteOrFreq, { duration = 1.0, delay = 0, loop = false, mode = 'synth:warm' } = {}) {
+                await Tone.start();
+                if (!synth) {
+                    synth = new Tone.Synth().toDestination();
+                }
+                configureSynthTimbre(mode);
+
+                let freq = 130.81;
+                if (typeof noteOrFreq === 'number') {
+                    freq = noteOrFreq < 80 && Number.isInteger(noteOrFreq)
+                        ? 440 * Math.pow(2, (noteOrFreq - 69) / 12)
+                        : noteOrFreq;
+                } else if (noteOrFreq && typeof noteOrFreq.freq === 'number') {
+                    freq = noteOrFreq.freq;
+                }
+
+                const now = Tone.now() + Math.max(0, delay);
+                if (loop) {
+                    synth.triggerAttack(freq, now);
+                } else {
+                    const durStr = typeof duration === 'number' ? `${duration}s` : duration;
+                    synth.triggerAttackRelease(freq, durStr, now);
+                }
+            }
+        };
+
+        // Funções globais solicitadas para carregar e trocar instrumentos General MIDI
+        async function loadInstrument(instrumentName) {
+            return SoundFontEngine.loadInstrument(instrumentName);
+        }
+
+        async function setInstrument(instrumentName) {
+            SoundFontEngine.currentInstrument = instrumentName;
+            if (timbreSelect && timbreSelect.value !== instrumentName) {
+                const optExists = Array.from(timbreSelect.options).some(o => o.value === instrumentName);
+                if (optExists) timbreSelect.value = instrumentName;
+            }
+            if (instrumentName && !instrumentName.startsWith('synth:')) {
+                const activeNotes = getActiveNotesPool();
+                await SoundFontEngine.preloadNotes(instrumentName, activeNotes);
+            } else {
+                configureSynthTimbre(instrumentName);
+            }
+        }
+
+        window.SoundFontEngine = SoundFontEngine;
+        window.loadInstrument = loadInstrument;
+        window.setInstrument = setInstrument;
 
         // Estado de Gamificação e Diagnóstico
         let gameState = {
@@ -1175,32 +1610,31 @@
         }
 
         // =========================================================================
-        // 5. UTILITÁRIOS DE ESCALA, TIMBRE E TECLADO DE REFERÊNCIA
+        // 5. UTILITÁRIOS DE ESCALA, REGIÃO VOCAL (SOL A SOL / DÓ A DÓ) E TECLADO
         // =========================================================================
-        function getActiveNotesPool() {
-            const scaleMode = scaleSelect.value;
-            const octaveMult = Number(octaveSelect.value) === 4 ? 2 : 1;
-
-            return baseNotesC3
-                .filter(n => {
-                    if (scaleMode === 'pentatonic') return n.pentatonic;
-                    if (scaleMode === 'diatonic') return n.diatonic;
-                    return true;
-                })
-                .map(n => ({
-                    name: n.name,
-                    semitone: n.semitone,
-                    freq: +(n.freq3 * octaveMult).toFixed(2)
-                }));
+        function isVozesGravesSelected() {
+            return octaveSelect.value === 'graves';
         }
 
         function getAllChromaticNotesInCurrentOctave() {
-            const octaveMult = Number(octaveSelect.value) === 4 ? 2 : 1;
-            return baseNotesC3.map(n => ({
-                name: n.name,
-                semitone: n.semitone,
-                freq: +(n.freq3 * octaveMult).toFixed(2)
-            }));
+            return isVozesGravesSelected() ? notesVozesGravesSolASol : notesVozesAgudasDoADo;
+        }
+
+        function getActiveNotesPool() {
+            const scaleMode = scaleSelect.value;
+            const baseList = getAllChromaticNotesInCurrentOctave();
+
+            return baseList.filter(n => {
+                if (scaleMode === 'pentatonic') return n.pentatonic;
+                if (scaleMode === 'diatonic') return n.diatonic;
+                return true;
+            });
+        }
+
+        function getCurrentTonicInfo() {
+            return isVozesGravesSelected()
+                ? { label: 'Sol', freq: 98.00 }
+                : { label: 'Dó', freq: 130.81 };
         }
 
         function findClosestNoteInfo(freq) {
@@ -1208,26 +1642,26 @@
             const midiRounded = Math.round(midiFloat);
             const noteIndex = ((midiRounded % 12) + 12) % 12;
             const octave = Math.floor(midiRounded / 12) - 1;
-            const noteObj = baseNotesC3[noteIndex];
+            const noteName = chromaticPitchNames[noteIndex] || '?';
             const closestFreq = 440 * Math.pow(2, (midiRounded - 69) / 12);
             const centsFromClosest = Math.round(1200 * Math.log2(freq / closestFreq));
             return {
-                name: `${noteObj ? noteObj.name : '?'}${octave}`,
+                name: `${noteName}${octave}`,
                 cents: centsFromClosest,
                 freq: closestFreq
             };
         }
 
-        function configureSynthTimbre() {
+        function configureSynthTimbre(forcedMode = null) {
             if (!synth) return;
-            const mode = timbreSelect.value;
-            if (mode === 'warm') {
+            const mode = forcedMode || timbreSelect.value;
+            if (mode === 'synth:warm' || mode === 'warm') {
                 synth.oscillator.type = 'triangle';
                 synth.envelope.attack = 0.06;
                 synth.envelope.decay = 0.2;
                 synth.envelope.sustain = 0.7;
                 synth.envelope.release = 0.5;
-            } else if (mode === 'harmonic') {
+            } else if (mode === 'synth:harmonic' || mode === 'harmonic') {
                 synth.oscillator.type = 'fmsine';
                 synth.envelope.attack = 0.02;
                 synth.envelope.decay = 0.3;
@@ -1242,10 +1676,22 @@
             }
         }
 
+        function updateDroneButtonLabel() {
+            const tonic = getCurrentTonicInfo();
+            droneToggleButton.textContent = `Pedal ${tonic.label}: ${droneActive ? 'ON' : 'OFF'}`;
+        }
+
         function renderReferenceKeyboard() {
             const allNotes = getAllChromaticNotesInCurrentOctave();
-            referenceKeyboardEl.innerHTML = allNotes.map(n => {
+            if (keyboardTitleEl) {
+                keyboardTitleEl.textContent = isVozesGravesSelected()
+                    ? 'Diapasão Interativo — Vozes Graves (de Sol a Sol)'
+                    : 'Diapasão Interativo — Vozes Agudas (de Dó a Dó)';
+            }
+
+            referenceKeyboardEl.innerHTML = allNotes.map((n, idx) => {
                 const isSharp = n.name.includes('#') || n.name.includes('b');
+                const displayLabel = idx === allNotes.length - 1 ? `${n.name}'` : n.name;
                 return `
                     <button data-note="${n.name}" data-freq="${n.freq}"
                         class="ref-key-btn rounded-xl py-2 px-1 text-center transition-all border ${
@@ -1253,7 +1699,7 @@
                                 ? 'bg-[#264653]/95 border-white/15 text-brand-gold hover:bg-[#264653]'
                                 : 'bg-white/10 border-white/25 text-brand-light font-semibold hover:bg-brand-teal/35'
                         }">
-                        <span class="block text-xs">${n.name}</span>
+                        <span class="block text-xs">${displayLabel}</span>
                         <span class="block text-[9px] font-mono-tech text-brand-light/70">${Math.round(n.freq)}</span>
                     </button>
                 `;
@@ -1267,15 +1713,10 @@
                     errorCount = 0;
                     updateAttemptBadge();
                     targetNoteDisplayEl.textContent = name;
-                    targetFreqSubEl.textContent = `Referência: ${freq.toFixed(1)} Hz`;
+                    targetFreqSubEl.textContent = `Referência: ${freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(freq)})`;
 
-                    if (!synth) {
-                        await Tone.start();
-                        synth = new Tone.Synth().toDestination();
-                    }
-                    configureSynthTimbre();
                     listening = false;
-                    synth.triggerAttackRelease(freq, '1s');
+                    await SoundFontEngine.playNote(freq, { duration: 1.0 });
                     setTimeout(() => {
                         if (analyser) {
                             listening = true;
@@ -1301,6 +1742,9 @@
                 statusEl.textContent = 'Inicializando motor de áudio...';
                 await Tone.start();
                 audioContext = Tone.context.rawContext;
+                await SoundFontEngine.ensureAudioContext();
+
+                // Mantém Tone.Synth inicializado como fallback imediato e para o glissando contínuo
                 synth = new Tone.Synth().toDestination();
                 configureSynthTimbre();
 
@@ -1310,16 +1754,20 @@
                 }).toDestination();
                 droneSynth.volume.value = -20;
 
+                // Carrega sob demanda o instrumento inicial (Coro Vocal / choir_aahs) e pré-decodifica somente as notas da escala atual
+                await setInstrument(timbreSelect.value);
+
                 analyser = new Tone.Analyser('waveform', FFT_SIZE);
                 mic = new Tone.UserMedia();
                 await mic.open();
                 mic.connect(analyser);
 
-                statusEl.textContent = 'Microfone ativo · Biofeedback em tempo real pronto';
+                statusEl.textContent = 'Microfone e Coro Vocal (FluidR3_GM) prontos · Biofeedback ativo';
                 startButton.classList.add('hidden');
                 nextNoteButton.classList.remove('hidden');
                 replayNoteButton.classList.remove('hidden');
                 droneToggleButton.classList.remove('hidden');
+                updateDroneButtonLabel();
 
                 if (currentPath === 'freelab') {
                     instructionEl.textContent = 'Modo Livre: Cante qualquer nota ou toque no Diapasão abaixo';
@@ -1335,7 +1783,7 @@
         };
 
         const startNewRound = () => {
-            if (!synth) return;
+            if (!audioContext && !synth) return;
             if (audiationTimer) clearInterval(audiationTimer);
             const pool = getActiveNotesPool();
             errorCount = 0;
@@ -1379,7 +1827,7 @@
                 currentNote = allChrom[stepSpec.semitone];
                 currentBaseNote = null;
                 intervalBadgeEl.classList.remove('hidden');
-                intervalBadgeEl.textContent = stepSpec.degree;
+                intervalBadgeEl.textContent = `${stepSpec.degree} (${currentNote.name})`;
                 playAndSetupListener(currentNote);
                 return;
             }
@@ -1403,7 +1851,7 @@
             let newNote;
             do {
                 newNote = pool[Math.floor(Math.random() * pool.length)];
-            } while (pool.length > 1 && newNote && currentNote && newNote.name === currentNote.name);
+            } while (pool.length > 1 && newNote && currentNote && newNote.freq === currentNote.freq);
             currentNote = newNote;
             currentBaseNote = null;
 
@@ -1436,9 +1884,8 @@
             }
         };
 
-        const playAndSetupListener = (noteToPlay) => {
-            if (!synth || !noteToPlay) return;
-            configureSynthTimbre();
+        const playAndSetupListener = async (noteToPlay) => {
+            if (!noteToPlay) return;
             listening = false;
             actionTaken = true;
             feedbackEl.innerHTML = '&nbsp;';
@@ -1450,9 +1897,9 @@
 
             instructionEl.textContent = 'Ouça com atenção e mentalize a altura...';
             targetNoteDisplayEl.textContent = noteToPlay.name;
-            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz`;
+            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
 
-            synth.triggerAttackRelease(noteToPlay.freq, '1.1s');
+            await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.1 });
 
             setTimeout(() => {
                 instructionEl.textContent = 'AGORA CANTE E SUSTENTE A NOTA';
@@ -1461,9 +1908,8 @@
             }, 1850);
         };
 
-        const playAudiationAndSetupListener = (noteToPlay) => {
-            if (!synth || !noteToPlay) return;
-            configureSynthTimbre();
+        const playAudiationAndSetupListener = async (noteToPlay) => {
+            if (!noteToPlay) return;
             listening = false;
             actionTaken = true;
             feedbackEl.innerHTML = '&nbsp;';
@@ -1471,9 +1917,9 @@
 
             instructionEl.textContent = '1. Ouça a referência sonora...';
             targetNoteDisplayEl.textContent = noteToPlay.name;
-            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz`;
+            targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
 
-            synth.triggerAttackRelease(noteToPlay.freq, '1.0s');
+            await SoundFontEngine.playNote(noteToPlay.freq, { duration: 1.0 });
 
             let remaining = 3;
             setTimeout(() => {
@@ -1492,9 +1938,8 @@
             }, 1400);
         };
 
-        const playIntervalAndSetupListener = (baseNote, targetNote) => {
-            if (!synth) return;
-            configureSynthTimbre();
+        const playIntervalAndSetupListener = async (baseNote, targetNote) => {
+            if (!baseNote || !targetNote) return;
             listening = false;
             actionTaken = true;
             feedbackEl.innerHTML = '&nbsp;';
@@ -1504,9 +1949,9 @@
             targetNoteDisplayEl.textContent = targetNote.name;
             targetFreqSubEl.textContent = `Alvo: ${targetNote.freq.toFixed(1)} Hz (Base: ${baseNote.name})`;
 
-            const now = Tone.now();
-            synth.triggerAttackRelease(baseNote.freq, '0.8s', now);
-            synth.triggerAttackRelease(targetNote.freq, '1.0s', now + 0.95);
+            await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, [baseNote.freq, targetNote.freq]);
+            SoundFontEngine.playNote(baseNote.freq, { duration: 0.8, delay: 0 });
+            SoundFontEngine.playNote(targetNote.freq, { duration: 1.0, delay: 0.95 });
 
             setTimeout(() => {
                 instructionEl.textContent = `CANTE A 2ª NOTA (${targetNote.name.toUpperCase()})`;
@@ -1727,33 +2172,41 @@
         }
 
         // =========================================================================
-        // 8. EXERCÍCIOS DE AQUECIMENTO VOCAL SINTETIZADOS E EVENTOS
+        // 8. EXERCÍCIOS DE AQUECIMENTO VOCAL E EVENTOS DE CONTROLE
         // =========================================================================
         document.querySelectorAll('.warmup-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 await Tone.start();
+                await SoundFontEngine.ensureAudioContext();
                 if (!synth) {
                     synth = new Tone.Synth().toDestination();
                 }
-                configureSynthTimbre();
                 const type = btn.getAttribute('data-warmup');
-                const mult = Number(octaveSelect.value) === 4 ? 2 : 1;
-                const now = Tone.now();
+                const allChrom = getAllChromaticNotesInCurrentOctave();
+                const n1 = allChrom[0].freq; // 1º grau (Sol2 ou Dó3)
+                const n2 = allChrom[2].freq; // 2º grau Maior (Lá2 ou Ré3)
+                const n3 = allChrom[4].freq; // 3º grau Maior (Si2 ou Mi3)
+                const n5 = allChrom[7].freq; // 5º grau Justo (Ré3 ou Sol3)
 
                 if (type === 'siren') {
-                    synth.triggerAttack(130.81 * mult, now);
-                    synth.frequency.rampTo(196.00 * mult, 1.2, now);
-                    synth.frequency.rampTo(130.81 * mult, 1.2, now + 1.2);
+                    // Glissando contínuo 1º -> 5º -> 1º
+                    configureSynthTimbre('synth:warm');
+                    const now = Tone.now();
+                    synth.triggerAttack(n1, now);
+                    synth.frequency.rampTo(n5, 1.2, now);
+                    synth.frequency.rampTo(n1, 1.2, now + 1.2);
                     synth.triggerRelease(now + 2.5);
                 } else if (type === 'humming') {
-                    const seq = [130.81, 146.83, 164.81, 146.83, 130.81];
+                    const seq = [n1, n2, n3, n2, n1];
+                    await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, seq);
                     seq.forEach((f, idx) => {
-                        synth.triggerAttackRelease(f * mult, '0.45s', now + idx * 0.55);
+                        SoundFontEngine.playNote(f, { duration: 0.45, delay: idx * 0.55 });
                     });
                 } else if (type === 'triad') {
-                    const seq = [130.81, 164.81, 196.00, 164.81, 130.81];
+                    const seq = [n1, n3, n5, n3, n1];
+                    await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, seq);
                     seq.forEach((f, idx) => {
-                        synth.triggerAttackRelease(f * mult, '0.5s', now + idx * 0.6);
+                        SoundFontEngine.playNote(f, { duration: 0.5, delay: idx * 0.6 });
                     });
                 }
             });
@@ -1763,20 +2216,19 @@
         nextNoteButton.addEventListener('click', startNewRound);
         replayNoteButton.addEventListener('click', repeatRound);
 
-        // Pedal Tônico (Drone em Dó)
+        // Pedal Tônico (Sol para Vozes Graves / Dó para Vozes Agudas)
         droneToggleButton.addEventListener('click', () => {
             if (!droneSynth) return;
             droneActive = !droneActive;
+            const tonic = getCurrentTonicInfo();
             if (droneActive) {
-                const cFreq = Number(octaveSelect.value) === 4 ? 261.63 : 130.81;
-                droneSynth.triggerAttack(cFreq);
-                droneToggleButton.textContent = 'Pedal Dó: ON';
+                droneSynth.triggerAttack(tonic.freq);
                 droneToggleButton.classList.add('tab-active');
             } else {
                 droneSynth.triggerRelease();
-                droneToggleButton.textContent = 'Pedal Dó: OFF';
                 droneToggleButton.classList.remove('tab-active');
             }
+            updateDroneButtonLabel();
         });
 
         // Troca de Caminhos Pedagógicos
@@ -1793,7 +2245,7 @@
                 stepwiseDirection = 1;
                 triadStepIndex = 0;
 
-                if (synth) {
+                if (audioContext || synth) {
                     startNewRound();
                 }
             });
@@ -1816,19 +2268,44 @@
             });
         });
 
-        // Atualização de Configurações
-        octaveSelect.addEventListener('change', () => {
+        // Troca de Instrumento General MIDI ou Síntese em Tempo de Execução
+        timbreSelect.addEventListener('change', async () => {
+            await setInstrument(timbreSelect.value);
+        });
+
+        // Controle de Volume via GainNode
+        instrumentVolumeSlider.addEventListener('input', () => {
+            const val = parseFloat(instrumentVolumeSlider.value);
+            instrumentVolumeLabel.textContent = `${Math.round(val * 100)}%`;
+            SoundFontEngine.setVolume(val);
+        });
+
+        // Atualização de Região Vocal (Vozes Graves: Sol a Sol | Vozes Agudas: Dó a Dó)
+        octaveSelect.addEventListener('change', async () => {
+            stepwiseIndex = 0;
+            stepwiseDirection = 1;
+            triadStepIndex = 0;
             renderReferenceKeyboard();
+            updateDroneButtonLabel();
             if (droneActive && droneSynth) {
-                const cFreq = Number(octaveSelect.value) === 4 ? 261.63 : 130.81;
-                droneSynth.setNote(cFreq);
+                const tonic = getCurrentTonicInfo();
+                droneSynth.setNote(tonic.freq);
+            }
+            if (audioContext) {
+                await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, getActiveNotesPool());
+                if (currentPath !== 'freelab') {
+                    startNewRound();
+                }
             }
         });
 
         toleranceSelect.addEventListener('change', updateToleranceVisualZone);
-        scaleSelect.addEventListener('change', () => {
+        scaleSelect.addEventListener('change', async () => {
             stepwiseIndex = 0;
             stepwiseDirection = 1;
+            if (audioContext) {
+                await SoundFontEngine.preloadNotes(SoundFontEngine.currentInstrument, getActiveNotesPool());
+            }
         });
 
         resetProgressBtn.addEventListener('click', () => {
@@ -1851,7 +2328,7 @@
             renderDiagnosticsUI();
         });
 
-        // Inicialização da Interface
+        // Inicialização da Interface (sem baixar o banco GM inteiro no load inicial)
         loadGameState();
         renderReferenceKeyboard();
         updateToleranceVisualZone();
