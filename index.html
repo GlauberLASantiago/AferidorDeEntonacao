@@ -238,12 +238,19 @@
                             <p class="font-semibold text-sm text-brand-light">6. Laboratório Livre</p>
                             <p class="text-xs text-brand-light/70 mt-0.5">Afinador contínuo, curva vocal e teclado sem erros.</p>
                         </button>
-                        <button data-path="mirror" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 sm:col-span-2 border border-brand-gold/30">
-                            <div class="flex items-center justify-between">
-                                <p class="font-semibold text-sm text-brand-gold">7. Espelho Vocal (Emitir → Gravar 3s → Comparar)</p>
-                                <span class="text-[10px] font-mono-tech px-2 py-0.5 rounded-full bg-brand-coral/30 border border-brand-coral text-brand-light">NOVO</span>
+                        <button data-path="mirror" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-gold/30">
+                            <div class="flex items-center justify-between gap-1">
+                                <p class="font-semibold text-sm text-brand-gold">7. Espelho Vocal</p>
+                                <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-teal/30 border border-brand-teal text-brand-light">3s</span>
                             </div>
-                            <p class="text-xs text-brand-light/80 mt-0.5">O app emite a nota, grava sua voz por 3s e toca: 1º Nota de Origem → 2º Sua Voz → 3º As Duas Juntas.</p>
+                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º Sua Voz → 3º As Duas Juntas.</p>
+                        </button>
+                        <button data-path="special" class="path-btn glass-panel p-3 rounded-2xl text-left transition-all hover:border-brand-gold/50 border border-brand-coral/40">
+                            <div class="flex items-center justify-between gap-1">
+                                <p class="font-semibold text-sm text-brand-gold">8. Comparação Especial</p>
+                                <span class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded-full bg-brand-coral/35 border border-brand-coral text-brand-light">Auto-Tune</span>
+                            </div>
+                            <p class="text-xs text-brand-light/80 mt-0.5">Emite a nota, grava 3s e toca: 1º Origem → 2º Áudio Gravado → 3º Gravado Corrigido.</p>
                         </button>
                     </div>
 
@@ -486,25 +493,32 @@
                             <div id="mirrorProgressBar" class="bg-gradient-to-r from-[#E76F51] via-[#F4A261] to-[#2A9D8F] h-full transition-all duration-100" style="width: 0%"></div>
                         </div>
 
-                        <!-- 3 Etapas da Comparação (1º Nota de Origem -> 2º Sua Voz -> 3º As Duas Juntas) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                        <!-- Etapas da Comparação (Trilha 7: Espelho Vocal | Trilha 8: Comparação Especial Auto-Tune) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                             <button type="button" id="playOnlyOriginBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
                                 <span class="block text-[10px] font-mono-tech uppercase text-brand-gold">1ª Etapa (Individual)</span>
-                                <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota de Origem</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🔊 Nota Original</span>
                                 <span id="mirrorOriginInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Referência do app</span>
                             </button>
 
                             <button type="button" id="playOnlyUserVoiceBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
                                 <span class="block text-[10px] font-mono-tech uppercase text-brand-sandy">2ª Etapa (Individual)</span>
-                                <span class="block text-xs font-bold text-brand-light mt-0.5">🎤 Sua Voz (3s)</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">🎤 Áudio Gravado</span>
                                 <span id="mirrorVoiceInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Aguardando gravação</span>
+                            </button>
+
+                            <button type="button" id="playAutoTunedVoiceBtn" disabled
+                                class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
+                                <span class="block text-[10px] font-mono-tech uppercase text-brand-coral">Trilha 8 · Auto-Tune</span>
+                                <span class="block text-xs font-bold text-brand-light mt-0.5">✨ Voz Corrigida</span>
+                                <span id="mirrorAutoTuneInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Afinação corrigida</span>
                             </button>
 
                             <button type="button" id="playBothTogetherBtn" disabled
                                 class="mirror-step-btn rounded-xl p-2.5 border border-white/15 bg-[#264653]/75 text-left transition-all disabled:opacity-45 hover:border-brand-gold">
-                                <span class="block text-[10px] font-mono-tech uppercase text-brand-teal">3ª Etapa (Simultânea)</span>
+                                <span class="block text-[10px] font-mono-tech uppercase text-brand-teal">Trilha 7 · Simultânea</span>
                                 <span class="block text-xs font-bold text-brand-light mt-0.5">🎶 As Duas Juntas</span>
                                 <span id="mirrorBothInfo" class="block text-[10px] text-brand-light/70 mt-0.5">Origem + Sua Voz</span>
                             </button>
@@ -515,16 +529,22 @@
                                 <div class="flex items-center gap-2.5 flex-1 min-w-[220px]">
                                     <label for="mirrorVoiceVolumeSlider" class="text-[11px] text-brand-light/90 font-semibold shrink-0">🎤 Volume da Gravação:</label>
                                     <input type="range" id="mirrorVoiceVolumeSlider" min="0.05" max="1.5" step="0.05" value="0.50"
-                                        class="w-full max-w-[180px] accent-[#F4A261] cursor-pointer h-1.5 bg-[#193039] rounded-lg">
+                                        class="w-full max-w-[160px] accent-[#F4A261] cursor-pointer h-1.5 bg-[#193039] rounded-lg">
                                     <span id="mirrorVoiceVolumeLabel" class="font-mono-tech text-[11px] text-brand-sandy w-10 text-right">50%</span>
                                 </div>
-                                <button type="button" id="replayFullComparisonBtn" disabled
-                                    class="glass-btn-teal px-3 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-40 shrink-0">
-                                    ↻ Reouvir Sequência (1 → 2 → Juntas)
-                                </button>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button type="button" id="replayFullComparisonBtn" disabled
+                                        class="glass-btn-teal px-2.5 py-1.5 rounded-xl text-[11px] font-semibold disabled:opacity-40 shrink-0">
+                                        ↻ Espelho (1 → 2 → Juntas)
+                                    </button>
+                                    <button type="button" id="replaySpecialAutoTuneBtn" disabled
+                                        class="glass-btn-primary px-2.5 py-1.5 rounded-xl text-[11px] font-semibold disabled:opacity-40 shrink-0">
+                                        ✨ Especial (1 → 2 → Corrigida)
+                                    </button>
+                                </div>
                             </div>
                             <p id="mirrorSummaryText" class="text-[11px] text-brand-light/80">
-                                Clique em <strong>"🎙️ Emitir, Gravar 3s &amp; Comparar"</strong> (ou use a <strong>Trilha 7</strong>) para ouvir a referência, gravar 3s e escutar a comparação.
+                                Escolha a <strong>Trilha 7 (Espelho Vocal)</strong> ou a <strong>Trilha 8 (Comparação Especial · Auto-Tune)</strong>, ou clique em <strong>"🎙️ Emitir, Gravar 3s &amp; Comparar"</strong>.
                             </p>
                         </div>
                     </div>
@@ -966,10 +986,13 @@
         const mirrorProgressBarEl = document.getElementById('mirrorProgressBar');
         const playOnlyOriginBtn = document.getElementById('playOnlyOriginBtn');
         const playOnlyUserVoiceBtn = document.getElementById('playOnlyUserVoiceBtn');
+        const playAutoTunedVoiceBtn = document.getElementById('playAutoTunedVoiceBtn');
         const playBothTogetherBtn = document.getElementById('playBothTogetherBtn');
         const replayFullComparisonBtn = document.getElementById('replayFullComparisonBtn');
+        const replaySpecialAutoTuneBtn = document.getElementById('replaySpecialAutoTuneBtn');
         const mirrorOriginInfoEl = document.getElementById('mirrorOriginInfo');
         const mirrorVoiceInfoEl = document.getElementById('mirrorVoiceInfo');
+        const mirrorAutoTuneInfoEl = document.getElementById('mirrorAutoTuneInfo');
         const mirrorBothInfoEl = document.getElementById('mirrorBothInfo');
         const mirrorSummaryTextEl = document.getElementById('mirrorSummaryText');
         const statusEl = document.getElementById('status');
@@ -1123,6 +1146,10 @@
             mirror: {
                 badge: 'Trilha 7 · Espelho Vocal (3s)',
                 banner: '<strong class="text-brand-gold">Trilha 7 (Espelho Vocal — Emitir → Gravar 3s → Comparar):</strong> O app emite a nota de origem, grava sua voz automaticamente por <strong>3 segundos</strong> e depois reproduz a comparação: <strong>1º Nota de Origem</strong>, <strong>2º Sua Voz</strong> e <strong>3º As Duas Juntas</strong>!'
+            },
+            special: {
+                badge: 'Trilha 8 · Comparação Especial',
+                banner: '<strong class="text-brand-gold">Trilha 8 (Comparação Especial — Auto-Tune):</strong> O app emite a nota, grava sua voz automaticamente por <strong>3 segundos</strong> e depois reproduz: <strong>1º Nota Original</strong>, <strong>2º Áudio Gravado</strong> e <strong>3º Áudio Gravado Corrigido na Afinação (Auto-Tune)</strong>!'
             }
         };
 
@@ -1194,6 +1221,7 @@
         let recordedPcmChunks = [];
         let recordedPitchSamples = [];
         let lastRecordedVoiceBuffer = null;
+        let lastAutoTunedVoiceBuffer = null;
         let lastRecordedVoiceBlobUrl = null;
         let lastRecordedVoiceHasPcm = false;
         let lastComparisonNote = null;
@@ -2036,7 +2064,7 @@
         //     (1º Nota de Origem -> 2º Sua Voz -> 3º As Duas Juntas)
         // =========================================================================
         function shouldUseAutoMirrorMode() {
-            return currentPath === 'mirror';
+            return currentPath === 'mirror' || currentPath === 'special';
         }
 
         async function setupVoiceRecorderGraph() {
@@ -2191,7 +2219,7 @@
         }
 
         function highlightMirrorStepButton(activeBtnId = null) {
-            const buttons = [playOnlyOriginBtn, playOnlyUserVoiceBtn, playBothTogetherBtn];
+            const buttons = [playOnlyOriginBtn, playOnlyUserVoiceBtn, playAutoTunedVoiceBtn, playBothTogetherBtn];
             buttons.forEach(btn => {
                 if (!btn) return;
                 if (activeBtnId && btn.id === activeBtnId) {
@@ -2289,6 +2317,135 @@
             return outBuffer;
         }
 
+        /**
+         * Gera uma versão corrigida na afinação (estilo Auto-Tune) a partir do AudioBuffer gravado do usuário.
+         * Analisa a frequência fundamental quadro a quadro por autocorrelação e aplica um Pitch-Shifter Granular
+         * Dual-Tap com Janela de Hann (w0 + w1 === 1.0, zero cliques) + reforço harmônico sutil cravado na nota alvo.
+         */
+        async function buildAutoTunedVoiceAudioBuffer(voiceBuffer, targetFreq) {
+            const ctx = await SoundFontEngine.ensureAudioContext();
+            if (!voiceBuffer || !lastRecordedVoiceHasPcm) {
+                return voiceBuffer;
+            }
+
+            const sampleRate = voiceBuffer.sampleRate;
+            const inputData = voiceBuffer.getChannelData(0);
+            const length = inputData.length;
+            const outBuffer = ctx.createBuffer(1, length, sampleRate);
+            const outputData = outBuffer.getChannelData(0);
+
+            const winSize = Math.min(2048, length);
+            const hop = 512;
+            const numFrames = Math.max(1, Math.ceil(length / hop));
+            const rawRatios = new Float32Array(numFrames);
+            const validRatios = [];
+
+            let referenceTargetFreq = targetFreq;
+
+            for (let f = 0; f < numFrames; f++) {
+                const start = Math.min(Math.max(0, f * hop), Math.max(0, length - winSize));
+                const frameSlice = inputData.subarray(start, start + winSize);
+                const detected = autoCorrelate(frameSlice, sampleRate);
+
+                if (detected > 65 && detected < 1100) {
+                    let fTarget = targetFreq;
+                    if (!strictOctaveToggle || !strictOctaveToggle.checked) {
+                        while (detected > fTarget * 1.414) fTarget *= 2;
+                        while (detected < fTarget / 1.414) fTarget /= 2;
+                    }
+                    referenceTargetFreq = fTarget;
+                    const ratio = Math.max(0.5, Math.min(2.0, fTarget / detected));
+                    rawRatios[f] = ratio;
+                    validRatios.push(ratio);
+                } else {
+                    rawRatios[f] = 0;
+                }
+            }
+
+            let medianRatio = 1.0;
+            if (validRatios.length > 0) {
+                const sorted = validRatios.slice().sort((a, b) => a - b);
+                medianRatio = sorted[Math.floor(sorted.length / 2)];
+            } else if (recordedPitchSamples.length > 0) {
+                const avgC = recordedPitchSamples.reduce((acc, s) => acc + s.cents, 0) / recordedPitchSamples.length;
+                medianRatio = Math.max(0.5, Math.min(2.0, Math.pow(2, -avgC / 1200)));
+            }
+
+            for (let f = 0; f < numFrames; f++) {
+                if (rawRatios[f] === 0) {
+                    rawRatios[f] = medianRatio;
+                }
+            }
+
+            const frameRatios = new Float32Array(numFrames);
+            for (let f = 0; f < numFrames; f++) {
+                const rPrev = rawRatios[Math.max(0, f - 1)];
+                const rCurr = rawRatios[f];
+                const rNext = rawRatios[Math.min(numFrames - 1, f + 1)];
+                frameRatios[f] = (rPrev + 2 * rCurr + rNext) / 4;
+            }
+
+            const grainSize = Math.max(512, Math.round(sampleRate * 0.038));
+            let phase0 = 0.0;
+            let currentRatio = frameRatios[0] || 1.0;
+            let synthPhase = 0.0;
+            let envFollower = 0.0;
+
+            const sampleInterp = (pos) => {
+                if (pos <= 0) return inputData[0];
+                if (pos >= length - 1) return inputData[length - 1];
+                const idx = Math.floor(pos);
+                const frac = pos - idx;
+                return inputData[idx] * (1.0 - frac) + inputData[idx + 1] * frac;
+            };
+
+            const fadeInSamples = Math.min(Math.floor(sampleRate * 0.018), Math.floor(length / 4));
+            const fadeOutSamples = Math.min(Math.floor(sampleRate * 0.035), Math.floor(length / 4));
+
+            for (let i = 0; i < length; i++) {
+                const fIdx = Math.min(numFrames - 1, Math.floor(i / hop));
+                currentRatio += 0.006 * (frameRatios[fIdx] - currentRatio);
+
+                phase0 += (currentRatio - 1.0) / grainSize;
+                phase0 = phase0 - Math.floor(phase0);
+                let phase1 = phase0 + 0.5;
+                if (phase1 >= 1.0) phase1 -= 1.0;
+
+                const w0 = 0.5 * (1.0 - Math.cos(2.0 * Math.PI * phase0));
+                const w1 = 0.5 * (1.0 - Math.cos(2.0 * Math.PI * phase1));
+
+                const pos0 = i + (phase0 - 0.5) * grainSize;
+                const pos1 = i + (phase1 - 0.5) * grainSize;
+
+                const s0 = sampleInterp(pos0);
+                const s1 = sampleInterp(pos1);
+                const shiftedVoice = w0 * s0 + w1 * s1;
+
+                const absVal = Math.abs(shiftedVoice);
+                envFollower = absVal > envFollower
+                    ? envFollower + 0.02 * (absVal - envFollower)
+                    : envFollower + 0.0015 * (absVal - envFollower);
+
+                synthPhase += (2.0 * Math.PI * referenceTargetFreq) / sampleRate;
+                if (synthPhase > 2.0 * Math.PI) synthPhase -= 2.0 * Math.PI;
+
+                const autoTuneLock = envFollower > 0.012
+                    ? envFollower * 0.16 * (0.68 * Math.sin(synthPhase) + 0.22 * Math.sin(2.0 * synthPhase) + 0.10 * Math.sin(3.0 * synthPhase))
+                    : 0.0;
+
+                let env = 1.0;
+                if (i < fadeInSamples) {
+                    env = i / fadeInSamples;
+                } else if (i > length - fadeOutSamples) {
+                    env = (length - i) / fadeOutSamples;
+                }
+
+                outputData[i] = Math.max(-0.85, Math.min(0.85, (0.88 * shiftedVoice + autoTuneLock) * env));
+            }
+
+            return outBuffer;
+        }
+
         async function playRecordedVoiceBuffer(audioBuffer, { duration = null, gain = recordedVoiceVolume } = {}) {
             const ctx = await SoundFontEngine.ensureAudioContext();
 
@@ -2352,6 +2509,29 @@
             return null;
         }
 
+        function evaluateMirrorRecordingResult(avgCents) {
+            const tol = Number(toleranceSelect.value);
+            if (avgCents !== null && Number.isFinite(avgCents)) {
+                const absC = Math.abs(avgCents);
+                const sign = avgCents > 0 ? '+' : '';
+                if (absC <= tol) {
+                    updateScore(true, avgCents);
+                    userResultDisplay.textContent = absC <= 12 ? 'Na Mosca!' : 'Afinado';
+                    feedbackEl.textContent = `Excelente afinação! Desvio médio na gravação: ${sign}${avgCents} cents.`;
+                    displayArea.style.background = 'rgba(42, 157, 143, 0.34)';
+                    displayArea.style.borderColor = '#2A9D8F';
+                } else {
+                    const hint = avgCents < 0 ? 'um pouco grave (♭)' : 'um pouco agudo (♯)';
+                    userResultDisplay.textContent = avgCents < 0 ? 'Grave (♭)' : 'Agudo (♯)';
+                    feedbackEl.textContent = `Sua gravação ficou ${hint} (média: ${sign}${avgCents} c). Ouça a diferença nos botões abaixo ou tente novamente!`;
+                    displayArea.style.background = 'rgba(244, 162, 97, 0.28)';
+                    displayArea.style.borderColor = '#F4A261';
+                }
+            } else {
+                feedbackEl.textContent = 'Comparação concluída! Use os botões abaixo para reouvir cada parte ou sorteie a próxima nota.';
+            }
+        }
+
         async function playFullComparisonSequence(noteToCompare = lastComparisonNote || currentNote, { evaluateAfter = false, avgCents = null } = {}) {
             if (!noteToCompare || (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl)) return;
             stopVoiceComparisonPlayback();
@@ -2364,7 +2544,7 @@
 
             // 1ª ETAPA: NOTA DE ORIGEM (SOZINHA)
             highlightMirrorStepButton('playOnlyOriginBtn');
-            mirrorStatusBadgeEl.textContent = '1/3 · Nota de Origem';
+            mirrorStatusBadgeEl.textContent = '1/3 · Nota Original';
             mirrorProgressBarEl.style.width = '33%';
             instructionEl.textContent = `1º · Ouvindo a NOTA DE ORIGEM (${noteToCompare.name})...`;
             feedbackEl.textContent = 'Compare mentalmente o timbre e o centro da nota de referência.';
@@ -2374,9 +2554,9 @@
             const step2DelayMs = Math.round((originDur + gapSec) * 1000);
             const t2 = setTimeout(async () => {
                 highlightMirrorStepButton('playOnlyUserVoiceBtn');
-                mirrorStatusBadgeEl.textContent = '2/3 · Sua Voz Gravada';
+                mirrorStatusBadgeEl.textContent = '2/3 · Áudio Gravado';
                 mirrorProgressBarEl.style.width = '66%';
-                instructionEl.textContent = '2º · Ouvindo a SUA VOZ GRAVADA...';
+                instructionEl.textContent = '2º · Ouvindo o SEU ÁUDIO GRAVADO...';
                 feedbackEl.textContent = 'Observe a altura do seu ataque e a estabilidade da sustentação.';
                 await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume });
             }, step2DelayMs);
@@ -2402,30 +2582,70 @@
             const tEnd = setTimeout(() => {
                 highlightMirrorStepButton(null);
                 mirrorStatusBadgeEl.textContent = 'Comparação concluída ✓';
-
                 if (evaluateAfter) {
-                    const tol = Number(toleranceSelect.value);
-                    if (avgCents !== null && Number.isFinite(avgCents)) {
-                        const absC = Math.abs(avgCents);
-                        const sign = avgCents > 0 ? '+' : '';
-                        if (absC <= tol) {
-                            updateScore(true, avgCents);
-                            userResultDisplay.textContent = absC <= 12 ? 'Na Mosca!' : 'Afinado';
-                            feedbackEl.textContent = `Excelente fusão! Desvio médio na gravação: ${sign}${avgCents} cents.`;
-                            displayArea.style.background = 'rgba(42, 157, 143, 0.34)';
-                            displayArea.style.borderColor = '#2A9D8F';
-                        } else {
-                            const hint = avgCents < 0 ? 'um pouco grave (♭)' : 'um pouco agudo (♯)';
-                            userResultDisplay.textContent = avgCents < 0 ? 'Grave (♭)' : 'Agudo (♯)';
-                            feedbackEl.textContent = `Sua gravação ficou ${hint} (média: ${sign}${avgCents} c). Ouça novamente nos botões abaixo ou tente de novo!`;
-                            displayArea.style.background = 'rgba(244, 162, 97, 0.28)';
-                            displayArea.style.borderColor = '#F4A261';
-                        }
-                    } else {
-                        feedbackEl.textContent = 'Comparação concluída! Use os botões abaixo para reouvir cada parte ou sorteie a próxima nota.';
-                    }
+                    evaluateMirrorRecordingResult(avgCents);
                 }
                 instructionEl.textContent = 'Toque nos botões do Espelho Auditivo para reouvir ou clique em "Sortear / Próxima Nota"';
+            }, finishDelayMs);
+            comparisonTimers.push(tEnd);
+        }
+
+        /**
+         * 8. Comparação Especial (Auto-Tune):
+         * Reproduz em sequência: 1º Nota Original -> 2º Áudio Gravado -> 3º Áudio Gravado Corrigido na Afinação (Auto-Tune)
+         */
+        async function playSpecialAutoTuneSequence(noteToCompare = lastComparisonNote || currentNote, { evaluateAfter = false, avgCents = null } = {}) {
+            if (!noteToCompare || (!lastRecordedVoiceBuffer && !lastRecordedVoiceBlobUrl)) return;
+            stopVoiceComparisonPlayback();
+
+            const voiceDur = lastRecordedVoiceBuffer
+                ? Math.max(1.5, Math.min(3.0, lastRecordedVoiceBuffer.duration))
+                : 2.8;
+            const originDur = 1.65;
+            const gapSec = 0.35;
+
+            // 1ª ETAPA: NOTA ORIGINAL
+            highlightMirrorStepButton('playOnlyOriginBtn');
+            mirrorStatusBadgeEl.textContent = '1/3 · Nota Original';
+            mirrorProgressBarEl.style.width = '33%';
+            instructionEl.textContent = `1º · Ouvindo a NOTA ORIGINAL (${noteToCompare.name})...`;
+            feedbackEl.textContent = 'Escute o centro exato da nota de referência.';
+            await SoundFontEngine.playNote(noteToCompare.freq, { duration: originDur, velocity: 0.92 });
+
+            // 2ª ETAPA: ÁUDIO GRAVADO (VOZ ORIGINAL DO USUÁRIO)
+            const step2DelayMs = Math.round((originDur + gapSec) * 1000);
+            const t2 = setTimeout(async () => {
+                highlightMirrorStepButton('playOnlyUserVoiceBtn');
+                mirrorStatusBadgeEl.textContent = '2/3 · Áudio Gravado';
+                mirrorProgressBarEl.style.width = '66%';
+                instructionEl.textContent = '2º · Ouvindo o SEU ÁUDIO GRAVADO (original)...';
+                feedbackEl.textContent = 'Perceba como sua voz foi captada antes da correção de afinação.';
+                await playRecordedVoiceBuffer(lastRecordedVoiceBuffer, { duration: voiceDur, gain: recordedVoiceVolume });
+            }, step2DelayMs);
+            comparisonTimers.push(t2);
+
+            // 3ª ETAPA: ÁUDIO GRAVADO CORRIGIDO NA AFINAÇÃO (AUTO-TUNE)
+            const step3DelayMs = step2DelayMs + Math.round((voiceDur + gapSec) * 1000);
+            const t3 = setTimeout(async () => {
+                highlightMirrorStepButton('playAutoTunedVoiceBtn');
+                mirrorStatusBadgeEl.textContent = '3/3 · Voz Corrigida (Auto-Tune)!';
+                mirrorProgressBarEl.style.width = '100%';
+                instructionEl.textContent = `3º · Ouvindo o ÁUDIO GRAVADO CORRIGIDO (${noteToCompare.name} · Auto-Tune)!`;
+                feedbackEl.textContent = 'Compare sua própria voz agora cravada na afinação exata da nota alvo!';
+                const bufferToPlay = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
+                await playRecordedVoiceBuffer(bufferToPlay, { duration: voiceDur, gain: recordedVoiceVolume });
+            }, step3DelayMs);
+            comparisonTimers.push(t3);
+
+            // CONCLUSÃO DA COMPARAÇÃO ESPECIAL
+            const finishDelayMs = step3DelayMs + Math.round((voiceDur + 0.25) * 1000);
+            const tEnd = setTimeout(() => {
+                highlightMirrorStepButton(null);
+                mirrorStatusBadgeEl.textContent = 'Comparação Especial concluída ✓';
+                if (evaluateAfter) {
+                    evaluateMirrorRecordingResult(avgCents);
+                }
+                instructionEl.textContent = 'Toque em "🎤 Áudio Gravado" ou "✨ Voz Corrigida" para comparar novamente!';
             }, finishDelayMs);
             comparisonTimers.push(tEnd);
         }
@@ -2457,6 +2677,9 @@
             targetFreqSubEl.textContent = `Referência: ${noteToPlay.freq.toFixed(1)} Hz (${SoundFontEngine.toNoteKey(noteToPlay.freq)})`;
             mirrorOriginInfoEl.textContent = `${noteToPlay.name} · ${noteToPlay.freq.toFixed(1)} Hz`;
             mirrorVoiceInfoEl.textContent = 'Preparando gravação (3s)...';
+            if (mirrorAutoTuneInfoEl) {
+                mirrorAutoTuneInfoEl.textContent = `Auto-Tune → ${noteToPlay.name}`;
+            }
             mirrorBothInfoEl.textContent = `${noteToPlay.name} + Sua Voz`;
 
             // 1. EMITE A NOTA DE ORIGEM
@@ -2496,7 +2719,7 @@
                     updateSustainProgress(pct);
                 }, 80);
 
-                // 3. FINALIZA OS 3 SEGUNDOS DE GRAVAÇÃO E DISPARA A COMPARAÇÃO (1º -> 2º -> JUNTAS)
+                // 3. FINALIZA OS 3 SEGUNDOS DE GRAVAÇÃO E DISPARA A COMPARAÇÃO (TRILHA 7 OU TRILHA 8 AUTO-TUNE)
                 const stopRecTimer = setTimeout(async () => {
                     if (recordingProgressInterval) {
                         clearInterval(recordingProgressInterval);
@@ -2510,10 +2733,11 @@
                         mirrorRecDotEl.className = 'w-2.5 h-2.5 rounded-full bg-[#2A9D8F] inline-block';
                     }
                     mirrorProgressBarEl.style.width = '100%';
-                    mirrorStatusBadgeEl.textContent = 'Processando áudio...';
+                    mirrorStatusBadgeEl.textContent = 'Processando e afinando áudio...';
 
                     const recordedBlob = await stopNativeMediaRecorder();
                     lastRecordedVoiceBuffer = await buildProcessedVoiceAudioBuffer(recordedBlob);
+                    lastAutoTunedVoiceBuffer = await buildAutoTunedVoiceAudioBuffer(lastRecordedVoiceBuffer, noteToPlay.freq);
 
                     let avgCents = null;
                     let avgFreq = null;
@@ -2527,15 +2751,24 @@
                     } else {
                         mirrorVoiceInfoEl.textContent = 'Voz gravada (3s)';
                     }
+                    if (mirrorAutoTuneInfoEl) {
+                        mirrorAutoTuneInfoEl.textContent = `Corrigida: ${noteToPlay.name} (0 c)`;
+                    }
 
                     playOnlyOriginBtn.disabled = false;
                     playOnlyUserVoiceBtn.disabled = false;
+                    if (playAutoTunedVoiceBtn) playAutoTunedVoiceBtn.disabled = false;
                     playBothTogetherBtn.disabled = false;
                     replayFullComparisonBtn.disabled = false;
+                    if (replaySpecialAutoTuneBtn) replaySpecialAutoTuneBtn.disabled = false;
 
-                    mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação pronta:</strong> Escutando 1º Nota de Origem (${noteToPlay.name}) → 2º Sua Voz → 3º As Duas Juntas!`;
-
-                    await playFullComparisonSequence(noteToPlay, { evaluateAfter: true, avgCents });
+                    if (currentPath === 'special') {
+                        mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação Especial pronta:</strong> 1º Nota Original (${noteToPlay.name}) → 2º Áudio Gravado → 3º Áudio Corrigido (Auto-Tune)!`;
+                        await playSpecialAutoTuneSequence(noteToPlay, { evaluateAfter: true, avgCents });
+                    } else {
+                        mirrorSummaryTextEl.innerHTML = `<strong class="text-brand-gold">Comparação pronta:</strong> 1º Nota Original (${noteToPlay.name}) → 2º Áudio Gravado → 3º As Duas Juntas!`;
+                        await playFullComparisonSequence(noteToPlay, { evaluateAfter: true, avgCents });
+                    }
                 }, VOICE_RECORD_DURATION_MS);
 
                 comparisonTimers.push(stopRecTimer);
@@ -2700,7 +2933,9 @@
             if (!noteToPlay) return;
             if (shouldUseAutoMirrorMode()) {
                 intervalBadgeEl.classList.remove('hidden');
-                intervalBadgeEl.textContent = 'Espelho Vocal (Emitir → Gravar 3s → Comparar)';
+                intervalBadgeEl.textContent = currentPath === 'special'
+                    ? 'Comparação Especial (Original → Gravado → Auto-Tune)'
+                    : 'Espelho Vocal (Emitir → Gravar 3s → Comparar)';
                 await playRecordAndCompare(noteToPlay);
                 return;
             }
@@ -3082,6 +3317,22 @@
             });
         }
 
+        if (playAutoTunedVoiceBtn) {
+            playAutoTunedVoiceBtn.addEventListener('click', async () => {
+                const buf = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
+                if (!buf && !lastRecordedVoiceBlobUrl) return;
+                stopVoiceComparisonPlayback();
+                const dur = buf
+                    ? Math.max(1.4, Math.min(3.0, buf.duration))
+                    : 2.8;
+                highlightMirrorStepButton('playAutoTunedVoiceBtn');
+                mirrorStatusBadgeEl.textContent = 'Auto-Tune · Voz Corrigida';
+                await playRecordedVoiceBuffer(buf, { duration: dur, gain: recordedVoiceVolume });
+                const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
+                comparisonTimers.push(t);
+            });
+        }
+
         if (playBothTogetherBtn) {
             playBothTogetherBtn.addEventListener('click', async () => {
                 const note = lastComparisonNote || currentNote;
@@ -3104,6 +3355,12 @@
         if (replayFullComparisonBtn) {
             replayFullComparisonBtn.addEventListener('click', () => {
                 playFullComparisonSequence(lastComparisonNote || currentNote, { evaluateAfter: false });
+            });
+        }
+
+        if (replaySpecialAutoTuneBtn) {
+            replaySpecialAutoTuneBtn.addEventListener('click', () => {
+                playSpecialAutoTuneSequence(lastComparisonNote || currentNote, { evaluateAfter: false });
             });
         }
 

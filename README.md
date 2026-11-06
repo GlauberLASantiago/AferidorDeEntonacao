@@ -6,14 +6,15 @@ O **Aferidor de Entonação** é uma aplicação web interativa desenvolvida par
 
 ## Funcionalidades Pedagógicas e Técnicas
 
-### 1. Sete Caminhos (Trilhas) de Estudo Musical
+### 1. Oito Caminhos (Trilhas) de Estudo Musical
 1. **Trilha 1 — Uníssono Guiado:** Percepção e reprodução de notas isoladas sorteadas dentro do repertório escolhido.
 2. **Trilha 2 — Escada Vocal (Graus Conjuntos):** Subida e descida sequencial pelos graus da escala (`Sol a Sol` ou `Dó a Dó`) para calibrar microajustes musculares da laringe.
 3. **Trilha 3 — Saltos & Intervalos Melódicos:** Reproduz uma nota base seguida de um intervalo melódico (*2ª Maior, 3ª Menor, 3ª Maior, 4ª Justa ou 5ª Justa*) para o estudante entoar a segunda nota alvo.
 4. **Trilha 4 — Memória Tonal & *Audiation* (Gordon):** Toca a referência, realiza uma contagem silenciosa de **3 segundos de *Audiation*** (retenção mental da altura) e abre a captação para o ataque vocal.
 5. **Trilha 5 — Arpejos & Tríades (Sentido Harmônico):** Percorre os graus de tríades maiores e menores (*1º, 3º e 5º graus*) para consolidar a afinação harmônica e coral.
 6. **Trilha 6 — Laboratório Livre:** Afinador contínuo integrado ao gráfico de contorno vocal e ao **Diapasão Interativo** de 13 notas (1 oitava completa), sem contagem de erros.
-7. **Trilha 7 — Espelho Vocal (Emitir → Gravar 3s → Comparar):** O aplicativo emite a nota de referência, inicia automaticamente uma **gravação de 3 segundos** da voz do usuário e, em seguida, reproduz automaticamente a comparação em 3 etapas: **1º Nota de Origem**, **2º Voz Gravada da Pessoa** e **3º As Duas Juntas (em uníssono)**, permitindo também reouvir cada etapa isoladamente ou toda a sequência.
+7. **Trilha 7 — Espelho Vocal (Emitir → Gravar 3s → Comparar):** O aplicativo emite a nota de referência, inicia automaticamente uma **gravação de 3 segundos** da voz do usuário e, em seguida, reproduz a comparação: **1º Nota Original**, **2º Áudio Gravado** e **3º As Duas Juntas (em uníssono)**.
+8. **Trilha 8 — Comparação Especial (Auto-Tune):** O aplicativo emite a nota de referência, grava a voz do usuário por **3 segundos** e reproduz automaticamente: **1º Nota Original**, **2º Áudio Gravado (voz original)** e **3º Áudio Gravado Corrigido na Afinação (estilo Auto-Tune)**, permitindo comparar diretamente a emissão original com a própria voz afinada na frequência alvo.
 
 ### 2. Biofeedback Visual Contínuo e Repetição Pedagógica
 - **Régua Direcional de Cents (`-100` a `+100 cents`):** Mostra instantaneamente a nota detectada, o desvio numérico em *cents* e a orientação motora (*"Suba um pouco — está Grave ♭"* ou *"Relaxe/desça um pouco — está Agudo ♯"*).
