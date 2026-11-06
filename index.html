@@ -2340,7 +2340,7 @@
             const rawRatios = new Float32Array(numFrames);
             const validRatios = [];
 
-            let referenceTargetFreq = targetFreq;
+            const referenceTargetFreq = targetFreq;
 
             for (let f = 0; f < numFrames; f++) {
                 const start = Math.min(Math.max(0, f * hop), Math.max(0, length - winSize));
@@ -2348,13 +2348,8 @@
                 const detected = autoCorrelate(frameSlice, sampleRate);
 
                 if (detected > 65 && detected < 1100) {
-                    let fTarget = targetFreq;
-                    if (!strictOctaveToggle || !strictOctaveToggle.checked) {
-                        while (detected > fTarget * 1.414) fTarget *= 2;
-                        while (detected < fTarget / 1.414) fTarget /= 2;
-                    }
-                    referenceTargetFreq = fTarget;
-                    const ratio = Math.max(0.5, Math.min(2.0, fTarget / detected));
+                    // Força a correção para a frequência e OITAVA EXATA da nota emitida (targetFreq)
+                    const ratio = Math.max(0.25, Math.min(4.0, targetFreq / detected));
                     rawRatios[f] = ratio;
                     validRatios.push(ratio);
                 } else {
@@ -2367,8 +2362,10 @@
                 const sorted = validRatios.slice().sort((a, b) => a - b);
                 medianRatio = sorted[Math.floor(sorted.length / 2)];
             } else if (recordedPitchSamples.length > 0) {
-                const avgC = recordedPitchSamples.reduce((acc, s) => acc + s.cents, 0) / recordedPitchSamples.length;
-                medianRatio = Math.max(0.5, Math.min(2.0, Math.pow(2, -avgC / 1200)));
+                const avgRawFreq = recordedPitchSamples.reduce((acc, s) => acc + (s.rawFreq || s.freq), 0) / recordedPitchSamples.length;
+                if (avgRawFreq > 0) {
+                    medianRatio = Math.max(0.25, Math.min(4.0, targetFreq / avgRawFreq));
+                }
             }
 
             for (let f = 0; f < numFrames; f++) {
@@ -2429,8 +2426,8 @@
                 synthPhase += (2.0 * Math.PI * referenceTargetFreq) / sampleRate;
                 if (synthPhase > 2.0 * Math.PI) synthPhase -= 2.0 * Math.PI;
 
-                const autoTuneLock = envFollower > 0.012
-                    ? envFollower * 0.16 * (0.68 * Math.sin(synthPhase) + 0.22 * Math.sin(2.0 * synthPhase) + 0.10 * Math.sin(3.0 * synthPhase))
+                const autoTuneLock = envFollower > 0.010
+                    ? envFollower * 0.30 * (0.65 * Math.sin(synthPhase) + 0.25 * Math.sin(2.0 * synthPhase) + 0.10 * Math.sin(3.0 * synthPhase))
                     : 0.0;
 
                 let env = 1.0;
@@ -2440,7 +2437,7 @@
                     env = (length - i) / fadeOutSamples;
                 }
 
-                outputData[i] = Math.max(-0.85, Math.min(0.85, (0.88 * shiftedVoice + autoTuneLock) * env));
+                outputData[i] = Math.max(-0.85, Math.min(0.85, (0.82 * shiftedVoice + autoTuneLock) * env));
             }
 
             return outBuffer;
@@ -2624,14 +2621,18 @@
             }, step2DelayMs);
             comparisonTimers.push(t2);
 
-            // 3ª ETAPA: ÁUDIO GRAVADO CORRIGIDO NA AFINAÇÃO (AUTO-TUNE)
+            // 3ª ETAPA: ÁUDIO GRAVADO CORRIGIDO NA AFINAÇÃO E OITAVA EXATA DA NOTA EMITIDA (AUTO-TUNE)
             const step3DelayMs = step2DelayMs + Math.round((voiceDur + gapSec) * 1000);
             const t3 = setTimeout(async () => {
+                const exactKey = SoundFontEngine.toNoteKey(noteToCompare.freq);
                 highlightMirrorStepButton('playAutoTunedVoiceBtn');
-                mirrorStatusBadgeEl.textContent = '3/3 · Voz Corrigida (Auto-Tune)!';
+                mirrorStatusBadgeEl.textContent = `3/3 · Voz Corrigida (${exactKey})!`;
                 mirrorProgressBarEl.style.width = '100%';
-                instructionEl.textContent = `3º · Ouvindo o ÁUDIO GRAVADO CORRIGIDO (${noteToCompare.name} · Auto-Tune)!`;
-                feedbackEl.textContent = 'Compare sua própria voz agora cravada na afinação exata da nota alvo!';
+                instructionEl.textContent = `3º · Ouvindo o ÁUDIO GRAVADO CORRIGIDO na oitava exata (${noteToCompare.name} · ${exactKey} · ${noteToCompare.freq.toFixed(1)} Hz)!`;
+                feedbackEl.textContent = `Compare sua voz agora cravada na afinação e oitava exatas da nota emitida (${exactKey})!`;
+                userDetectedNoteEl.textContent = `${noteToCompare.name} (${exactKey})`;
+                userCentsDisplayEl.textContent = '0 c';
+                updateNeedlePosition(0);
                 const bufferToPlay = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
                 await playRecordedVoiceBuffer(bufferToPlay, { duration: voiceDur, gain: recordedVoiceVolume });
             }, step3DelayMs);
@@ -2743,16 +2744,17 @@
                     let avgFreq = null;
                     if (recordedPitchSamples.length > 0) {
                         const sumCents = recordedPitchSamples.reduce((acc, s) => acc + s.cents, 0);
-                        const sumFreq = recordedPitchSamples.reduce((acc, s) => acc + s.freq, 0);
+                        const sumRawFreq = recordedPitchSamples.reduce((acc, s) => acc + (s.rawFreq || s.freq), 0);
                         avgCents = Math.round(sumCents / recordedPitchSamples.length);
-                        avgFreq = sumFreq / recordedPitchSamples.length;
+                        avgFreq = sumRawFreq / recordedPitchSamples.length;
                         const sign = avgCents > 0 ? '+' : '';
                         mirrorVoiceInfoEl.textContent = `Média: ${avgFreq.toFixed(1)} Hz (${sign}${avgCents} c)`;
                     } else {
                         mirrorVoiceInfoEl.textContent = 'Voz gravada (3s)';
                     }
                     if (mirrorAutoTuneInfoEl) {
-                        mirrorAutoTuneInfoEl.textContent = `Corrigida: ${noteToPlay.name} (0 c)`;
+                        const exactKey = SoundFontEngine.toNoteKey(noteToPlay.freq);
+                        mirrorAutoTuneInfoEl.textContent = `${noteToPlay.name} (${exactKey}) · ${noteToPlay.freq.toFixed(1)} Hz`;
                     }
 
                     playOnlyOriginBtn.disabled = false;
@@ -3137,7 +3139,7 @@
 
             // Durante a gravação automática de 3 segundos (Espelho Vocal), registra as amostras sem interromper os 3s
             if (isRecordingVoice3s) {
-                recordedPitchSamples.push({ freq: comparedFreq, cents: roundedCents });
+                recordedPitchSamples.push({ freq: comparedFreq, rawFreq: userFreq, cents: roundedCents });
                 if (absCentsDiff <= tolerance) {
                     userResultDisplay.textContent = absCentsDiff <= 12 ? 'Na Mosca!' : 'Afinado';
                 } else {
@@ -3321,12 +3323,21 @@
             playAutoTunedVoiceBtn.addEventListener('click', async () => {
                 const buf = lastAutoTunedVoiceBuffer || lastRecordedVoiceBuffer;
                 if (!buf && !lastRecordedVoiceBlobUrl) return;
+                const note = lastComparisonNote || currentNote;
                 stopVoiceComparisonPlayback();
                 const dur = buf
                     ? Math.max(1.4, Math.min(3.0, buf.duration))
                     : 2.8;
                 highlightMirrorStepButton('playAutoTunedVoiceBtn');
-                mirrorStatusBadgeEl.textContent = 'Auto-Tune · Voz Corrigida';
+                if (note) {
+                    const exactKey = SoundFontEngine.toNoteKey(note.freq);
+                    mirrorStatusBadgeEl.textContent = `Auto-Tune · ${note.name} (${exactKey})`;
+                    userDetectedNoteEl.textContent = `${note.name} (${exactKey})`;
+                    userCentsDisplayEl.textContent = '0 c';
+                    updateNeedlePosition(0);
+                } else {
+                    mirrorStatusBadgeEl.textContent = 'Auto-Tune · Voz Corrigida';
+                }
                 await playRecordedVoiceBuffer(buf, { duration: dur, gain: recordedVoiceVolume });
                 const t = setTimeout(() => highlightMirrorStepButton(null), Math.round(dur * 1000) + 100);
                 comparisonTimers.push(t);
